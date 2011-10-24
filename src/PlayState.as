@@ -7,14 +7,13 @@ package
 	
 	public class PlayState extends FlxState
 	{
-		private var p:Player;
+		private var p:Player;		// the player object
 		
+		// sort of "constructor"
 		override public function create():void 
 		{
 			super.create();
-			this.add( p = new Player(100, 50, this ) );
-			//this.add( player = new PlayerPlane( 50, 50 ) );
-			//this.add( player2 = new PlayerPlane2( 100, 50 ) );
+			this.add( p = new Player(100, 50, this ) );		// add the player object
 		}
 		
 		override public function update():void 
