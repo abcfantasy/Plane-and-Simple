@@ -17,6 +17,7 @@
   <classpaths>
     <class path="src" />
     <class path="flixel 2.43" />
+    <class path="Box2D" />
   </classpaths>
   <!-- Build options -->
   <build>
