@@ -1,5 +1,9 @@
 package  
 {
+	import Box2D.Dynamics.*;
+	import Box2D.Collision.*;
+	import Box2D.Collision.Shapes.*;
+	import Box2D.Common.Math.*;
 	import org.flixel.FlxState;
 	import org.flixel.FlxTilemap;
 	import org.flixel.FlxG;
@@ -7,17 +11,29 @@ package
 	
 	public class PlayState extends FlxState
 	{
+		public var _world:b2World;
 		private var p:Player;		// the player object
 		
 		// sort of "constructor"
 		override public function create():void 
 		{
 			super.create();
-			this.add( p = new Player(100, 50, this ) );		// add the player object
+			setupWorld();
+			this.add( p = new Player(100, 50, this, _world ) );		// add the player object
+			
+		}
+		
+		private function setupWorld():void 
+		{
+			var gravity:b2Vec2 = new b2Vec2(0, 0); 
+			_world = new b2World(gravity, false);
 		}
 		
 		override public function update():void 
 		{
+			_world.Step(FlxG.elapsed, 10, 10);
+			_world.DrawDebugData();
+			
 			super.update();
 			
 			// boundaries
