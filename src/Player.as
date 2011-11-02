@@ -8,10 +8,13 @@ package
 	import Box2D.Dynamics.Joints.b2JointDef;
 	import Box2D.Common.Math.b2Vec2;
 	import flash.display.Sprite;
+	import flash.geom.Point;
 	import org.flixel.FlxObject;
+	import org.flixel.FlxRect;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxG;
 	import org.flixel.FlxState;
+	import org.flixel.plugin.photonstorm.FlxExtendedSprite;
 	
 	/*
 	 * Note about drag: Drag in flixel automatically decelerates an object ONLY when 
@@ -41,7 +44,6 @@ package
 		protected static const PLAYER_RUN_SPEED:int = 300;
 		protected static const STRING_DISTANCE:int = 80;
 		
-		
 		private function CreateString(_world:b2World):void
 		{
 			// The distance joint is initialized. _obj refers to the bodies of the player sprites
@@ -58,6 +60,7 @@ package
 			dbgDraw.SetAlpha(1);
 			dbgDraw.SetFillAlpha(0.3);
 			dbgDraw.SetLineThickness(1.0);
+			
 			// Here we specify which physics we want debugDraw to draw
 			dbgDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 			_world.SetDebugDraw(dbgDraw);
@@ -170,6 +173,16 @@ package
 				else
 					playerRight.acceleration.y = PLAYER_RUN_SPEED;
 			}
+		}
+		
+		public function getLeftPlaneCoord():Point
+		{
+			return new Point(this.playerLeft.x, this.playerLeft.y);
+		}
+		
+		public function getRightPlaneCoord():Point
+		{
+			return new Point(this.playerRight.x, this.playerRight.y);
 		}
 		
 		override public function update():void 
