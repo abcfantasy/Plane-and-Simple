@@ -411,6 +411,7 @@ package org.flixel
 					itr = _headB;
 			}
 			
+			
 			//Make sure this is a valid list to walk first!
 			if(itr.object != null)
 			{
@@ -418,6 +419,7 @@ package org.flixel
 				while(itr != null)
 				{
 					co = itr.object;
+					
 					if( (_o === co) || !co.exists || !_o.exists || !co.solid || !_o.solid ||
 						(_o.x + _o.width  < co.x + FlxU.roundingError) ||
 						(_o.x + FlxU.roundingError > co.x + co.width) ||

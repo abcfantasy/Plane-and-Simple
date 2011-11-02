@@ -19,7 +19,7 @@ package
 		public var _world:b2World;
 		private var p:Player;		// the player object
 		private var c:Coin;			// TEST coin object
-		
+
 		private var groundMap:FlxTilemap = new FlxTilemap();
 		private var emitter:FlxEmitter;
 
