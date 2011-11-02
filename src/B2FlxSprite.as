@@ -9,7 +9,6 @@ package
     import Box2D.Common.*;
 	import Box2D.Common.Math.*;
 	
- 
     public class B2FlxSprite extends FlxSprite
     {
 		// The before-mentioned ratio of pixels/meter

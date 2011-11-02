@@ -16,17 +16,17 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'31-10-2011'</value>
+      <value>'02.11.11'</value>
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
-      <path-element>F:\Dokumenter\Dropbox\ITU\Game Design\abcfantasy-Plane-and-Simple-d8989e3\src</path-element>
-      <path-element>F:\Dokumenter\Dropbox\ITU\Game Design\abcfantasy-Plane-and-Simple-d8989e3\flixel 2.43</path-element>
-      <path-element>F:\Programmer\FlashDevelop\Library\AS3\classes</path-element>
+      <path-element>C:\Users\Andrew Borg Cardona\Programming\Flash\Games\Plane-and-Simple Project\Plane-and-Simple\src</path-element>
+      <path-element>C:\Users\Andrew Borg Cardona\Programming\Flash\Games\Plane-and-Simple Project\Plane-and-Simple\flixel 2.43</path-element>
+      <path-element>C:\Program Files (x86)\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
   </compiler>
   <file-specs>
-    <path-element>F:\Dokumenter\Dropbox\ITU\Game Design\abcfantasy-Plane-and-Simple-d8989e3\src\Main.as</path-element>
+    <path-element>C:\Users\Andrew Borg Cardona\Programming\Flash\Games\Plane-and-Simple Project\Plane-and-Simple\src\Main.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>
