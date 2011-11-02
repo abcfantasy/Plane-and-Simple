@@ -185,6 +185,15 @@ package
 			return new Point(this.playerRight.x, this.playerRight.y);
 		}
 		
+		public function getLeftPlane():FlxSprite
+		{
+			return this.playerLeft;
+		}
+		public function getRightPlane():FlxSprite
+		{
+			return this.playerRight;
+		}
+		
 		override public function update():void 
 		{
 			updateLeftPlane();

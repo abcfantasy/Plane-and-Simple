@@ -12,12 +12,15 @@ package
 		protected static const COIN_RADIUS:int = 8;		// radius of coin, used for collision
 		protected static const COIN_THRESHOLD:int = 2;  // distance from line to coint must be smaller than this
 		private var player_:*;							// reference to player, used for collision
+		private var emitter_:*;
 		
-		public function Coin(x:int, y:int, player:*)
+		public function Coin(x:int, y:int, player:*, emitter:*)
 		{
 			super(x, y);
 			
 			player_ = player;
+			emitter_ = emitter;
+			
 			this.loadGraphic( coinImage, true, false, 16, 16 );
 			this.addAnimation( "spin", [0, 1, 2, 3], 8 );
 			
@@ -73,7 +76,13 @@ package
 			
 			// within distance threshold
 			if (dist >= -COIN_THRESHOLD && dist <= COIN_THRESHOLD)
+			{
+				// emit particles
+				emitter_.at( this );
+				emitter_.start( true, 0.5, 10 );
+			
 				this.kill();
+			}
 			
 			super.update();
 		}
