@@ -10,13 +10,18 @@ package
 		[Embed(source="../assets/coin.png")] public var coinImage:Class;
 		
 		protected static const COIN_RADIUS:int = 8;		// radius of coin, used for collision
-		
+		protected static const COIN_THRESHOLD:int = 2;  // distance from line to coint must be smaller than this
 		private var player_:*;							// reference to player, used for collision
 		
 		public function Coin(x:int, y:int, player:*)
 		{
+			super(x, y);
+			
 			player_ = player;
-			super(x, y, coinImage);
+			this.loadGraphic( coinImage, true, false, 16, 16 );
+			this.addAnimation( "spin", [0, 1, 2, 3], 8 );
+			
+			play( "spin" );
 		}
 		
 		/**
@@ -67,7 +72,7 @@ package
 				this.x + Coin.COIN_RADIUS, this.y + Coin.COIN_RADIUS );
 			
 			// within distance threshold
-			if (dist >= -1 && dist <= 1)
+			if (dist >= -COIN_THRESHOLD && dist <= COIN_THRESHOLD)
 				this.kill();
 			
 			super.update();
