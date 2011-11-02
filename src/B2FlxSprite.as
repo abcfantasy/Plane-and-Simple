@@ -42,7 +42,6 @@ package
         {
             super(X,Y);
             _radius = Radius;
-            //height = Height;
             _world = w
         }
 		
@@ -58,7 +57,6 @@ package
 			if (bodyFollowsSprite)
 			{
 				_obj.SetPosition(new b2Vec2((x + (width / 2)) / ratio, (y + (height / 2)) / ratio));
-				//_anchor.Set((x + (width / 2)) / ratio, (y + (height / 2)) / ratio);
 			}
             angle = _obj.GetAngle() * (180 / Math.PI);
             super.update();
@@ -68,7 +66,6 @@ package
         {   
 			// The shape is used to visualize the fixture, using debugDraw
             var boxShape:b2CircleShape = new b2CircleShape();
-            //boxShape.SetAsBox((width / 2) / ratio, (height / 2) / ratio);
 			boxShape.SetRadius(_radius / ratio);
 						
             _fixDef = new b2FixtureDef();

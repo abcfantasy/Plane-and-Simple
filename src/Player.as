@@ -87,12 +87,15 @@ package
 		
 		private function updateLeftPlane():void
 		{
+			// movement-flag
 			var flag:Boolean = false;
 			
+			// position of sprite is set to the body's position
 			leftPosition.x = (playerLeft._obj.GetPosition().x * 30) - playerLeft._radius;
 			leftPosition.y = (playerLeft._obj.GetPosition().y * 30) - playerLeft._radius;
 			
 			// keys input
+			// an impulse in the corresponding direction is stored in the leftImpulse vector
 			if ( FlxG.keys.RIGHT )		// right direction
 			{
 				flag = true;
@@ -114,12 +117,14 @@ package
 				leftImpulse.y = PLAYER_IMPULSE_FORCE;
 			}
 			
+			// when no key is pressed, the impulse is set to the opposite of its current direction and velocity, to slow it down
 			if(!flag)
 			{
 				leftImpulse.x = -(playerLeft._obj.GetLinearVelocity().x);
 				leftImpulse.y = -(playerLeft._obj.GetLinearVelocity().y);
 				
 			}
+			// finally, leftImpulse containing the impulse based on what happened above, is applied to the body of the player object
 			playerLeft._obj.ApplyImpulse(leftImpulse, leftPosition);
 		}
 		
