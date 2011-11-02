@@ -13,13 +13,6 @@ package
 	import org.flixel.FlxG;
 	import org.flixel.FlxState;
 	
-	/*
-	 * Note about drag: Drag in flixel automatically decelerates an object ONLY when 
-	 * there is no acceleration. Therefore, if object is moving to the left, and player
-	 * accelerates to the right, the object should first slow down according to the 
-	 * "rightwards" acceleration + drag acceleration. This drag needs to be added
-	 * manually. - Andrew
-	 */
 	public class Player extends FlxObject
 	{
 		// images of the planes
@@ -36,10 +29,15 @@ package
 		private var dbgDraw:b2DebugDraw = new b2DebugDraw();
 		// A sprite is required for debugDraw
 		private var dbgSprite:Sprite = new Sprite();
+		// Temp vectors for impulse-movement and position
+		private var leftImpulse:b2Vec2 = new b2Vec2(0, 0);
+		private var rightImpulse:b2Vec2 = new b2Vec2(0, 0);
+		private var leftPosition:b2Vec2 = new b2Vec2(0, 0);
+		private var rightPosition:b2Vec2 = new b2Vec2(0, 0);
 
 		// constants
-		protected static const PLAYER_RUN_SPEED:int = 300;
-		protected static const STRING_DISTANCE:int = 80;
+		protected static const PLAYER_IMPULSE_FORCE:int = 3;
+		protected static const STRING_DISTANCE:int = 150;
 		
 		
 		private function CreateString(_world:b2World):void
@@ -50,6 +48,9 @@ package
 			// Frequency and damping ratio can changes the physical properties of the string. These values should be fine-tuned at some point
 			jointDef.frequencyHz = 4;
 			jointDef.dampingRatio = 0.5;
+			
+			jointDef.length = STRING_DISTANCE / 30;	// I'm not sure whether we should divide by 30	
+			jointDef.collideConnected = false;
 			
 			FlxG.stage.addChild(dbgSprite);
 			dbgDraw.SetSprite(dbgSprite);
@@ -64,32 +65,19 @@ package
 		}
 
 		public function Player( x:int, y:int, parent:FlxState, _world:b2World) 
-		{
-			// create the plane sprites
-			//playerLeft = new FlxSprite( x - 40, y, leftPlaneImage );
-			//playerRight = new FlxSprite( x + 40, y, rightPlaneImage );
-			
-			playerLeft = new B2FlxSprite(x - 40, y, 40, 40, _world);
-			playerRight = new B2FlxSprite(x + 40, y, 40, 40, _world);
+		{		
+			playerLeft = new B2FlxSprite(x - 40, y, 20, _world);
+			playerRight = new B2FlxSprite(x + 40, y, 20, _world);
 			playerLeft.createBody();
 			playerRight.createBody();
 			playerLeft.loadGraphic(leftPlaneImage, false, false, 40, 40);
 			playerRight.loadGraphic(rightPlaneImage, false, false, 40, 40);
 			
+			// This bool is enabled by default, so the call below will disable it
+			playerRight.toggleBodyFollowsSprite();
+			
 			CreateString(_world);
-			
-			// set the drag and maximum velocity of left plane
-			playerLeft.drag.x = PLAYER_RUN_SPEED * 1.5;
-			playerLeft.drag.y = PLAYER_RUN_SPEED * 1.5;
-			playerLeft.maxVelocity.x = 300;
-			playerLeft.maxVelocity.y = 300;
-			
-			// set the drag and maximum velocity of right plane
-			playerRight.drag.x = PLAYER_RUN_SPEED * 1.5;
-			playerRight.drag.y = PLAYER_RUN_SPEED * 1.5;
-			playerRight.maxVelocity.x = 300;
-			playerRight.maxVelocity.y = 300;
-			
+					
 			// add the planes to the parent game state
 			parent.add( playerLeft );
 			parent.add( playerRight );
@@ -99,77 +87,79 @@ package
 		
 		private function updateLeftPlane():void
 		{
-			// reset acceleration every frame
-			playerLeft.acceleration.x = 0;
-			playerLeft.acceleration.y = 0;
+			var flag:Boolean = false;
+			
+			leftPosition.x = (playerLeft._obj.GetPosition().x * 30) - playerLeft._radius;
+			leftPosition.y = (playerLeft._obj.GetPosition().y * 30) - playerLeft._radius;
 			
 			// keys input
 			if ( FlxG.keys.RIGHT )		// right direction
 			{
-				if ( playerLeft.velocity.x < 0 )		// if moving left, add drag to acceleration (note above)
-					playerLeft.acceleration.x = PLAYER_RUN_SPEED + playerLeft.drag.x;
-				else
-					playerLeft.acceleration.x = PLAYER_RUN_SPEED;
+				flag = true;
+				leftImpulse.x = PLAYER_IMPULSE_FORCE;
 			}
 			if ( FlxG.keys.LEFT )		// left direction
 			{
-				if ( playerLeft.velocity.x > 0 )
-					playerLeft.acceleration.x = -PLAYER_RUN_SPEED - playerLeft.drag.x;
-				else
-					playerLeft.acceleration.x = -PLAYER_RUN_SPEED;
+				flag = true;
+				leftImpulse.x = -PLAYER_IMPULSE_FORCE;
 			}
 			if ( FlxG.keys.UP )			// up direction
 			{
-				if ( playerLeft.velocity.y > 0 )
-					playerLeft.acceleration.y = -PLAYER_RUN_SPEED - playerLeft.drag.y;
-				else
-					playerLeft.acceleration.y = -PLAYER_RUN_SPEED;		
+				flag = true;
+				leftImpulse.y = -PLAYER_IMPULSE_FORCE;
 			}
 			if ( FlxG.keys.DOWN )		// down direction
 			{
-				if ( playerLeft.velocity.y < 0 )
-					playerLeft.acceleration.y = PLAYER_RUN_SPEED + playerLeft.drag.y;
-				else
-					playerLeft.acceleration.y = PLAYER_RUN_SPEED;
+				flag = true;
+				leftImpulse.y = PLAYER_IMPULSE_FORCE;
 			}
+			
+			if(!flag)
+			{
+				leftImpulse.x = -(playerLeft._obj.GetLinearVelocity().x);
+				leftImpulse.y = -(playerLeft._obj.GetLinearVelocity().y);
+				
+			}
+			playerLeft._obj.ApplyImpulse(leftImpulse, leftPosition);
 		}
 		
 		private function updateRightPlane():void
 		{
-			// reset acceleration every frame
-			playerRight.acceleration.x = 0;
-			playerRight.acceleration.y = 0;
+			var flag:Boolean = false;
+			
+			rightPosition.x = (playerRight._obj.GetPosition().x * 30) - playerRight._radius;
+			rightPosition.y = (playerRight._obj.GetPosition().y * 30) - playerRight._radius;
 			
 			// keys input
 			if ( FlxG.keys.D )		// right direction
 			{
-				if ( playerRight.velocity.x < 0 )
-					playerRight.acceleration.x = PLAYER_RUN_SPEED + playerRight.drag.x;
-				else
-					playerRight.acceleration.x = PLAYER_RUN_SPEED;
+				flag = true;
+				rightImpulse.x = PLAYER_IMPULSE_FORCE;
 			}
 			
 			if ( FlxG.keys.A )		// left direction
 			{
-				if ( playerRight.velocity.x > 0 )
-					playerRight.acceleration.x = -PLAYER_RUN_SPEED - playerRight.drag.x;
-				else
-					playerRight.acceleration.x = -PLAYER_RUN_SPEED;
+				flag = true;
+				rightImpulse.x = -PLAYER_IMPULSE_FORCE;
 			}
 			if ( FlxG.keys.W )		// up direction
 			{
-				if ( playerRight.velocity.y > 0 )
-					playerRight.acceleration.y = -PLAYER_RUN_SPEED - playerRight.drag.y;
-				else
-					playerRight.acceleration.y = -PLAYER_RUN_SPEED;		
+				flag = true;
+				rightImpulse.y = -PLAYER_IMPULSE_FORCE;	
 			}
 			if ( FlxG.keys.S )		// down direction
 			{
-				if ( playerRight.velocity.y < 0 )
-					playerRight.acceleration.y = PLAYER_RUN_SPEED + playerRight.drag.y;
-				else
-					playerRight.acceleration.y = PLAYER_RUN_SPEED;
+				flag = true;
+				rightImpulse.y = PLAYER_IMPULSE_FORCE;
 			}
+			
+			if(!flag)
+			{
+				rightImpulse.x = -(playerRight._obj.GetLinearVelocity().x);
+				rightImpulse.y = -(playerRight._obj.GetLinearVelocity().y);
+				
+			}
+			playerRight._obj.ApplyImpulse(rightImpulse, rightPosition);
 		}
 		
 		override public function update():void 

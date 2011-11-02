@@ -14,6 +14,7 @@ package
 		public var _world:b2World;
 		private var p:Player;		// the player object
 		
+		
 		// sort of "constructor"
 		override public function create():void 
 		{
