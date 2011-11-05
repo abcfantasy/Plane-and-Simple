@@ -63,50 +63,101 @@ package
 			_world = new b2World(gravity, false);
 		}
 		
+		private function forceLeftBoundary( plane:B2FlxSprite ):void
+		{
+			// get body of the correct plane
+			var planeBody:b2Body = plane._obj;
+				
+			// apply boundary physics
+			planeBody.ApplyImpulse( new b2Vec2( -(planeBody.GetLinearVelocity().x), 0 ), 
+				new b2Vec2( (planeBody.GetPosition().x * 30) - plane._radius,
+							(planeBody.GetPosition().y * 30) - plane._radius ) );
+								
+			planeBody.SetPosition( new b2Vec2( 0.73, planeBody.GetPosition().y ) );
+		}
+
+		private function forceRightBoundary( plane:B2FlxSprite ):void
+		{
+			// get body of the correct plane
+			var planeBody:b2Body = plane._obj;
+				
+			// apply boundary physics
+			planeBody.ApplyImpulse( new b2Vec2( -(planeBody.GetLinearVelocity().x), 0 ), 
+				new b2Vec2( (planeBody.GetPosition().x * 30) - plane._radius,
+							(planeBody.GetPosition().y * 30) - plane._radius ) );
+								
+			planeBody.SetPosition( new b2Vec2( groundMap.width / 30, planeBody.GetPosition().y ) );
+		}
+		
+		private function forceTopBoundary( plane:B2FlxSprite ):void
+		{
+			// get body of the plane
+			var planeBody:b2Body = plane._obj;
+			
+			// aply boundary physics
+			planeBody.ApplyImpulse( new b2Vec2( 0, -(planeBody.GetLinearVelocity().y) ), 
+				new b2Vec2( (planeBody.GetPosition().x * 30) - plane._radius,
+							(planeBody.GetPosition().y * 30) - plane._radius ) );
+								
+			planeBody.SetPosition( new b2Vec2( planeBody.GetPosition().x, 0.73 ) );
+		}
+		
+		private function forceBottomBoundary( plane:B2FlxSprite ):void
+		{
+			// get body of the plane
+			var planeBody:b2Body = plane._obj;
+			
+			// aply boundary physics
+			planeBody.ApplyImpulse( new b2Vec2( 0, -(planeBody.GetLinearVelocity().y) ), 
+				new b2Vec2( (planeBody.GetPosition().x * 30) - plane._radius,
+							(planeBody.GetPosition().y * 30) - plane._radius ) );
+								
+			planeBody.SetPosition( new b2Vec2( planeBody.GetPosition().x, groundMap.height / 30 ) );
+		}
+		
 		override public function update():void 
 		{
 			_world.Step(FlxG.elapsed, 10, 10);
 			_world.DrawDebugData();
 			
 			FlxG.debug = true;
-			if ( p.getLeftPlane().collide( groundMap ) )
-				FlxG.log( "COLLIDE" );
-			if ( p.getRightPlane().collide( groundMap ) )
-				FlxG.log( "COLLIDE" );
+			
+			if ( groundMap.overlaps( p.getLeftPlane() ) )
+				FlxG.log( "Left COLLIDE" );
+			if ( groundMap.overlaps( p.getRightPlane() ) )
+				FlxG.log( "right COLLIDE" );
 			
 			super.update();
 			
-			// boundaries
-			/*
-			leftPlane:B2FlxSprite = p.getLeftPlane();
-			
-			if ( leftPlane.x < 0 ) {
-				leftPlane.x = 0;
-			}
-			else if ( (leftPlane.x + leftPlane.width) > groundMap.width ) {
-				leftPlane.x = (FlxG.width - leftPlane.width)
-			}
-			
-			if ( leftPlane.y < 0 ) {
-				leftPlane.y = 0;
-			}
-			else if ( (leftPlane.y + leftPlane.height ) > FlxG.height ) {
-				leftPlane.y = (FlxG.height - leftPlane.height )
-			}
-			
-			if ( player2.x < 0 ) {
-				player2.x = 0;
-			}
-			else if ( (player2.x + player2.width) > FlxG.width ) {
-				player2.x = (FlxG.width - player2.width)
-			}
-			
-			if ( player2.y < 0 ) {
-				player2.y = 0;
-			}
-			else if ( (player2.y + player2.height ) > FlxG.height ) {
-				player2.y = (FlxG.height - player2.height )
-			}*/
+			// check boundaries 
+			// Note: must check each plane independently for each boundary, to handle the case where
+			// both planes are at the boundary
+			var planeLeft:B2FlxSprite = p.getLeftPlane();
+			var planeRight:B2FlxSprite = p.getRightPlane();
+			// left boundary, left plane
+			if ( planeLeft.x <= 1)
+				forceLeftBoundary( planeLeft );
+			// left boundary, right plane
+			if ( planeRight.x <= 1 )
+				forceLeftBoundary( planeRight );
+			// right boundary, left plane
+			if ( planeLeft.x >= groundMap.width - planeLeft._radius - 1 )
+				forceRightBoundary( planeLeft );
+			// right boundary, right plane
+			if ( planeRight.x >= groundMap.width - planeRight._radius - 1 )
+				forceRightBoundary( planeRight );
+			// top boundary, left plane
+			if ( planeLeft.y <= 1 )
+				forceTopBoundary( planeLeft );
+			// top boundary, right plane
+			if ( planeRight.y <= 1 )
+				forceTopBoundary( planeRight );
+			// bottom boundary, left plane
+			if ( planeLeft.y >= groundMap.height - planeLeft._radius - 1)
+				forceBottomBoundary( planeLeft );
+			// bottom boundary, right plane
+			if ( planeRight.y >= groundMap.height - planeRight._radius - 1)
+				forceBottomBoundary( planeRight );
 		}
 	}
 
