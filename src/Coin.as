@@ -81,6 +81,9 @@ package
 				emitter_.at( this );
 				emitter_.start( true, 0.5, 10 );
 			
+				// add score
+				FlxG.score++;
+				
 				this.kill();
 			}
 			

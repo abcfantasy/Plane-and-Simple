@@ -4,12 +4,15 @@ package
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
+	import org.flixel.FlxPoint;
 	import org.flixel.FlxState;
+	import org.flixel.FlxText;
 	import org.flixel.FlxTilemap;
 	import org.flixel.FlxG;
 	import org.flixel.FlxU;
 	import org.flixel.FlxEmitter;
 	import org.flixel.FlxSprite;
+	import org.flixel.plugin.photonstorm.FlxBitmapFont;
 	
 	public class PlayState extends FlxState
 	{
@@ -18,11 +21,13 @@ package
 		
 		public var _world:b2World;
 		private var p:Player;		// the player object
-		private var c:Coin;			// TEST coin object
 
 		private var groundMap:FlxTilemap = new FlxTilemap();
 		private var emitter:FlxEmitter;
 
+		private var scoreText:FlxText;
+		private var levelText:FlxText;
+		
 		// sort of "constructor"
 		override public function create():void 
 		{
@@ -42,7 +47,6 @@ package
 				emitter.add( particle );
 			}
 			emitter.gravity = 0;
-			
 			emitter.minParticleSpeed.y = -150;
 			emitter.maxParticleSpeed.y = 150;
 			emitter.maxParticleSpeed.x = 150;
@@ -51,8 +55,20 @@ package
 			emitter.particleDrag.y = 150;
 			this.add(emitter);
 			
+			// create score text
+			scoreText = new FlxText( 5, 5, 150, "Score: 0" );
+			scoreText.setFormat( null, 8, 0xFFFFFFFF, "left" );
+			scoreText.scrollFactor = new FlxPoint( 0, 0 );
+			this.add( scoreText );
+			
+			// create level text
+			levelText = new FlxText( FlxG.width - 155, 5, 150, "Level: " + FlxG.level );
+			levelText.setFormat( null, 8, 0xFFFFFFFF, "right" );
+			levelText.scrollFactor = new FlxPoint( 0, 0 );
+			this.add( levelText );
+			
 			this.add( p = new Player(100, 50, this, _world ) );		// add the player object
-			this.add( c = new Coin( 300, 450, p, emitter ) );
+			this.add( new Coin( 300, 450, p, emitter ) );
 			this.add( new Coin( 400, 370, p, emitter ) );
 			this.add( new Coin( 500, 370, p, emitter ) ); 
 		}
@@ -86,7 +102,7 @@ package
 				new b2Vec2( (planeBody.GetPosition().x * 30) - plane._radius,
 							(planeBody.GetPosition().y * 30) - plane._radius ) );
 								
-			planeBody.SetPosition( new b2Vec2( groundMap.width / 30, planeBody.GetPosition().y ) );
+			planeBody.SetPosition( new b2Vec2( (groundMap.width - 2) / 30, planeBody.GetPosition().y ) );
 		}
 		
 		private function forceTopBoundary( plane:B2FlxSprite ):void
@@ -112,22 +128,25 @@ package
 				new b2Vec2( (planeBody.GetPosition().x * 30) - plane._radius,
 							(planeBody.GetPosition().y * 30) - plane._radius ) );
 								
-			planeBody.SetPosition( new b2Vec2( planeBody.GetPosition().x, groundMap.height / 30 ) );
+			planeBody.SetPosition( new b2Vec2( planeBody.GetPosition().x, (groundMap.height - 2) / 30 ) );
 		}
 		
 		override public function update():void 
 		{
+			super.update();
+			
 			_world.Step(FlxG.elapsed, 10, 10);
-			_world.DrawDebugData();
+			_world.DrawDebugData();			
 			
-			FlxG.debug = true;
+			// update score
+			scoreText.text = "Score: " + FlxG.score;
 			
+			// check plane collision to map
+			FlxG.debug = true;		// test
 			if ( groundMap.overlaps( p.getLeftPlane() ) )
 				FlxG.log( "Left COLLIDE" );
 			if ( groundMap.overlaps( p.getRightPlane() ) )
 				FlxG.log( "right COLLIDE" );
-			
-			super.update();
 			
 			// check boundaries 
 			// Note: must check each plane independently for each boundary, to handle the case where
