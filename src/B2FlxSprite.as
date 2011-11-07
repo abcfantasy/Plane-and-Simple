@@ -51,14 +51,15 @@ package
  
         override public function update():void
         {
-            this.x = (_obj.GetPosition().x * ratio) - width/2;
+            this.x = (_obj.GetPosition().x * ratio) - width / 2;
             this.y = (_obj.GetPosition().y * ratio) - height / 2;
 			if (bodyFollowsSprite)
 			{
 				_obj.SetPosition(new b2Vec2((x + (width / 2)) / ratio, (y + (height / 2)) / ratio));
 			}
-            angle = _obj.GetAngle() * (180 / Math.PI);
-            super.update();
+            this._angle = _obj.GetAngle() * (180 / Math.PI);
+			
+			super.update();
         }
  
         public function createBody():void

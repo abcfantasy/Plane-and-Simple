@@ -92,6 +92,8 @@ package
 		{
 			// movement-flag
 			var flag:Boolean = false;
+			// linear velocity is calculated - used for angle-direction and drag
+			var linVel:b2Vec2 = playerLeft._obj.GetLinearVelocity();
 			
 			// position of sprite is set to the body's position
 			leftPosition.x = (playerLeft._obj.GetPosition().x * 30) - playerLeft._radius;
@@ -123,16 +125,19 @@ package
 			// when no key is pressed, the impulse is set to the opposite of its current direction and velocity, to slow it down
 			if(!flag)
 			{
-				leftImpulse.x = -(playerLeft._obj.GetLinearVelocity().x);
-				leftImpulse.y = -(playerLeft._obj.GetLinearVelocity().y);
+				leftImpulse.x = -(linVel.x);
+				leftImpulse.y = -(linVel.y);
 				
 			}
 			// finally, leftImpulse containing the impulse based on what happened above, is applied to the body of the player object
 			playerLeft._obj.ApplyImpulse(leftImpulse, leftPosition);
+			// ... and the angle is set for which way the object is turning.
+			playerLeft._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
 		}
 		
 		private function updateRightPlane():void
 		{
+			var linVel:b2Vec2 = playerRight._obj.GetLinearVelocity();
 			var flag:Boolean = false;
 			
 			rightPosition.x = (playerRight._obj.GetPosition().x * 30) - playerRight._radius;
@@ -163,11 +168,12 @@ package
 			
 			if(!flag)
 			{
-				rightImpulse.x = -(playerRight._obj.GetLinearVelocity().x);
-				rightImpulse.y = -(playerRight._obj.GetLinearVelocity().y);
+				rightImpulse.x = -(linVel.x);
+				rightImpulse.y = -(linVel.y);
 				
 			}
 			playerRight._obj.ApplyImpulse(rightImpulse, rightPosition);
+			playerRight._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
 		}
 		
 		public function getLeftPlaneCoord():Point
