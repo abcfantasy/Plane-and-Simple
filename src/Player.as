@@ -28,6 +28,7 @@ package
 		
 		// distance joint
 		private var jointDef:b2DistanceJointDef = new b2DistanceJointDef();
+		private var joint:b2DistanceJoint;
 		// debugDraw can draw all the invisible physics stuff, such as joints, bodies, shapes, centres of mass etc.
 		private var dbgDraw:b2DebugDraw = new b2DebugDraw();
 		// A sprite is required for debugDraw
@@ -39,20 +40,19 @@ package
 		private var rightPosition:b2Vec2 = new b2Vec2(0, 0);
 
 		// constants
-		protected static const PLAYER_IMPULSE_FORCE:int = 3;
-		protected static const STRING_DISTANCE:int = 150;
+		protected static const PLAYER_IMPULSE_FORCE:int = 2;
+		protected static const STRING_DISTANCE:int = 4; // Meters, i.e. 120 pixels
 		
 		private function CreateString(_world:b2World):void
 		{
 			// The distance joint is initialized. _obj refers to the bodies of the player sprites
 			jointDef.Initialize(playerLeft._obj, playerRight._obj, playerLeft._anchor, playerRight._anchor);
-			_world.CreateJoint(jointDef);
+			jointDef.collideConnected = true;
+			joint = _world.CreateJoint(jointDef) as b2DistanceJoint;
 			// Frequency and damping ratio can changes the physical properties of the string. These values should be fine-tuned at some point
-			jointDef.frequencyHz = 4;
-			jointDef.dampingRatio = 0.5;
-			
-			jointDef.length = STRING_DISTANCE / 30;	// I'm not sure whether we should divide by 30	
-			jointDef.collideConnected = false;
+			joint.SetDampingRatio(0.5);
+			joint.SetFrequency(1);
+			joint.SetLength(STRING_DISTANCE);
 			
 			FlxG.stage.addChild(dbgSprite);
 			dbgDraw.SetSprite(dbgSprite);
@@ -77,7 +77,7 @@ package
 			playerRight.loadGraphic(rightPlaneImage, false, false, 40, 40);
 			
 			// This bool is enabled by default, so the call below will disable it
-			playerRight.toggleBodyFollowsSprite();
+			//playerRight.toggleBodyFollowsSprite();
 			
 			CreateString(_world);
 					
@@ -98,6 +98,9 @@ package
 			// position of sprite is set to the body's position
 			leftPosition.x = (playerLeft._obj.GetPosition().x * 30) - playerLeft._radius;
 			leftPosition.y = (playerLeft._obj.GetPosition().y * 30) - playerLeft._radius;
+			
+			// impulse vector is reset, to avoid e.g. applied y-force, when only x-force is desired
+			leftImpulse.SetZero();
 			
 			// keys input
 			// an impulse in the corresponding direction is stored in the leftImpulse vector
@@ -142,6 +145,8 @@ package
 			
 			rightPosition.x = (playerRight._obj.GetPosition().x * 30) - playerRight._radius;
 			rightPosition.y = (playerRight._obj.GetPosition().y * 30) - playerRight._radius;
+			
+			rightImpulse.SetZero();
 			
 			// keys input
 			if ( FlxG.keys.D )		// right direction
