@@ -80,13 +80,11 @@ package
 				// emit particles
 				emitter_.at( this );
 				emitter_.start( true, 0.5, 10 );
-			
+				
 				this.kill();
 			}
 			
 			super.update();
 		}
-	
 	}
-
 }

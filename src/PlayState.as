@@ -16,9 +16,8 @@ package
 		[Embed(source = "../assets/map_prototype.csv", mimeType = "application/octet-stream")]public var mapString:Class;
 		[Embed(source = "../assets/newTiles.png")]public var newTiles:Class;
 		
-		public var _world:b2World;
-		private var p:Player;		// the player object
-		private var c:Coin;			// TEST coin object
+		public var _world:b2World;	// The Game World
+		private var p:Player;		// The Player
 
 		private var groundMap:FlxTilemap = new FlxTilemap();
 		private var emitter:FlxEmitter;
@@ -42,7 +41,6 @@ package
 				emitter.add( particle );
 			}
 			emitter.gravity = 0;
-			
 			emitter.minParticleSpeed.y = -150;
 			emitter.maxParticleSpeed.y = 150;
 			emitter.maxParticleSpeed.x = 150;
@@ -51,8 +49,9 @@ package
 			emitter.particleDrag.y = 150;
 			this.add(emitter);
 			
-			this.add( p = new Player(100, 50, this, _world ) );		// add the player object
-			this.add( c = new Coin( 300, 450, p, emitter ) );
+			p = new Player(100, 50, this, _world);
+			this.add( p );		// add the player object
+			this.add( new Coin( 300, 450, p, emitter ) );
 			this.add( new Coin( 400, 370, p, emitter ) );
 			this.add( new Coin( 500, 370, p, emitter ) ); 
 		}
@@ -123,9 +122,11 @@ package
 			FlxG.debug = true;
 			
 			if ( groundMap.overlaps( p.getLeftPlane() ) )
-				FlxG.log( "Left COLLIDE" );
+				// Actions when left plane collides with groundMap.
+				FlxG.log( "Left COLLIDE!" );
 			if ( groundMap.overlaps( p.getRightPlane() ) )
-				FlxG.log( "right COLLIDE" );
+				// Same, for the right plane.
+				FlxG.log( "Right COLLIDE!" );
 			
 			super.update();
 			
@@ -160,5 +161,4 @@ package
 				forceBottomBoundary( planeRight );
 		}
 	}
-
 }

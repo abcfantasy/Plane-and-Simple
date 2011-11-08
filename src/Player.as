@@ -10,6 +10,7 @@ package
 	import Box2D.Common.Math.b2Vec2;
 	import flash.display.Sprite;
 	import flash.geom.Point;
+	import org.flixel.FlxEmitter;
 	import org.flixel.FlxObject;
 	import org.flixel.FlxRect;
 	import org.flixel.FlxSprite;
@@ -51,6 +52,25 @@ package
 		//protected static const STRING_MAX_DISTANCE:int = 125;
 		protected static const PLAYER_MAX_VELOCITY:int = 150;
 		
+		public function Player( x:int, y:int, parent:FlxState, _world:b2World) 
+		{		
+			playerLeft = new B2FlxSprite(x - 40, y, 20, _world);
+			playerRight = new B2FlxSprite(x + 40, y, 20, _world);
+			playerLeft.createBody();
+			playerRight.createBody();
+			playerLeft.loadGraphic(leftPlaneImage, false, false, 40, 40);
+			playerRight.loadGraphic(rightPlaneImage, false, false, 40, 40);
+			// This bool is enabled by default, so the call below will disable it
+			//playerRight.toggleBodyFollowsSprite();
+			
+			CreateString(_world);
+			
+			// add the planes to the parent game state
+			parent.add( playerLeft );
+			parent.add( playerRight );
+			super( x, y );
+		}
+		
 		private function CreateString(_world:b2World):void
 		{
 			// The distance joint is initialized. _obj refers to the bodies of the player sprites
@@ -73,25 +93,6 @@ package
 			// Here we specify which physics we want debugDraw to draw
 			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit | */b2DebugDraw.e_jointBit);
 			_world.SetDebugDraw(dbgDraw);
-		}
-
-		public function Player( x:int, y:int, parent:FlxState, _world:b2World) 
-		{		
-			playerLeft = new B2FlxSprite(x - 40, y, 20, _world);
-			playerRight = new B2FlxSprite(x + 40, y, 20, _world);
-			playerLeft.createBody();
-			playerRight.createBody();
-			playerLeft.loadGraphic(leftPlaneImage, false, false, 40, 40);
-			playerRight.loadGraphic(rightPlaneImage, false, false, 40, 40);
-			// This bool is enabled by default, so the call below will disable it
-			//playerRight.toggleBodyFollowsSprite();
-			
-			CreateString(_world);
-					
-			// add the planes to the parent game state
-			parent.add( playerLeft );
-			parent.add( playerRight );
-			super( x, y );
 		}
 		
 		private function updatePlane(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
@@ -151,7 +152,7 @@ package
 			
 			if(movement)
 			{
-				// Here the ship should be emitting exhaust!
+				// Here the ship should be emitting exhaust... eventually!
 			}
 			else
 			{
@@ -222,5 +223,4 @@ package
 			super.update();
 		}
 	}
-
 }
