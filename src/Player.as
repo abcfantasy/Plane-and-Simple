@@ -138,10 +138,13 @@ package
 			// ... and the angle is set for which way the object is turning.
 			player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
 			
-			if (player._obj.GetLinearVelocity().x > 5)
-				player._obj.SetLinearVelocity(new b2Vec2(5, player._obj.GetLinearVelocity().y));
-				
-			// FlxG.log("Left: (" + playerLeft._obj.GetLinearVelocity().x.toString() + "," + playerLeft._obj.GetLinearVelocity().y.toString() + ")");
+			if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
+			{
+				var scaleVector:b2Vec2 = linVel;
+				scaleVector.Multiply(PLAYER_MAX_VELOCITY / linVel.LengthSquared());
+				player._obj.SetLinearVelocity(scaleVector);
+			}
+			player.angle = player._angle;
 		}
 		
 		public function getLeftPlaneCoord():Point
@@ -167,21 +170,6 @@ package
 		{
 			updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN]);
 			updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S]);
-			if (playerLeft._obj.GetLinearVelocity().LengthSquared() > PLAYER_MAX_VELOCITY)
-			{
-				var velLeft:b2Vec2 = playerLeft._obj.GetLinearVelocity();
-				velLeft.Multiply(PLAYER_MAX_VELOCITY / playerLeft._obj.GetLinearVelocity().LengthSquared())
-				playerLeft._obj.SetLinearVelocity(velLeft);
-			}
-			if (playerRight._obj.GetLinearVelocity().LengthSquared() > PLAYER_MAX_VELOCITY)
-			{
-				var velRight:b2Vec2 = playerRight._obj.GetLinearVelocity();
-				velRight.Multiply(PLAYER_MAX_VELOCITY / playerRight._obj.GetLinearVelocity().LengthSquared())
-				playerRight._obj.SetLinearVelocity(velRight);
-			}
-			playerLeft.angle = playerLeft._angle;
-			playerRight.angle = playerRight._angle;
-
 			super.update();
 		}
 	}
