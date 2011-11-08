@@ -1,5 +1,6 @@
 package  
 {
+	import Box2D.Collision.Shapes.b2MassData;
 	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Joints.*;
@@ -40,10 +41,14 @@ package
 		private var rightImpulse:b2Vec2 = new b2Vec2(0, 0);
 		private var leftPosition:b2Vec2 = new b2Vec2(0, 0);
 		private var rightPosition:b2Vec2 = new b2Vec2(0, 0);
+		
+		private var massNormal:Number = 10.0;
+		private var massLockDown:Number = 2000.0;
 
 		// constants
 		protected static const PLAYER_IMPULSE_FORCE:int = 2;
-		protected static const STRING_DISTANCE:int = 4; // Meters, i.e. 120 pixels
+		protected static const STRING_DISTANCE:int = 120;
+		//protected static const STRING_MAX_DISTANCE:int = 125;
 		protected static const PLAYER_MAX_VELOCITY:int = 150;
 		
 		private function CreateString(_world:b2World):void
@@ -53,9 +58,9 @@ package
 			jointDef.collideConnected = true;
 			joint = _world.CreateJoint(jointDef) as b2DistanceJoint;
 			// Frequency and damping ratio can changes the physical properties of the string. These values should be fine-tuned at some point
-			joint.SetDampingRatio(0.5);
-			joint.SetFrequency(1);
-			joint.SetLength(STRING_DISTANCE);
+			joint.SetDampingRatio(0.1);
+			joint.SetFrequency(0.0);
+			joint.SetLength(STRING_DISTANCE/30);
 			
 			FlxG.stage.addChild(dbgSprite);
 			dbgDraw.SetSprite(dbgSprite);
@@ -125,6 +130,19 @@ package
 				flag = true;
 				impulse.y = PLAYER_IMPULSE_FORCE;
 			}
+			if ( keys[4] )		// lockdown
+			{
+				//var prevAngle:Number = player.angle;
+				player._massData.mass = massLockDown;
+				player._obj.SetMassData(player._massData);
+				player._obj.SetLinearVelocity(new b2Vec2(0, 0));
+				//player.angle = prevAngle;
+			}
+			else
+			{
+				player._massData.mass = massNormal;
+				player._obj.SetMassData(player._massData);
+			}
 			
 			// when no key is pressed, the impulse is set to the opposite of its current direction and velocity, to slow it down
 			if(!flag)
@@ -168,8 +186,21 @@ package
 		
 		override public function update():void 
 		{
-			updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN]);
-			updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S]);
+			updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
+			updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
+			
+			// Methods for keeping the string as an actual string, rather than an elastic band
+			var dist:Number = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
+			
+			if (dist > (STRING_DISTANCE+25))
+				joint.SetFrequency(5.0);
+			else 
+			{
+				if (dist > (STRING_DISTANCE+5))
+					joint.SetFrequency(1.0);
+				else
+					joint.SetFrequency(0.1);
+			}
 			super.update();
 		}
 	}

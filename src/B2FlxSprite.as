@@ -18,7 +18,7 @@ package
 		// Initially, the body needs a bodyDef, that specifies initial position, angle and type. The idea is that multiple bodies can use the same bodyDef, and that the bodyDef remains untouched after declaration
         public var _bodyDef:b2BodyDef
         public var _obj:b2Body;
-		private var _massData:b2MassData = new b2MassData;
+		public var _massData:b2MassData = new b2MassData;
 		// The anchor point is used to specify the position within the body, that the joint should connect to
 		public var _anchor:b2Vec2 = new b2Vec2(0, 0);
 		
@@ -87,7 +87,7 @@ package
             _obj.CreateFixture(_fixDef);
 			_massData.center = new b2Vec2((x + _radius ) / ratio, (y + _radius) / ratio);
 			_massData.I = 0.0;
-			_massData.mass = 5.0;
+			_massData.mass = 10.0;
 			_obj.SetMassData(_massData);
         }
     }
