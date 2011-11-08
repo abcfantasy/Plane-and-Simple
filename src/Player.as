@@ -78,7 +78,6 @@ package
 			playerRight.createBody();
 			playerLeft.loadGraphic(leftPlaneImage, false, false, 40, 40);
 			playerRight.loadGraphic(rightPlaneImage, false, false, 40, 40);
-			
 			// This bool is enabled by default, so the call below will disable it
 			//playerRight.toggleBodyFollowsSprite();
 			
@@ -87,101 +86,62 @@ package
 			// add the planes to the parent game state
 			parent.add( playerLeft );
 			parent.add( playerRight );
-			
 			super( x, y );
 		}
 		
-		private function updateLeftPlane():void
+		private function updatePlane(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
 		{
 			// movement-flag
 			var flag:Boolean = false;
 			// linear velocity is calculated - used for angle-direction and drag
-			var linVel:b2Vec2 = playerLeft._obj.GetLinearVelocity();
+			var linVel:b2Vec2 = player._obj.GetLinearVelocity();
 			
 			// position of sprite is set to the body's position
-			leftPosition.x = (playerLeft._obj.GetPosition().x * 30) - playerLeft._radius;
-			leftPosition.y = (playerLeft._obj.GetPosition().y * 30) - playerLeft._radius;
+			position.x = (player._obj.GetPosition().x * 30) - player._radius;
+			position.y = (player._obj.GetPosition().y * 30) - player._radius;
 			
 			// impulse vector is reset, to avoid e.g. applied y-force, when only x-force is desired
-			leftImpulse.SetZero();
+			impulse.SetZero();
 			
 			// keys input
 			// an impulse in the corresponding direction is stored in the leftImpulse vector
-			if ( FlxG.keys.RIGHT )		// right direction
+			if ( keys[0] )		// right direction
 			{
 				flag = true;
-				leftImpulse.x = PLAYER_IMPULSE_FORCE;
+				impulse.x = PLAYER_IMPULSE_FORCE;
 			}
-			if ( FlxG.keys.LEFT )		// left direction
+			if ( keys[1] )		// left direction
 			{
 				flag = true;
-				leftImpulse.x = -PLAYER_IMPULSE_FORCE;
+				impulse.x = -PLAYER_IMPULSE_FORCE;
 			}
-			if ( FlxG.keys.UP )			// up direction
+			if ( keys[2] )			// up direction
 			{
 				flag = true;
-				leftImpulse.y = -PLAYER_IMPULSE_FORCE;
+				impulse.y = -PLAYER_IMPULSE_FORCE;
 			}
-			if ( FlxG.keys.DOWN )		// down direction
+			if ( keys[3] )		// down direction
 			{
 				flag = true;
-				leftImpulse.y = PLAYER_IMPULSE_FORCE;
+				impulse.y = PLAYER_IMPULSE_FORCE;
 			}
 			
 			// when no key is pressed, the impulse is set to the opposite of its current direction and velocity, to slow it down
 			if(!flag)
 			{
-				leftImpulse.x = -(linVel.x);
-				leftImpulse.y = -(linVel.y);
+				impulse.x = -(linVel.x);
+				impulse.y = -(linVel.y);
 				
 			}
 			// finally, leftImpulse containing the impulse based on what happened above, is applied to the body of the player object
-			playerLeft._obj.ApplyImpulse(leftImpulse, leftPosition);
+			player._obj.ApplyImpulse(impulse, position);
 			// ... and the angle is set for which way the object is turning.
-			playerLeft._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
-		}
-		
-		private function updateRightPlane():void
-		{
-			var linVel:b2Vec2 = playerRight._obj.GetLinearVelocity();
-			var flag:Boolean = false;
+			player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
 			
-			rightPosition.x = (playerRight._obj.GetPosition().x * 30) - playerRight._radius;
-			rightPosition.y = (playerRight._obj.GetPosition().y * 30) - playerRight._radius;
-			
-			rightImpulse.SetZero();
-			
-			// keys input
-			if ( FlxG.keys.D )		// right direction
-			{
-				flag = true;
-				rightImpulse.x = PLAYER_IMPULSE_FORCE;
-			}
-			
-			if ( FlxG.keys.A )		// left direction
-			{
-				flag = true;
-				rightImpulse.x = -PLAYER_IMPULSE_FORCE;
-			}
-			if ( FlxG.keys.W )		// up direction
-			{
-				flag = true;
-				rightImpulse.y = -PLAYER_IMPULSE_FORCE;	
-			}
-			if ( FlxG.keys.S )		// down direction
-			{
-				flag = true;
-				rightImpulse.y = PLAYER_IMPULSE_FORCE;
-			}
-			
-			if(!flag)
-			{
-				rightImpulse.x = -(linVel.x);
-				rightImpulse.y = -(linVel.y);
+			if (player._obj.GetLinearVelocity().x > 5)
+				player._obj.SetLinearVelocity(new b2Vec2(5, player._obj.GetLinearVelocity().y));
 				
-			}
-			playerRight._obj.ApplyImpulse(rightImpulse, rightPosition);
-			playerRight._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+			// FlxG.log("Left: (" + playerLeft._obj.GetLinearVelocity().x.toString() + "," + playerLeft._obj.GetLinearVelocity().y.toString() + ")");
 		}
 		
 		public function getLeftPlaneCoord():Point
@@ -205,8 +165,8 @@ package
 		
 		override public function update():void 
 		{
-			updateLeftPlane();
-			updateRightPlane();
+			updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN]);
+			updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S]);
 			if (playerLeft._obj.GetLinearVelocity().LengthSquared() > PLAYER_MAX_VELOCITY)
 			{
 				var velLeft:b2Vec2 = playerLeft._obj.GetLinearVelocity();
@@ -221,6 +181,7 @@ package
 			}
 			playerLeft.angle = playerLeft._angle;
 			playerRight.angle = playerRight._angle;
+
 			super.update();
 		}
 	}
