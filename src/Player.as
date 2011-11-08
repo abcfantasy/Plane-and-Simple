@@ -19,8 +19,10 @@ package
 	public class Player extends FlxObject
 	{
 		// images of the planes
-		[Embed(source = "../assets/left.png")]public var leftPlaneImage:Class;
-		[Embed(source = "../assets/right.png")]public var rightPlaneImage:Class;
+		[Embed(source = "../assets/left2.png")]public var leftPlaneImage:Class;
+		[Embed(source = "../assets/right2.png")]public var rightPlaneImage:Class;
+		//[Embed(source = "../assets/left.png")]public var leftPlaneImage:Class;
+		//[Embed(source = "../assets/right.png")]public var rightPlaneImage:Class;
 		
 		// sprite objects
 		private var playerLeft:B2FlxSprite;
@@ -42,6 +44,7 @@ package
 		// constants
 		protected static const PLAYER_IMPULSE_FORCE:int = 2;
 		protected static const STRING_DISTANCE:int = 4; // Meters, i.e. 120 pixels
+		protected static const PLAYER_MAX_VELOCITY:int = 150;
 		
 		private function CreateString(_world:b2World):void
 		{
@@ -63,7 +66,7 @@ package
 			dbgDraw.SetLineThickness(1.0);
 			
 			// Here we specify which physics we want debugDraw to draw
-			dbgDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit | */b2DebugDraw.e_jointBit);
 			_world.SetDebugDraw(dbgDraw);
 		}
 
@@ -204,6 +207,20 @@ package
 		{
 			updateLeftPlane();
 			updateRightPlane();
+			if (playerLeft._obj.GetLinearVelocity().LengthSquared() > PLAYER_MAX_VELOCITY)
+			{
+				var velLeft:b2Vec2 = playerLeft._obj.GetLinearVelocity();
+				velLeft.Multiply(PLAYER_MAX_VELOCITY / playerLeft._obj.GetLinearVelocity().LengthSquared())
+				playerLeft._obj.SetLinearVelocity(velLeft);
+			}
+			if (playerRight._obj.GetLinearVelocity().LengthSquared() > PLAYER_MAX_VELOCITY)
+			{
+				var velRight:b2Vec2 = playerRight._obj.GetLinearVelocity();
+				velRight.Multiply(PLAYER_MAX_VELOCITY / playerRight._obj.GetLinearVelocity().LengthSquared())
+				playerRight._obj.SetLinearVelocity(velRight);
+			}
+			playerLeft.angle = playerLeft._angle;
+			playerRight.angle = playerRight._angle;
 			super.update();
 		}
 	}

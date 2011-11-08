@@ -10,7 +10,7 @@ package
 		[Embed(source="../assets/coin.png")] public var coinImage:Class;
 		
 		protected static const COIN_RADIUS:int = 8;		// radius of coin, used for collision
-		protected static const COIN_THRESHOLD:int = 2;  // distance from line to coint must be smaller than this
+		protected static const COIN_THRESHOLD:int = 5;  // distance from line to coint must be smaller than this
 		private var player_:*;							// reference to player, used for collision
 		private var emitter_:*;
 		

@@ -86,7 +86,7 @@ package
 				new b2Vec2( (planeBody.GetPosition().x * 30) - plane._radius,
 							(planeBody.GetPosition().y * 30) - plane._radius ) );
 								
-			planeBody.SetPosition( new b2Vec2( groundMap.width / 30, planeBody.GetPosition().y ) );
+			planeBody.SetPosition( new b2Vec2( (groundMap.width-1) / 30, planeBody.GetPosition().y ) );
 		}
 		
 		private function forceTopBoundary( plane:B2FlxSprite ):void
@@ -112,7 +112,7 @@ package
 				new b2Vec2( (planeBody.GetPosition().x * 30) - plane._radius,
 							(planeBody.GetPosition().y * 30) - plane._radius ) );
 								
-			planeBody.SetPosition( new b2Vec2( planeBody.GetPosition().x, groundMap.height / 30 ) );
+			planeBody.SetPosition( new b2Vec2( planeBody.GetPosition().x, (groundMap.height-1) / 30 ) );
 		}
 		
 		override public function update():void 
