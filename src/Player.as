@@ -96,8 +96,10 @@ package
 		
 		private function updatePlane(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
 		{
-			// movement-flag
-			var flag:Boolean = false;
+			// Flags
+			var movement:Boolean = false;
+			var lockdown:Boolean = false;
+			
 			// linear velocity is calculated - used for angle-direction and drag
 			var linVel:b2Vec2 = player._obj.GetLinearVelocity();
 			
@@ -109,60 +111,67 @@ package
 			impulse.SetZero();
 			
 			// keys input
-			// an impulse in the corresponding direction is stored in the leftImpulse vector
-			if ( keys[0] )		// right direction
-			{
-				flag = true;
-				impulse.x = PLAYER_IMPULSE_FORCE;
-			}
-			if ( keys[1] )		// left direction
-			{
-				flag = true;
-				impulse.x = -PLAYER_IMPULSE_FORCE;
-			}
-			if ( keys[2] )			// up direction
-			{
-				flag = true;
-				impulse.y = -PLAYER_IMPULSE_FORCE;
-			}
-			if ( keys[3] )		// down direction
-			{
-				flag = true;
-				impulse.y = PLAYER_IMPULSE_FORCE;
-			}
+			// an impulse in the corresponding direction is stored in the impulse vector
 			if ( keys[4] )		// lockdown
 			{
 				//var prevAngle:Number = player.angle;
+				lockdown = true;
 				player._massData.mass = massLockDown;
 				player._obj.SetMassData(player._massData);
 				player._obj.SetLinearVelocity(new b2Vec2(0, 0));
 				//player.angle = prevAngle;
 			}
 			else
-			{
+			{	
+				if ( keys[0] )		// right direction
+				{
+					movement = true;
+					impulse.x = PLAYER_IMPULSE_FORCE;
+				}
+				if ( keys[1] )		// left direction
+				{
+					movement = true;
+					impulse.x = -PLAYER_IMPULSE_FORCE;
+				}
+				if ( keys[2] )		// up direction
+				{
+					movement = true;
+					impulse.y = -PLAYER_IMPULSE_FORCE;
+				}
+				if ( keys[3] )		// down direction
+				{
+					movement = true;
+					impulse.y = PLAYER_IMPULSE_FORCE;
+				}
+				// Since there's no lockdown, the mass is set to be normal again
 				player._massData.mass = massNormal;
 				player._obj.SetMassData(player._massData);
 			}
 			
-			// when no key is pressed, the impulse is set to the opposite of its current direction and velocity, to slow it down
-			if(!flag)
+			// If no movement, the impulse is set to the inverted velocity, to slow it down
+			if(!movement)
 			{
 				impulse.x = -(linVel.x);
 				impulse.y = -(linVel.y);
-				
 			}
-			// finally, leftImpulse containing the impulse based on what happened above, is applied to the body of the player object
-			player._obj.ApplyImpulse(impulse, position);
-			// ... and the angle is set for which way the object is turning.
-			player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+			else
+			{
+				// Here the ship should be emitting exhaust!
+			}
 			
+			// The resulting impulse is applied to the body of the player object
+			player._obj.ApplyImpulse(impulse, position);
+			// The angle is set for which way the object is turning.
+			player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+			player.angle = player._angle;
+			// Lastly, the maximum velocity is capped.
 			if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
 			{
 				var scaleVector:b2Vec2 = linVel;
 				scaleVector.Multiply(PLAYER_MAX_VELOCITY / linVel.LengthSquared());
 				player._obj.SetLinearVelocity(scaleVector);
 			}
-			player.angle = player._angle;
+			
 		}
 		
 		public function getLeftPlaneCoord():Point
