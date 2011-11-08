@@ -103,6 +103,9 @@ package
 			// linear velocity is calculated - used for angle-direction and drag
 			var linVel:b2Vec2 = player._obj.GetLinearVelocity();
 			
+			// The angle the plane is currently turning.
+			var currentAngle:Number = player.angle;
+			
 			// position of sprite is set to the body's position
 			position.x = (player._obj.GetPosition().x * 30) - player._radius;
 			position.y = (player._obj.GetPosition().y * 30) - player._radius;
@@ -110,68 +113,74 @@ package
 			// impulse vector is reset, to avoid e.g. applied y-force, when only x-force is desired
 			impulse.SetZero();
 			
-			// keys input
-			// an impulse in the corresponding direction is stored in the impulse vector
-			if ( keys[4] )		// lockdown
+			// Either the ship goes into Lockdown, or movement is being handled.
+			if ( keys[4] )
 			{
-				//var prevAngle:Number = player.angle;
 				lockdown = true;
 				player._massData.mass = massLockDown;
 				player._obj.SetMassData(player._massData);
 				player._obj.SetLinearVelocity(new b2Vec2(0, 0));
-				//player.angle = prevAngle;
 			}
 			else
 			{	
-				if ( keys[0] )		// right direction
+				// Since there's no lockdown, the mass is set to be normal again
+				player._massData.mass = massNormal;
+				player._obj.SetMassData(player._massData);
+				// An impulse in the corresponding direction is stored in the impulse vector
+				if ( keys[0] )		// RIGHT direction
 				{
 					movement = true;
 					impulse.x = PLAYER_IMPULSE_FORCE;
 				}
-				if ( keys[1] )		// left direction
+				if ( keys[1] )		// LEFT direction
 				{
 					movement = true;
 					impulse.x = -PLAYER_IMPULSE_FORCE;
 				}
-				if ( keys[2] )		// up direction
+				if ( keys[2] )		// UP direction
 				{
 					movement = true;
 					impulse.y = -PLAYER_IMPULSE_FORCE;
 				}
-				if ( keys[3] )		// down direction
+				if ( keys[3] )		// DOWN direction
 				{
 					movement = true;
 					impulse.y = PLAYER_IMPULSE_FORCE;
 				}
-				// Since there's no lockdown, the mass is set to be normal again
-				player._massData.mass = massNormal;
-				player._obj.SetMassData(player._massData);
 			}
 			
-			// If no movement, the impulse is set to the inverted velocity, to slow it down
-			if(!movement)
+			if(movement)
 			{
-				impulse.x = -(linVel.x);
-				impulse.y = -(linVel.y);
+				// Here the ship should be emitting exhaust!
 			}
 			else
 			{
-				// Here the ship should be emitting exhaust!
+				// The impulse is set to the inverted velocity, to slow it down
+				impulse.x = -(linVel.x);
+				impulse.y = -(linVel.y);
 			}
 			
 			// The resulting impulse is applied to the body of the player object
 			player._obj.ApplyImpulse(impulse, position);
-			// The angle is set for which way the object is turning.
-			player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
-			player.angle = player._angle;
-			// Lastly, the maximum velocity is capped.
-			if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
-			{
-				var scaleVector:b2Vec2 = linVel;
-				scaleVector.Multiply(PLAYER_MAX_VELOCITY / linVel.LengthSquared());
-				player._obj.SetLinearVelocity(scaleVector);
-			}
 			
+			if (lockdown) 
+			{	
+				// The original angle is retained.
+				player.angle = currentAngle;
+			}
+			else
+			{	
+				// If not, the angle is set based on the current velocity.
+				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+				player.angle = player._angle;
+				// On top of that, the maximum velocity is capped.
+				if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
+				{
+					var scaleVector:b2Vec2 = linVel;
+					scaleVector.Multiply(PLAYER_MAX_VELOCITY / linVel.LengthSquared());
+					player._obj.SetLinearVelocity(scaleVector);
+				}
+			}
 		}
 		
 		public function getLeftPlaneCoord():Point
