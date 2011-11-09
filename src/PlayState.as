@@ -4,6 +4,7 @@ package
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
+	import org.flixel.FlxObject;
 	import org.flixel.FlxState;
 	import org.flixel.FlxTilemap;
 	import org.flixel.FlxG;
@@ -15,14 +16,6 @@ package
 	
 	public class PlayState extends FlxState
 	{
-		[Embed(source="../assets/map_prototype.csv",mimeType="application/octet-stream")]
-		public var mapString:Class;
-		[Embed(source="../assets/newTiles.png")]
-		public var newTiles:Class;
-		
-		// sounds
-		[Embed(source = "../assets/Boom_all.mp3")] public var boomSound:Class;
-		
 		
 		public var _world:b2World; // The Game World
 		private var p:Player; // The Player
@@ -36,14 +29,24 @@ package
 		private var planeDestroyed:Boolean = false; // flag determining whether the plane collided
 		private var resetCounter:Number = 0; 		// counter for delay after plane is destroyed
 		
+
+		
+		
 		// sort of "constructor"
 		override public function create():void
 		{
+			// FOR TESTING
+			FlxG.level = 1;
+			
 			super.create();
 			setupWorld();
 			
-			// create tilemap
-			this.add(groundMap.loadMap(new mapString, newTiles, 23, 23));
+			// create level background
+			this.add( LevelManager.getBackgroundImage( FlxG.level ) );
+			
+			// create level tilemap
+			groundMap = LevelManager.getTileMap( FlxG.level );
+			this.add(groundMap);
 			FlxU.setWorldBounds(0, 0, groundMap.width, groundMap.height);
 			
 			// create score text
@@ -94,9 +97,13 @@ package
 			
 			p = new Player(200, 50, this, _world);
 			this.add(p); // add the player object
-			this.add(new Coin(300, 450, p, emitter));
-			this.add(new Coin(400, 370, p, emitter));
-			this.add(new Coin(500, 370, p, emitter));
+			
+			// get coins for level
+			var coinList:Array = LevelManager.getCoins( FlxG.level );
+			for ( var i:int = 0; i < coinList.length; i++ )
+			{
+				this.add( new Coin( coinList[i].x, coinList[i].y, p, emitter ) );
+			}
 		}
 		
 		private function setupWorld():void
@@ -175,7 +182,7 @@ package
 					explosionEmitter.start(true, 2);
 					p.getLeftPlane().kill();
 					FlxG.stage.removeChild( p.getDebugSprite() );
-					FlxG.play( boomSound );
+					SoundManager.Explosion();
 					planeDestroyed = true;
 				}
 				if (groundMap.overlaps(p.getRightPlane()))
@@ -184,7 +191,7 @@ package
 					explosionEmitter.start(true, 2);
 					p.getRightPlane().kill();
 					FlxG.stage.removeChild( p.getDebugSprite() );
-					FlxG.play( boomSound );
+					SoundManager.Explosion();
 					planeDestroyed = true;
 				}
 				

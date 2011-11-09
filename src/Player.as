@@ -21,8 +21,8 @@ package
 	public class Player extends FlxObject
 	{
 		// images of the planes
-		[Embed(source = "../assets/left2.png")]public var leftPlaneImage:Class;
-		[Embed(source = "../assets/right2.png")]public var rightPlaneImage:Class;
+		[Embed(source = "../assets/fat_bug.png")]public var leftPlaneImage:Class;
+		[Embed(source = "../assets/fat_bug2.png")]public var rightPlaneImage:Class;
 		//[Embed(source = "../assets/left.png")]public var leftPlaneImage:Class;
 		//[Embed(source = "../assets/right.png")]public var rightPlaneImage:Class;
 		
@@ -48,18 +48,22 @@ package
 
 		// constants
 		protected static const PLAYER_IMPULSE_FORCE:int = 2;
-		protected static const STRING_DISTANCE:int = 120;
+		protected static const STRING_DISTANCE:int = 200;
 		//protected static const STRING_MAX_DISTANCE:int = 125;
 		protected static const PLAYER_MAX_VELOCITY:int = 150;
 		
 		public function Player( x:int, y:int, parent:FlxState, _world:b2World) 
 		{		
-			playerLeft = new B2FlxSprite(x - 40, y, 20, _world);
-			playerRight = new B2FlxSprite(x + 40, y, 20, _world);
+			playerLeft = new B2FlxSprite(x - 40, y, 30, _world);
+			playerRight = new B2FlxSprite(x + 40, y, 30, _world);
 			playerLeft.createBody();
 			playerRight.createBody();
-			playerLeft.loadGraphic(leftPlaneImage, false, false, 40, 40);
-			playerRight.loadGraphic(rightPlaneImage, false, false, 40, 40);
+			playerLeft.loadGraphic(leftPlaneImage, true, false, 30, 60);
+			playerRight.loadGraphic(rightPlaneImage, true, false, 30, 60);
+			//playerLeft.addAnimation( "spin", [0, 1, 2, 3], 20, true );
+			//playerRight.addAnimation( "spin", [0, 1, 2, 3], 20, true );
+			//playerLeft.play("spin");
+			//playerRight.play("spin");
 			// This bool is enabled by default, so the call below will disable it
 			//playerRight.toggleBodyFollowsSprite();
 			
@@ -91,7 +95,7 @@ package
 			dbgDraw.SetLineThickness(1.0);
 			
 			// Here we specify which physics we want debugDraw to draw
-			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit | */b2DebugDraw.e_jointBit);
+			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit |*/ b2DebugDraw.e_jointBit);
 			_world.SetDebugDraw(dbgDraw);
 		}
 		

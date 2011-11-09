@@ -22,7 +22,7 @@ package
 			emitter_ = emitter;
 			
 			this.loadGraphic( coinImage, true, false, 16, 16 );
-			this.addAnimation( "spin", [0, 1, 2, 3], 8 );
+			this.addAnimation( "spin", [0, 1, 2, 3, 4, 5, 6, 7], 16 );
 			
 			play( "spin" );
 		}
@@ -80,6 +80,9 @@ package
 				// emit particles
 				emitter_.at( this );
 				emitter_.start( true, 0.5, 10 );
+				
+				// play coin
+				SoundManager.TakeCoin();
 				
 				// add score
 				FlxG.score++;
