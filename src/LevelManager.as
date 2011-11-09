@@ -8,9 +8,9 @@ package
 	public class LevelManager 
 	{
 		// level 1 background
-		[Embed(source = "../assets/universe3.jpg")] public static var level1BgImage:Class;		
+		[Embed(source = "../assets/graphics/universe3.jpg")] public static var level1BgImage:Class;		
 		// level 1 tiles
-		[Embed(source="../assets/newTiles.png")] private static var stage1Tiles:Class;
+		[Embed(source="../assets/graphics/newTiles.png")] private static var stage1Tiles:Class;
 		// level 1 map
 		[Embed(source = "../assets/test_map.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
 		

@@ -6,13 +6,13 @@ package
 	public class SoundManager 
 	{
 		// explosion
-		[Embed(source = "../assets/Boom_all.mp3")] private static var boomSound:Class;
+		[Embed(source = "../assets/sounds/Boom_all.mp3")] private static var boomSound:Class;
 		
 		// coins
-		[Embed(source = "../assets/coin1.mp3")] private static var coin1Sound:Class;
-		[Embed(source = "../assets/coin2.mp3")] private static var coin2Sound:Class;
-		[Embed(source = "../assets/coin3.mp3")] private static var coin3Sound:Class;
-		[Embed(source = "../assets/coin4.mp3")] private static var coin4Sound:Class;
+		[Embed(source = "../assets/sounds/coin1.mp3")] private static var coin1Sound:Class;
+		[Embed(source = "../assets/sounds/coin2.mp3")] private static var coin2Sound:Class;
+		[Embed(source = "../assets/sounds/coin3.mp3")] private static var coin3Sound:Class;
+		[Embed(source = "../assets/sounds/coin4.mp3")] private static var coin4Sound:Class;
 		
 		public static function Explosion():void
 		{

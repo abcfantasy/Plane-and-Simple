@@ -29,9 +29,6 @@ package
 		private var planeDestroyed:Boolean = false; // flag determining whether the plane collided
 		private var resetCounter:Number = 0; 		// counter for delay after plane is destroyed
 		
-
-		
-		
 		// sort of "constructor"
 		override public function create():void
 		{
@@ -63,7 +60,7 @@ package
 			
 			// set up emitter for coins
 			emitter = new FlxEmitter(this.x, this.y);
-			for (var i:int = 0; i < 50; i++)
+			for (var j:int = 0; j < 50; j++)
 			{
 				var particle:FlxSprite = new FlxSprite();
 				particle.createGraphic(4, 4, 0xffffff00);
@@ -82,9 +79,9 @@ package
 			explosionEmitter = new FlxEmitter(this.x, this.y);
 			for (var i:int = 0; i < 50; i++)
 			{
-				var particle:FlxSprite = new FlxSprite();
-				particle.createGraphic(3, 3, 0xFFFF0000);
-				explosionEmitter.add(particle);
+				var explosionParticle:FlxSprite = new FlxSprite();
+				explosionParticle.createGraphic(3, 3, 0xFFFF0000);
+				explosionEmitter.add(explosionParticle);
 			}
 			explosionEmitter.gravity = 0;
 			explosionEmitter.minParticleSpeed.y = -200;
@@ -95,14 +92,14 @@ package
 			explosionEmitter.particleDrag.y = 60;
 			this.add(explosionEmitter);
 			
-			p = new Player(200, 50, this, _world);
+			p = new Player(200, 50, this, _world, 1);
 			this.add(p); // add the player object
 			
 			// get coins for level
 			var coinList:Array = LevelManager.getCoins( FlxG.level );
-			for ( var i:int = 0; i < coinList.length; i++ )
+			for ( var k:int = 0; k < coinList.length; k++ )
 			{
-				this.add( new Coin( coinList[i].x, coinList[i].y, p, emitter ) );
+				this.add( new Coin( coinList[k].x, coinList[k].y, p, emitter ) );
 			}
 		}
 		
