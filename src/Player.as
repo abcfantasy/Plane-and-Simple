@@ -202,6 +202,16 @@ package
 		{
 			return this.playerRight;
 		}
+		/*
+		public function getJoint():b2JointDef
+		{
+			return this.jointDef;
+		}
+		*/
+		public function getDebugSprite():Sprite
+		{
+			return this.dbgSprite;
+		}
 		
 		override public function update():void 
 		{
