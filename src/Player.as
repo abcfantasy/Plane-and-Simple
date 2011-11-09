@@ -17,6 +17,7 @@ package
 	import org.flixel.FlxG;
 	import org.flixel.FlxState;
 	import org.flixel.plugin.photonstorm.FlxExtendedSprite;
+	import GamePads.*;
 	
 	public class Player extends FlxObject
 	{
@@ -43,12 +44,14 @@ package
 		
 		private var massNormal:Number = 10.0;
 		private var massLockDown:Number = 2000.0;
+		
+		private var controller:XBOX360Manager = XBOX360Manager.getInstance();
 
 		// constants
-		protected static const PLAYER_IMPULSE_FORCE:int = 2;
+		protected static const PLAYER_IMPULSE_FORCE:int = 3;
 		protected static const STRING_DISTANCE:int = 120;
 		//protected static const STRING_MAX_DISTANCE:int = 125;
-		protected static const PLAYER_MAX_VELOCITY:int = 150;
+		protected static const PLAYER_MAX_VELOCITY:int = 100;
 		
 		public function Player( x:int, y:int, parent:FlxState, _world:b2World) 
 		{		
@@ -62,6 +65,8 @@ package
 			//playerRight.toggleBodyFollowsSprite();
 			
 			CreateString(_world);
+			
+			XBOX360Manager.getInstance().connect();
 			
 			// add the planes to the parent game state
 			parent.add( playerLeft );
@@ -92,6 +97,82 @@ package
 			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit | */b2DebugDraw.e_jointBit);
 			_world.SetDebugDraw(dbgDraw);
 		}
+		
+		private function updatePlaneController(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
+		{
+						// Flags
+			var movement:Boolean = false;
+			var lockdown:Boolean = false;
+			
+			// linear velocity is calculated - used for angle-direction and drag
+			var linVel:b2Vec2 = player._obj.GetLinearVelocity();
+			
+			// The angle the plane is currently turning.
+			var currentAngle:Number = player.angle;
+			
+			// position of sprite is set to the body's position
+			position.x = (player._obj.GetPosition().x * 30) - player._radius;
+			position.y = (player._obj.GetPosition().y * 30) - player._radius;
+			
+			// impulse vector is reset, to avoid e.g. applied y-force, when only x-force is desired
+			impulse.SetZero();
+			
+			// Either the ship goes into Lockdown, or movement is being handled.
+			if ( keys[1] )
+			{
+				lockdown = true;
+				player._massData.mass = massLockDown;
+				player._obj.SetMassData(player._massData);
+				player._obj.SetLinearVelocity(new b2Vec2(0, 0));
+			}
+			else
+			{	
+				// Since there's no lockdown, the mass is set to be normal again
+				player._massData.mass = massNormal;
+				player._obj.SetMassData(player._massData);
+				// An impulse in the corresponding direction is stored in the impulse vector
+				if ( keys[0].x != 0 || keys[0].y != 0)		// RIGHT direction
+				{
+					movement = true;
+					impulse.x = keys[0].x * PLAYER_IMPULSE_FORCE;
+					impulse.y = -(keys[0].y * PLAYER_IMPULSE_FORCE);
+				}
+			}
+			
+			if(movement)
+			{
+				// Here the ship should be emitting exhaust... eventually!
+			}
+			else
+			{
+				// The impulse is set to the inverted velocity, to slow it down
+				impulse.x = -0.5*(linVel.x);
+				impulse.y = -0.5*(linVel.y);
+			}
+			
+			// The resulting impulse is applied to the body of the player object
+			player._obj.ApplyImpulse(impulse, position);
+			
+			if (lockdown) 
+			{	
+				// The original angle is retained.
+				player.angle = currentAngle;
+			}
+			else
+			{	
+				// If not, the angle is set based on the current velocity.
+				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+				player.angle = player._angle;
+				// On top of that, the maximum velocity is capped.
+				if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
+				{
+					var scaleVector:b2Vec2 = linVel;
+					scaleVector.Multiply(PLAYER_MAX_VELOCITY / linVel.LengthSquared());
+					player._obj.SetLinearVelocity(scaleVector);
+				}
+			}
+		}
+		
 		
 		private function updatePlane(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
 		{
@@ -213,8 +294,11 @@ package
 		
 		override public function update():void 
 		{
-			updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
-			updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
+			//updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
+			updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(1).LeftStick, controller.getState(1).LB]); 
+
+			//updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
+			updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(1).RightStick, controller.getState(1).RB]); 
 			
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			var dist:Number = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
@@ -228,6 +312,7 @@ package
 				else
 					joint.SetFrequency(0.1);
 			}
+			//FlxG.log("Leftstick.x: " + controller.getState(1).LeftStick.x + "Leftstick.y: " + controller.getState(1).LeftStick.y);
 			super.update();
 		}
 	}
