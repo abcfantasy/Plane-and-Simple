@@ -46,14 +46,14 @@ package
 		private var massLockDown:Number = 2000.0;
 		
 		private var controller:XBOX360Manager = XBOX360Manager.getInstance();
+		private var controllerState:int = 0;
 
 		// constants
-		protected static const PLAYER_IMPULSE_FORCE:int = 3;
-		protected static const STRING_DISTANCE:int = 120;
-		//protected static const STRING_MAX_DISTANCE:int = 125;
+		protected static const PLAYER_IMPULSE_FORCE:int = 2.5;
+		protected static const STRING_DISTANCE:int = 150;
 		protected static const PLAYER_MAX_VELOCITY:int = 100;
 		
-		public function Player( x:int, y:int, parent:FlxState, _world:b2World) 
+		public function Player( x:int, y:int, parent:FlxState, _world:b2World, state:int) 
 		{		
 			playerLeft = new B2FlxSprite(x - 40, y, 20, _world);
 			playerRight = new B2FlxSprite(x + 40, y, 20, _world);
@@ -67,6 +67,7 @@ package
 			CreateString(_world);
 			
 			XBOX360Manager.getInstance().connect();
+			controllerState = state;
 			
 			// add the planes to the parent game state
 			parent.add( playerLeft );
@@ -295,16 +296,17 @@ package
 		override public function update():void 
 		{
 			//updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
-			updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(1).LeftStick, controller.getState(1).LB]); 
+			updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
 
 			//updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
-			updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(1).RightStick, controller.getState(1).RB]); 
+			updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
 			
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			var dist:Number = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
 			
 			if (dist > (STRING_DISTANCE+25))
 				joint.SetFrequency(5.0);
+				// Fire object here, potentially :D
 			else 
 			{
 				if (dist > (STRING_DISTANCE+5))

@@ -25,7 +25,9 @@ package
 		
 		
 		public var _world:b2World; // The Game World
+	//	private var players:Array; // The players
 		private var p:Player; // The Player
+	//	private var p2:Player; // The Player
 		
 		private var groundMap:FlxTilemap = new FlxTilemap();
 		private var emitter:FlxEmitter; // coin taking
@@ -92,7 +94,12 @@ package
 			explosionEmitter.particleDrag.y = 60;
 			this.add(explosionEmitter);
 			
-			p = new Player(200, 50, this, _world);
+			p = new Player(200, 50, this, _world, 1);
+			/*p2 = new Player(200, 150, this, _world, 2);
+			players.push(p1);
+			players.push(p2);
+			this.add(p2); // add the player object*/
+			
 			this.add(p); // add the player object
 			this.add(new Coin(300, 450, p, emitter));
 			this.add(new Coin(400, 370, p, emitter));
