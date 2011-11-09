@@ -21,7 +21,7 @@ package
 		public var newTiles:Class;
 		
 		// sounds
-		[Embed(source = "../assets/explosions/all.mp3")] public var boomSound:Class;
+		[Embed(source = "../assets/sounds/explosions/all.mp3")] public var boomSound:Class;
 		
 		
 		public var _world:b2World; // The Game World
@@ -77,11 +77,11 @@ package
 			
 			// set up emitter for exploding planes
 			explosionEmitter = new FlxEmitter(this.x, this.y);
-			for (var i:int = 0; i < 50; i++)
+			for (var j:int = 0; j < 50; j++)
 			{
-				var particle:FlxSprite = new FlxSprite();
-				particle.createGraphic(3, 3, 0xFFFF0000);
-				explosionEmitter.add(particle);
+				var explosionParticle:FlxSprite = new FlxSprite();
+				explosionParticle.createGraphic(3, 3, 0xFFFF0000);
+				explosionEmitter.add(explosionParticle);
 			}
 			explosionEmitter.gravity = 0;
 			explosionEmitter.minParticleSpeed.y = -200;
