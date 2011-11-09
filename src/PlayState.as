@@ -17,11 +17,11 @@ package
 	{
 		[Embed(source="../assets/map_prototype.csv",mimeType="application/octet-stream")]
 		public var mapString:Class;
-		[Embed(source="../assets/newTiles.png")]
+		[Embed(source="../assets/graphics/newTiles.png")]
 		public var newTiles:Class;
 		
 		// sounds
-		[Embed(source = "../assets/Boom_all.mp3")] public var boomSound:Class;
+		[Embed(source = "../assets/explosions/all.mp3")] public var boomSound:Class;
 		
 		
 		public var _world:b2World; // The Game World

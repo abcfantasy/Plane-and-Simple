@@ -21,10 +21,8 @@ package
 	public class Player extends FlxObject
 	{
 		// images of the planes
-		[Embed(source = "../assets/left2.png")]public var leftPlaneImage:Class;
-		[Embed(source = "../assets/right2.png")]public var rightPlaneImage:Class;
-		//[Embed(source = "../assets/left.png")]public var leftPlaneImage:Class;
-		//[Embed(source = "../assets/right.png")]public var rightPlaneImage:Class;
+		[Embed(source = "../assets/graphics/left2.png")]public var leftPlaneImage:Class;
+		[Embed(source = "../assets/graphics/right2.png")]public var rightPlaneImage:Class;
 		
 		// sprite objects
 		private var playerLeft:B2FlxSprite;
