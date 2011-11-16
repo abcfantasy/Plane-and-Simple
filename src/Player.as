@@ -8,6 +8,7 @@ package
 	import Box2D.Dynamics.Joints.b2DistanceJointDef;
 	import Box2D.Dynamics.Joints.b2JointDef;
 	import Box2D.Common.Math.b2Vec2;
+	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.geom.Point;
 	import org.flixel.FlxEmitter;
@@ -24,6 +25,13 @@ package
 		// images of the planes
 		[Embed(source = "../assets/graphics/fat_bug.png")]public var leftPlaneImage:Class;
 		[Embed(source = "../assets/graphics/fat_bug2.png")]public var rightPlaneImage:Class;
+		
+		// image of rope
+		[Embed(source = "../assets/graphics/rope.png")]public var ropeImage:Class;
+		
+		// sprite and bitmap for rope
+		private var rope:Sprite = new Sprite();
+		private var ropeBitMap:Bitmap;
 		
 		// sprite objects
 		private var playerLeft:B2FlxSprite;
@@ -70,7 +78,7 @@ package
 			
 			CreateString(_world);
 			
-			XBOX360Manager.getInstance().connect();
+			//XBOX360Manager.getInstance().connect();
 			controllerState = state;
 			
 			// add the planes to the parent game state
@@ -90,7 +98,7 @@ package
 			joint.SetFrequency(0.0);
 			joint.SetLength(STRING_DISTANCE/30);
 			
-			FlxG.stage.addChild(dbgSprite);
+	/*		FlxG.stage.addChild(dbgSprite);
 			dbgDraw.SetSprite(dbgSprite);
 			// 30 is used as drawScale, since box2D per default uses a ratio of 30, i.e. 30 pixels = 1 meter
 			dbgDraw.SetDrawScale(30.0);
@@ -99,8 +107,13 @@ package
 			dbgDraw.SetLineThickness(1.0);
 			
 			// Here we specify which physics we want debugDraw to draw
-			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit |*/ b2DebugDraw.e_jointBit);
-			_world.SetDebugDraw(dbgDraw);
+			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+			_world.SetDebugDraw(dbgDraw);*/
+			
+			ropeBitMap = new ropeImage;
+			rope.graphics.lineStyle(4, 0xFF0000, 1, true, "normal", null, null, 3);
+			rope.graphics.lineBitmapStyle(ropeBitMap.bitmapData, null, false, true);
+			FlxG.stage.addChild(rope);			
 		}
 		
 		private function updatePlaneController(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
@@ -299,11 +312,11 @@ package
 		
 		override public function update():void 
 		{
-			//updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
-			updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
+			updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
+			//updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
 
-			//updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
-			updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
+			updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
+			//updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
 			
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			var dist:Number = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
@@ -319,6 +332,14 @@ package
 					joint.SetFrequency(0.1);
 			}
 			//FlxG.log("Leftstick.x: " + controller.getState(1).LeftStick.x + "Leftstick.y: " + controller.getState(1).LeftStick.y);
+			
+			rope.graphics.clear();
+			// 400/dist makes the width of the rope depend on the distance between the planes
+			rope.graphics.lineStyle(400/dist, 0xFF0000, 1, true, "normal", null, null, 3);
+			rope.graphics.lineBitmapStyle(ropeBitMap.bitmapData, null, true, true);
+			rope.graphics.moveTo(playerLeft.x + (playerLeft.width/2), playerLeft.y + (playerLeft.height/2));
+			rope.graphics.lineTo(playerRight.x + (playerRight.width/2), playerRight.y + (playerRight.height/2));
+			
 			super.update();
 		}
 	}
