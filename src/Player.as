@@ -68,14 +68,9 @@ package
 			playerRight = new B2FlxSprite(x + 40, y, 30, _world);
 			playerLeft.createBody();
 			playerRight.createBody();
+
 			playerLeft.loadGraphic(leftPlaneImage, true, false, 40, 40);
 			playerRight.loadGraphic(rightPlaneImage, true, false, 40, 40);
-			//playerLeft.addAnimation( "spin", [0, 1, 2, 3], 20, true );
-			//playerRight.addAnimation( "spin", [0, 1, 2, 3], 20, true );
-			//playerLeft.play("spin");
-			//playerRight.play("spin");
-			// This bool is enabled by default, so the call below will disable it
-			//playerRight.toggleBodyFollowsSprite();
 			
 			CreateString(_world);
 			
@@ -99,7 +94,8 @@ package
 			joint.SetFrequency(0.0);
 			joint.SetLength(STRING_DISTANCE/30);
 			
-	/*		FlxG.stage.addChild(dbgSprite);
+			/*		
+			FlxG.stage.addChild(dbgSprite);
 			dbgDraw.SetSprite(dbgSprite);
 			// 30 is used as drawScale, since box2D per default uses a ratio of 30, i.e. 30 pixels = 1 meter
 			dbgDraw.SetDrawScale(30.0);
@@ -109,7 +105,8 @@ package
 			
 			// Here we specify which physics we want debugDraw to draw
 			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-			_world.SetDebugDraw(dbgDraw);*/
+			_world.SetDebugDraw(dbgDraw);
+			*/
 			
 			ropeBitMap = new ropeImage;
 			rope.graphics.lineStyle(4, 0xFF0000, 1, true, "normal", null, null, 3);
@@ -119,7 +116,7 @@ package
 		
 		private function updatePlaneController(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
 		{
-						// Flags
+			// Flags
 			var movement:Boolean = false;
 			var lockdown:Boolean = false;
 			
@@ -191,7 +188,6 @@ package
 				}
 			}
 		}
-		
 		
 		private function updatePlane(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
 		{
@@ -323,7 +319,6 @@ package
 				updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
 				updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
 			}
-
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			var dist:Number = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
 			
@@ -337,7 +332,6 @@ package
 				else
 					joint.SetFrequency(0.1);
 			}
-			//FlxG.log("Leftstick.x: " + controller.getState(1).LeftStick.x + "Leftstick.y: " + controller.getState(1).LeftStick.y);
 			
 			rope.graphics.clear();
 			// 400/dist makes the width of the rope depend on the distance between the planes

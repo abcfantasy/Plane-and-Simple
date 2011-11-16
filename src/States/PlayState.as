@@ -205,55 +205,36 @@ package States
 						FlxG.state = new LevelMenuState();
 					}
 				
-					// collision on left plane
-					if (groundMap.overlaps(p.getLeftPlane()))
+					var planes:Array = [p.getLeftPlane(), p.getRightPlane()];
+					
+					// checks collision with the groundMap
+					for (var j:uint = 0; j < planes.length; j++)
 					{
-						explosionEmitter.at(p.getLeftPlane());
-						explosionEmitter.start(true, 2);
-						p.getLeftPlane().kill();
-						FlxG.stage.removeChild(p.getRope());
-						SoundManager.Explosion();
-						planeDestroyed = true;
-					}
-					if (groundMap.overlaps(p.getRightPlane()))
-					{
-						explosionEmitter.at(p.getRightPlane());
-						explosionEmitter.start(true, 2);
-						p.getRightPlane().kill();
-						FlxG.stage.removeChild(p.getRope());
-						SoundManager.Explosion();
-						planeDestroyed = true;
+						if (groundMap.overlaps(planes[j]))
+						{	
+							explosionEmitter.at(planes[j]);
+							explosionEmitter.start(true, 2);
+							planes[j].kill();
+							FlxG.stage.removeChild( p.getRope() );
+							SoundManager.Explosion();
+							planeDestroyed = true;
+						}
 					}
 					
 					// check boundaries 
 					// Note: must check each plane independently for each boundary, to handle the case where
 					// both planes are at the boundary
-					var planeLeft:B2FlxSprite = p.getLeftPlane();
-					var planeRight:B2FlxSprite = p.getRightPlane();
-					// left boundary, left plane
-					if (planeLeft.x <= 1)
-						forceLeftBoundary(planeLeft);
-					// left boundary, right plane
-					if (planeRight.x <= 1)
-						forceLeftBoundary(planeRight);
-					// right boundary, left plane
-					if (planeLeft.x >= groundMap.width - planeLeft._radius - 1)
-						forceRightBoundary(planeLeft);
-					// right boundary, right plane
-					if (planeRight.x >= groundMap.width - planeRight._radius - 1)
-						forceRightBoundary(planeRight);
-					// top boundary, left plane
-					if (planeLeft.y <= 1)
-						forceTopBoundary(planeLeft);
-					// top boundary, right plane
-					if (planeRight.y <= 1)
-						forceTopBoundary(planeRight);
-					// bottom boundary, left plane
-					if (planeLeft.y >= groundMap.height - planeLeft._radius - 1)
-						forceBottomBoundary(planeLeft);
-					// bottom boundary, right plane
-					if (planeRight.y >= groundMap.height - planeRight._radius - 1)
-						forceBottomBoundary(planeRight);
+					for (var i:uint = 0; i < planes.length; i++)
+					{
+						if (planes[i].x <= 1)
+							forceLeftBoundary(planes[i]);
+						if (planes[i].x >= groundMap.width - planes[i]._radius - 1)
+							forceRightBoundary(planes[i]);
+						if (planes[i].y <= 1)
+							forceTopBoundary(planes[i]);
+						if (planes[i].y >= groundMap.height - planes[i]._radius - 1)
+							forceBottomBoundary(planes[i]);
+					}
 				}
 			}
 		}
