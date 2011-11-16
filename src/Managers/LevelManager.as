@@ -12,10 +12,10 @@ package Managers
 		// level 1 tiles
 		[Embed(source="../../assets/graphics/tiles_asteroid_line3.png")] private static var stage1Tiles:Class;
 		// level 1 map
-		[Embed(source = "../../assets/maps/1tutlvl.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
+		[Embed(source = "../../assets/maps/5tutlvl.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
 		
 		private static const GAME_WIDTH:int = 800;
-		private static const GAME_HEIGHT:int = 621;
+		private static const GAME_HEIGHT:int = 600;
 		private static const TILE_SIZE:int = 16;
 		
 		// gets background image for given level

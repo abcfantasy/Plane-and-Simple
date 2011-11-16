@@ -1,23 +1,18 @@
 package States
 {
-	import Box2D.Dynamics.*;
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
-	import flash.events.AccelerometerEvent;
-	import org.flixel.data.FlxAnim;
-	import org.flixel.FlxObject;
-	import org.flixel.FlxState;
-	import org.flixel.FlxTilemap;
-	import org.flixel.FlxG;
-	import org.flixel.FlxU;
+	import Box2D.Dynamics.*;
+	import Managers.*;
 	import org.flixel.FlxEmitter;
-	import org.flixel.FlxSprite;
-	import org.flixel.FlxText;
+	import org.flixel.FlxG;
 	import org.flixel.FlxPoint;
-	import Managers.LevelManager;
-	import Managers.SoundManager;
-	import Managers.SettingsManager;
+	import org.flixel.FlxSprite;
+	import org.flixel.FlxState;
+	import org.flixel.FlxText;
+	import org.flixel.FlxTilemap;
+	import org.flixel.FlxU;
 	
 	public class PlayState extends FlxState
 	{
@@ -30,15 +25,16 @@ package States
 		private var explosionEmitter:FlxEmitter; // exploding planes
 		
 		// text
-		private var scoreText:FlxText;
+		//private var scoreText:FlxText;
 		private var coinsText:FlxText;
 		private var timeText:FlxText;
 		
 		private var coinList:Array;
-		private var coinsRemaining:Number = 0;		// number of remaining coins in the level
-		private var elapsedTime:Number = 0;			// elapsed time since starting the level
+		private var coinsRemaining:Number = 0; // number of remaining coins in the level
+		private var elapsedTime:Number = 0; // elapsed time since starting the level
 		private var planeDestroyed:Boolean = false; // flag determining whether the plane collided
-		private var resetCounter:Number = 0; 		// counter for delay after plane is destroyed
+		private var resetCounter:Number = 0; // counter for delay after plane is destroyed
+		private var endCounter:Number = 0; // counter for delay after all coins taken
 		
 		// sort of "constructor"
 		override public function create():void
@@ -47,31 +43,32 @@ package States
 			setupWorld();
 			
 			// create level background
-			this.add( LevelManager.getBackgroundImage( FlxG.level ) );
+			this.add(LevelManager.getBackgroundImage(FlxG.level));
 			
 			// create level tilemap
-			groundMap = LevelManager.getTileMap( FlxG.level );
+			groundMap = LevelManager.getTileMap(FlxG.level);
 			this.add(groundMap);
 			groundMap.collideIndex = 2;
 			FlxU.setWorldBounds(0, 0, groundMap.width, groundMap.height);
 			
 			// create score text
-			scoreText = new FlxText(5, 20, 150, "Score: 0");
-			scoreText.setFormat(null, 12, 0xFFFFFFFF, "left");
-			scoreText.scrollFactor = new FlxPoint(0, 0);
-			this.add(scoreText);
-			
+			/*
+			   scoreText = new FlxText(5, 20, 150, "Score: 0");
+			   scoreText.setFormat(null, 12, 0xFFFFFFFF, "left");
+			   scoreText.scrollFactor = new FlxPoint(0, 0);
+			   this.add(scoreText);
+			 */
 			// create coins remaining text
-			coinsText = new FlxText(5, 5, 150, "Coins Remaining: 0" );
-			coinsText.setFormat(null, 12, 0xFFFFFFFF, "left" );
+			coinsText = new FlxText(5, 5, 150, "Coins Remaining: 0");
+			coinsText.setFormat(null, 12, 0xFFFFFFFF, "left");
 			coinsText.scrollFactor = new FlxPoint(0, 0);
-			this.add( coinsText );
+			this.add(coinsText);
 			
 			// create time text
-			timeText = new FlxText(FlxG.width - 155, 5, 150, "0:00" );
-			timeText.setFormat(null, 12, 0xFFFFFFFF, "right" );
+			timeText = new FlxText(FlxG.width - 155, 5, 150, "0:00");
+			timeText.setFormat(null, 12, 0xFFFFFFFF, "right");
 			timeText.scrollFactor = new FlxPoint(0, 0);
-			this.add( timeText );
+			this.add(timeText);
 			
 			// set up emitter for coins
 			emitter = new FlxEmitter(this.x, this.y);
@@ -107,17 +104,17 @@ package States
 			explosionEmitter.particleDrag.y = 60;
 			this.add(explosionEmitter);
 			
-			p = new Player(150, 220, this, _world, 1);
+			p = new Player(50, 220, this, _world, 1);
 			this.add(p); // add the player object
 			
 			// get coins for level
-			coinList = LevelManager.getCoins( FlxG.level );
+			coinList = LevelManager.getCoins(FlxG.level);
 			coinsRemaining = coinList.length;
 			coinsText.text = "Coins Remaining: " + coinsRemaining;
 			
-			for ( var k:int = 0; k < coinList.length; k++ )
+			for (var k:int = 0; k < coinList.length; k++)
 			{
-				this.add( new Coin( coinList[k].x, coinList[k].y, p, emitter, onCoinTaken ) );
+				this.add(new Coin(coinList[k].x, coinList[k].y, p, emitter, onCoinTaken));
 			}
 		}
 		
@@ -177,106 +174,124 @@ package States
 			
 			// update elapsed time and text
 			elapsedTime += FlxG.elapsed;
-			var minutes:Number = Math.round( elapsedTime / 60 );
-			var seconds:Number = Math.round( elapsedTime % 60 );
-			timeText.text = (minutes < 10 ? "0":"") + minutes + ":" + (seconds < 10 ? "0":"") + seconds;
+			var minutes:Number = Math.round(elapsedTime / 60);
+			var seconds:Number = Math.round(elapsedTime % 60);
+			timeText.text = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
 			
 			// update and check for coins remaining
 			coinsText.text = "Coins Remaining: " + coinsRemaining;
-			if ( coinsRemaining == 0 )		// WIN
-				endLevel();
 			
-			if (planeDestroyed)
-			{
-				//_world.DestroyJoint(p.getJoint());
-				resetCounter += FlxG.elapsed;
-				if ( resetCounter >= 4 )
-					FlxG.state = new PlayState();
-			}
+			// WIN
+			if (coinsRemaining == 0)
+				endLevel();
 			else
-			{
-				_world.Step(FlxG.elapsed, 10, 80);
-				_world.DrawDebugData();
-				
-				// update score
-				scoreText.text = "Score: " + FlxG.score;
-				
-				// collision on left plane
-				if (groundMap.overlaps(p.getLeftPlane()))
+			{					
+				// LOSE
+				if (planeDestroyed)
 				{
-					explosionEmitter.at(p.getLeftPlane());
-					explosionEmitter.start(true, 2);
-					p.getLeftPlane().kill();
-					FlxG.stage.removeChild( p.getRope() );
-					SoundManager.Explosion();
-					planeDestroyed = true;
+					resetCounter += FlxG.elapsed;
+					if (resetCounter >= 4)
+						FlxG.state = new PlayState();
 				}
-				if (groundMap.overlaps(p.getRightPlane()))
+				// PLAY
+				else
 				{
-					explosionEmitter.at(p.getRightPlane());
-					explosionEmitter.start(true, 2);
-					p.getRightPlane().kill();
-					FlxG.stage.removeChild( p.getRope() );
-					SoundManager.Explosion();
-					planeDestroyed = true;
-				}
+					_world.Step(FlxG.elapsed, 10, 80);
+					_world.DrawDebugData();
+
+					// check input
+					if ( InputManager.exit() ) {
+						FlxG.stage.removeChild(p.getRope());
+						FlxG.state = new LevelMenuState();
+					}
 				
-				// check boundaries 
-				// Note: must check each plane independently for each boundary, to handle the case where
-				// both planes are at the boundary
-				var planeLeft:B2FlxSprite = p.getLeftPlane();
-				var planeRight:B2FlxSprite = p.getRightPlane();
-				// left boundary, left plane
-				if (planeLeft.x <= 1)
-					forceLeftBoundary(planeLeft);
-				// left boundary, right plane
-				if (planeRight.x <= 1)
-					forceLeftBoundary(planeRight);
-				// right boundary, left plane
-				if (planeLeft.x >= groundMap.width - planeLeft._radius - 1)
-					forceRightBoundary(planeLeft);
-				// right boundary, right plane
-				if (planeRight.x >= groundMap.width - planeRight._radius - 1)
-					forceRightBoundary(planeRight);
-				// top boundary, left plane
-				if (planeLeft.y <= 1)
-					forceTopBoundary(planeLeft);
-				// top boundary, right plane
-				if (planeRight.y <= 1)
-					forceTopBoundary(planeRight);
-				// bottom boundary, left plane
-				if (planeLeft.y >= groundMap.height - planeLeft._radius - 1)
-					forceBottomBoundary(planeLeft);
-				// bottom boundary, right plane
-				if (planeRight.y >= groundMap.height - planeRight._radius - 1)
-					forceBottomBoundary(planeRight);
+					// collision on left plane
+					if (groundMap.overlaps(p.getLeftPlane()))
+					{
+						explosionEmitter.at(p.getLeftPlane());
+						explosionEmitter.start(true, 2);
+						p.getLeftPlane().kill();
+						FlxG.stage.removeChild(p.getRope());
+						SoundManager.Explosion();
+						planeDestroyed = true;
+					}
+					if (groundMap.overlaps(p.getRightPlane()))
+					{
+						explosionEmitter.at(p.getRightPlane());
+						explosionEmitter.start(true, 2);
+						p.getRightPlane().kill();
+						FlxG.stage.removeChild(p.getRope());
+						SoundManager.Explosion();
+						planeDestroyed = true;
+					}
+					
+					// check boundaries 
+					// Note: must check each plane independently for each boundary, to handle the case where
+					// both planes are at the boundary
+					var planeLeft:B2FlxSprite = p.getLeftPlane();
+					var planeRight:B2FlxSprite = p.getRightPlane();
+					// left boundary, left plane
+					if (planeLeft.x <= 1)
+						forceLeftBoundary(planeLeft);
+					// left boundary, right plane
+					if (planeRight.x <= 1)
+						forceLeftBoundary(planeRight);
+					// right boundary, left plane
+					if (planeLeft.x >= groundMap.width - planeLeft._radius - 1)
+						forceRightBoundary(planeLeft);
+					// right boundary, right plane
+					if (planeRight.x >= groundMap.width - planeRight._radius - 1)
+						forceRightBoundary(planeRight);
+					// top boundary, left plane
+					if (planeLeft.y <= 1)
+						forceTopBoundary(planeLeft);
+					// top boundary, right plane
+					if (planeRight.y <= 1)
+						forceTopBoundary(planeRight);
+					// bottom boundary, left plane
+					if (planeLeft.y >= groundMap.height - planeLeft._radius - 1)
+						forceBottomBoundary(planeLeft);
+					// bottom boundary, right plane
+					if (planeRight.y >= groundMap.height - planeRight._radius - 1)
+						forceBottomBoundary(planeRight);
+				}
 			}
 		}
 		
-		private function onCoinTaken( coin:Coin ):void
+		private function onCoinTaken(coin:Coin):void
 		{
 			// deduct coins remaining
 			this.coinsRemaining--;
 			
 			// emit particles
-			emitter.at( coin );
-			emitter.start( true, 0.5, 10 );
-				
+			emitter.at(coin);
+			emitter.start(true, 0.5, 10);
+			
 			// play coin
 			SoundManager.TakeCoin();
-				
+			
 			// add score
 			FlxG.score++;
-				
+			
 			// kill coin
 			coin.kill();
 		}
 		
 		private function endLevel():void
 		{
-			SettingsManager.Max_Level++;
-			FlxG.stage.removeChild( p.getRope() );
-			FlxG.state = new LevelMenuState();
+			endCounter += FlxG.elapsed;
+			if (endCounter >= 1)
+			{
+				// remove graphics
+				FlxG.stage.removeChild(p.getRope());
+				
+				// if it was latest level, include new level
+				if ( FlxG.level == SettingsManager.Max_Level )
+					SettingsManager.Max_Level++;
+				
+				// go to end level state
+				FlxG.state = new EndLevelState(elapsedTime);
+			}
 		}
 	}
 }

@@ -43,6 +43,25 @@ package Managers
 			_save.data.controller = SettingsManager.Game_Controller;
 		}
 		
+		// save time of a level if better than previous
+		public static function saveLevelTime( level:int, time:Number ):void
+		{
+			if ( _save.read( level + "time" ) != null )
+			{
+				if ( _save.read( level + "time" ) > time )
+					_save.write( level + "time", time );
+			}
+		}
+		
+		// load time of a level
+		public static function loadLevelTime( level:int ):Number
+		{
+			if ( _save.read( level + "time" ) == null )
+				return 0;
+			else
+				return (Number)(_save.read( level + "time" ));
+		}
+		
 		// gets the game controller used as string
 		public static function getGameControllerString():String
 		{
