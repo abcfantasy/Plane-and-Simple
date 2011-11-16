@@ -19,12 +19,13 @@ package
 	import org.flixel.FlxState;
 	import org.flixel.plugin.photonstorm.FlxExtendedSprite;
 	import GamePads.*;
+	import Managers.SettingsManager;
 	
 	public class Player extends FlxObject
 	{
 		// images of the planes
-		[Embed(source = "../assets/graphics/fat_bug.png")]public var leftPlaneImage:Class;
-		[Embed(source = "../assets/graphics/fat_bug2.png")]public var rightPlaneImage:Class;
+		[Embed(source = "../assets/graphics/plane.png")]public var leftPlaneImage:Class;
+		[Embed(source = "../assets/graphics/plane.png")]public var rightPlaneImage:Class;
 		
 		// image of rope
 		[Embed(source = "../assets/graphics/rope.png")]public var ropeImage:Class;
@@ -67,8 +68,8 @@ package
 			playerRight = new B2FlxSprite(x + 40, y, 30, _world);
 			playerLeft.createBody();
 			playerRight.createBody();
-			playerLeft.loadGraphic(leftPlaneImage, true, false, 30, 60);
-			playerRight.loadGraphic(rightPlaneImage, true, false, 30, 60);
+			playerLeft.loadGraphic(leftPlaneImage, true, false, 40, 40);
+			playerRight.loadGraphic(rightPlaneImage, true, false, 40, 40);
 			//playerLeft.addAnimation( "spin", [0, 1, 2, 3], 20, true );
 			//playerRight.addAnimation( "spin", [0, 1, 2, 3], 20, true );
 			//playerLeft.play("spin");
@@ -312,12 +313,17 @@ package
 		
 		override public function update():void 
 		{
-			updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
-			//updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
+			if ( SettingsManager.Game_Controller == SettingsManager.KEYBOARD )
+			{
+				updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
+				updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
+			}
+			else
+			{
+				updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
+				updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
+			}
 
-			updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
-			//updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
-			
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			var dist:Number = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
 			

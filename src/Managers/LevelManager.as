@@ -1,4 +1,4 @@
-package  
+package Managers
 {
 	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
@@ -8,16 +8,17 @@ package
 	public class LevelManager 
 	{
 		// level 1 background
-		[Embed(source = "../assets/graphics/universe3.jpg")] public static var level1BgImage:Class;		
+		[Embed(source = "../../assets/graphics/1-5bg.jpg")] public static var level1BgImage:Class;		
 		// level 1 tiles
-		[Embed(source="../assets/graphics/newTiles.png")] private static var stage1Tiles:Class;
+		[Embed(source="../../assets/graphics/tiles_asteroid_line3.png")] private static var stage1Tiles:Class;
 		// level 1 map
-		[Embed(source = "../assets/test_map.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
+		[Embed(source = "../../assets/maps/1tutlvl.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
 		
 		private static const GAME_WIDTH:int = 800;
 		private static const GAME_HEIGHT:int = 621;
-		private static const TILE_SIZE:int = 23;
+		private static const TILE_SIZE:int = 16;
 		
+		// gets background image for given level
 		public static function getBackgroundImage( level:int ) : FlxSprite
 		{
 			var background:FlxSprite = new FlxSprite();
@@ -29,6 +30,7 @@ package
 			return background;
 		}
 		
+		// gets the tile map for given level
 		public static function getTileMap( level:int ) : FlxTilemap
 		{
 			var groundMap:FlxTilemap = new FlxTilemap();
@@ -40,6 +42,7 @@ package
 			return groundMap;
 		}
 		
+		// gets the list of coins for a given level
 		public static function getCoins( level:int ) : Array
 		{
 			var coinList:Array = new Array();

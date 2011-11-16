@@ -1,9 +1,11 @@
-package
+package States
 {
 	import Box2D.Dynamics.*;
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
+	import flash.events.AccelerometerEvent;
+	import org.flixel.data.FlxAnim;
 	import org.flixel.FlxObject;
 	import org.flixel.FlxState;
 	import org.flixel.FlxTilemap;
@@ -13,6 +15,9 @@ package
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxText;
 	import org.flixel.FlxPoint;
+	import Managers.LevelManager;
+	import Managers.SoundManager;
+	import Managers.SettingsManager;
 	
 	public class PlayState extends FlxState
 	{
@@ -23,18 +28,21 @@ package
 		private var groundMap:FlxTilemap = new FlxTilemap();
 		private var emitter:FlxEmitter; // coin taking
 		private var explosionEmitter:FlxEmitter; // exploding planes
-		private var scoreText:FlxText;
-		private var levelText:FlxText;
 		
+		// text
+		private var scoreText:FlxText;
+		private var coinsText:FlxText;
+		private var timeText:FlxText;
+		
+		private var coinList:Array;
+		private var coinsRemaining:Number = 0;		// number of remaining coins in the level
+		private var elapsedTime:Number = 0;			// elapsed time since starting the level
 		private var planeDestroyed:Boolean = false; // flag determining whether the plane collided
 		private var resetCounter:Number = 0; 		// counter for delay after plane is destroyed
 		
 		// sort of "constructor"
 		override public function create():void
 		{
-			// FOR TESTING
-			FlxG.level = 1;
-			
 			super.create();
 			setupWorld();
 			
@@ -47,16 +55,22 @@ package
 			FlxU.setWorldBounds(0, 0, groundMap.width, groundMap.height);
 			
 			// create score text
-			scoreText = new FlxText(5, 5, 150, "Score: 0");
-			scoreText.setFormat(null, 8, 0xFFFFFFFF, "left");
+			scoreText = new FlxText(5, 20, 150, "Score: 0");
+			scoreText.setFormat(null, 12, 0xFFFFFFFF, "left");
 			scoreText.scrollFactor = new FlxPoint(0, 0);
 			this.add(scoreText);
 			
-			// create level text
-			levelText = new FlxText(FlxG.width - 155, 5, 150, "Level: " + FlxG.level);
-			levelText.setFormat(null, 8, 0xFFFFFFFF, "right");
-			levelText.scrollFactor = new FlxPoint(0, 0);
-			this.add(levelText);
+			// create coins remaining text
+			coinsText = new FlxText(5, 5, 150, "Coins Remaining: 0" );
+			coinsText.setFormat(null, 12, 0xFFFFFFFF, "left" );
+			coinsText.scrollFactor = new FlxPoint(0, 0);
+			this.add( coinsText );
+			
+			// create time text
+			timeText = new FlxText(FlxG.width - 155, 5, 150, "0:00" );
+			timeText.setFormat(null, 12, 0xFFFFFFFF, "right" );
+			timeText.scrollFactor = new FlxPoint(0, 0);
+			this.add( timeText );
 			
 			// set up emitter for coins
 			emitter = new FlxEmitter(this.x, this.y);
@@ -92,14 +106,17 @@ package
 			explosionEmitter.particleDrag.y = 60;
 			this.add(explosionEmitter);
 			
-			p = new Player(200, 50, this, _world, 1);
+			p = new Player(150, 150, this, _world, 1);
 			this.add(p); // add the player object
 			
 			// get coins for level
-			var coinList:Array = LevelManager.getCoins( FlxG.level );
+			coinList = LevelManager.getCoins( FlxG.level );
+			coinsRemaining = coinList.length;
+			coinsText.text = "Coins Remaining: " + coinsRemaining;
+			
 			for ( var k:int = 0; k < coinList.length; k++ )
 			{
-				this.add( new Coin( coinList[k].x, coinList[k].y, p, emitter ) );
+				this.add( new Coin( coinList[k].x, coinList[k].y, p, emitter, onCoinTaken ) );
 			}
 		}
 		
@@ -157,6 +174,17 @@ package
 		{
 			super.update();
 			
+			// update elapsed time and text
+			elapsedTime += FlxG.elapsed;
+			var minutes:Number = Math.round( elapsedTime / 60 );
+			var seconds:Number = Math.round( elapsedTime % 60 );
+			timeText.text = (minutes < 10 ? "0":"") + minutes + ":" + (seconds < 10 ? "0":"") + seconds;
+			
+			// update and check for coins remaining
+			coinsText.text = "Coins Remaining: " + coinsRemaining;
+			if ( coinsRemaining == 0 )		// WIN
+				endLevel();
+			
 			if (planeDestroyed)
 			{
 				//_world.DestroyJoint(p.getJoint());
@@ -166,7 +194,7 @@ package
 			}
 			else
 			{
-				_world.Step(FlxG.elapsed, 10, 10);
+				_world.Step(FlxG.elapsed, 10, 80);
 				_world.DrawDebugData();
 				
 				// update score
@@ -222,6 +250,32 @@ package
 				if (planeRight.y >= groundMap.height - planeRight._radius - 1)
 					forceBottomBoundary(planeRight);
 			}
+		}
+		
+		private function onCoinTaken( coin:Coin ):void
+		{
+			// deduct coins remaining
+			this.coinsRemaining--;
+			
+			// emit particles
+			emitter.at( coin );
+			emitter.start( true, 0.5, 10 );
+				
+			// play coin
+			SoundManager.TakeCoin();
+				
+			// add score
+			FlxG.score++;
+				
+			// kill coin
+			coin.kill();
+		}
+		
+		private function endLevel():void
+		{
+			SettingsManager.Max_Level++;
+			FlxG.stage.removeChild( p.getRope() );
+			FlxG.state = new LevelMenuState();
 		}
 	}
 }
