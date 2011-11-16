@@ -52,6 +52,7 @@ package States
 			// create level tilemap
 			groundMap = LevelManager.getTileMap( FlxG.level );
 			this.add(groundMap);
+			groundMap.collideIndex = 2;
 			FlxU.setWorldBounds(0, 0, groundMap.width, groundMap.height);
 			
 			// create score text
@@ -106,7 +107,7 @@ package States
 			explosionEmitter.particleDrag.y = 60;
 			this.add(explosionEmitter);
 			
-			p = new Player(150, 150, this, _world, 1);
+			p = new Player(150, 220, this, _world, 1);
 			this.add(p); // add the player object
 			
 			// get coins for level

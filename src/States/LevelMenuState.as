@@ -5,6 +5,7 @@ package States
 	import org.flixel.FlxG;
 	import org.flixel.plugin.photonstorm.FlxBitmapFont;
 	import Managers.SettingsManager;
+	import Managers.InputManager;
 	
 	public class LevelMenuState extends FlxState
 	{
@@ -52,23 +53,23 @@ package States
 			levelTexts[selected - 1].alpha = 1;
 			
 			// check input
-			if ( FlxG.keys.justPressed("SPACE") || FlxG.keys.justPressed("ENTER") )
+			if ( InputManager.confirm() )
 			{
 				FlxG.level = selected;
 				FlxG.score = 0;
 				FlxG.state = new PlayState();
 			}
-			else if ( FlxG.keys.justPressed("DOWN") )
+			else if ( InputManager.down() )
 			{
 				if ( selected < SettingsManager.Max_Level )
 					selected++;
 			}
-			else if ( FlxG.keys.justPressed("UP") )
+			else if ( InputManager.up() )
 			{
 				if ( selected > 1 )
 					selected--;
 			}
-			else if ( FlxG.keys.justPressed("ESCAPE") )
+			else if ( InputManager.exit() )
 			{
 				FlxG.state = new MenuState();
 			}

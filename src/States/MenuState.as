@@ -5,6 +5,7 @@ package States
 	import org.flixel.FlxG;
 	import org.flixel.plugin.photonstorm.FlxBitmapFont;
 	import Managers.SettingsManager;
+	import Managers.InputManager;
 	
 	public class MenuState extends FlxState
 	{
@@ -49,7 +50,7 @@ package States
 			super.update();
 			
 			// check input
-			if ( FlxG.keys.justPressed("SPACE") || FlxG.keys.justPressed("ENTER") )
+			if ( InputManager.confirm() )
 			{
 				switch ( selected )
 				{
@@ -61,12 +62,12 @@ package States
 						break;
 				}
 			}
-			else if ( FlxG.keys.justPressed("DOWN") )
+			else if ( InputManager.down() )
 			{
 				if ( selected < maxOptions - 1 )
 					selected++;
 			}
-			else if ( FlxG.keys.justPressed("UP") )
+			else if ( InputManager.up() )
 			{
 				if ( selected > 0 )
 					selected--;
