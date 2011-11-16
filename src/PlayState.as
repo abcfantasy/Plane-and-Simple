@@ -178,7 +178,7 @@ package
 					explosionEmitter.at(p.getLeftPlane());
 					explosionEmitter.start(true, 2);
 					p.getLeftPlane().kill();
-					FlxG.stage.removeChild( p.getDebugSprite() );
+					FlxG.stage.removeChild( p.getRope() );
 					SoundManager.Explosion();
 					planeDestroyed = true;
 				}
@@ -187,7 +187,7 @@ package
 					explosionEmitter.at(p.getRightPlane());
 					explosionEmitter.start(true, 2);
 					p.getRightPlane().kill();
-					FlxG.stage.removeChild( p.getDebugSprite() );
+					FlxG.stage.removeChild( p.getRope() );
 					SoundManager.Explosion();
 					planeDestroyed = true;
 				}

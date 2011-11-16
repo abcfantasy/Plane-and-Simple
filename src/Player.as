@@ -305,9 +305,9 @@ package
 			return this.jointDef;
 		}
 		*/
-		public function getDebugSprite():Sprite
+		public function getRope():Sprite
 		{
-			return this.dbgSprite;
+			return this.rope;
 		}
 		
 		override public function update():void 
