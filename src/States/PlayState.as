@@ -103,8 +103,8 @@ package States
 			explosionEmitter.particleDrag.x = 60;
 			explosionEmitter.particleDrag.y = 60;
 			this.add(explosionEmitter);
-			
-			p = new Player(50, 220, this, _world, 1);
+			var playerPos:FlxPoint = LevelManager.getPlayerPosition(FlxG.level);
+			p = new Player(playerPos.x, playerPos.y, this, _world, 1);
 			this.add(p); // add the player object
 			
 			// get coins for level

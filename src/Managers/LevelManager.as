@@ -7,12 +7,17 @@ package Managers
 	
 	public class LevelManager 
 	{
-		// level 1 background
+		// level 1 background - but, we only use one background at the moment?
 		[Embed(source = "../../assets/graphics/1-5bg.jpg")] public static var level1BgImage:Class;		
-		// level 1 tiles
+		// level 1 tiles - but, we only use one tileset at the moment?
 		[Embed(source="../../assets/graphics/tiles_asteroid_line3.png")] private static var stage1Tiles:Class;
-		// level 1 map
-		[Embed(source = "../../assets/maps/5tutlvl.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
+		// Maps:
+		[Embed(source = "../../assets/maps/1tutlvl.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
+		[Embed(source = "../../assets/maps/2tutlvl.txt", mimeType = "application/octet-stream")] private static var level2MapString:Class;
+		[Embed(source = "../../assets/maps/3tutlvl.txt", mimeType = "application/octet-stream")] private static var level3MapString:Class;
+		[Embed(source = "../../assets/maps/4tutlvl.txt", mimeType = "application/octet-stream")] private static var level4MapString:Class;
+		[Embed(source = "../../assets/maps/5tutlvl.txt", mimeType = "application/octet-stream")] private static var level5MapString:Class;
+		// Coins:
 		
 		private static const GAME_WIDTH:int = 800;
 		private static const GAME_HEIGHT:int = 600;
@@ -34,11 +39,25 @@ package Managers
 		public static function getTileMap( level:int ) : FlxTilemap
 		{
 			var groundMap:FlxTilemap = new FlxTilemap();
+			var chosenMap:String;
 			switch ( level ) {
 				case 1:
-					groundMap = groundMap.loadMap(new level1MapString, stage1Tiles, TILE_SIZE, TILE_SIZE);
+					chosenMap = new level1MapString;
+					break;
+				case 2:
+					chosenMap = new level2MapString;
+					break;
+				case 3:
+					chosenMap = new level3MapString;
+					break;
+				case 4:
+					chosenMap = new level4MapString;
+					break;
+				case 5:
+					chosenMap = new level5MapString;
 					break;
 			}
+			groundMap = groundMap.loadMap(chosenMap, stage1Tiles, TILE_SIZE, TILE_SIZE);
 			return groundMap;
 		}
 		
@@ -54,6 +73,29 @@ package Managers
 			}
 			return coinList;
 		}
+		
+		// Returns the position of the Player
+		public static function getPlayerPosition (level:int ) : FlxPoint
+		{
+			var position:FlxPoint;
+			switch( level ) {
+				case 1:
+					position = new FlxPoint( 174, 67 );
+					break;
+				case 2:
+					position = new FlxPoint( 106, 90 );
+					break;
+				case 3:
+					position = new FlxPoint( 121, 67 );
+					break;
+				case 4:
+					position = new FlxPoint( 184, 69 );
+					break;
+				case 5:
+					position = new FlxPoint( 50, 220 );
+					break;
+			}	
+			return position;
+		}
 	}
-
 }
