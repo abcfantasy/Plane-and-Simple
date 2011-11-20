@@ -12,12 +12,17 @@ package Managers
 		// level 1 tiles - but, we only use one tileset at the moment?
 		[Embed(source="../../assets/graphics/tiles_asteroid_line3.png")] private static var stage1Tiles:Class;
 		// Maps:
-		[Embed(source = "../../assets/maps/1tutlvl.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
-		[Embed(source = "../../assets/maps/2tutlvl.txt", mimeType = "application/octet-stream")] private static var level2MapString:Class;
-		[Embed(source = "../../assets/maps/3tutlvl.txt", mimeType = "application/octet-stream")] private static var level3MapString:Class;
-		[Embed(source = "../../assets/maps/4tutlvl.txt", mimeType = "application/octet-stream")] private static var level4MapString:Class;
-		[Embed(source = "../../assets/maps/5tutlvl.txt", mimeType = "application/octet-stream")] private static var level5MapString:Class;
+		[Embed(source = "../../assets/maps/tut1.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
+		[Embed(source = "../../assets/maps/tut2.txt", mimeType = "application/octet-stream")] private static var level2MapString:Class;
+		[Embed(source = "../../assets/maps/tut3.txt", mimeType = "application/octet-stream")] private static var level3MapString:Class;
+		[Embed(source = "../../assets/maps/tut4.txt", mimeType = "application/octet-stream")] private static var level4MapString:Class;
+		[Embed(source = "../../assets/maps/tut5.txt", mimeType = "application/octet-stream")] private static var level5MapString:Class;
 		// Coins:
+		[Embed(source = "../../assets/maps/tut1coins.txt", mimeType = "application/octet-stream")] private static var level1Coins:Class;
+		[Embed(source = "../../assets/maps/tut2coins.txt", mimeType = "application/octet-stream")] private static var level2Coins:Class;
+		[Embed(source = "../../assets/maps/tut3coins.txt", mimeType = "application/octet-stream")] private static var level3Coins:Class;
+		[Embed(source = "../../assets/maps/tut4coins.txt", mimeType = "application/octet-stream")] private static var level4Coins:Class;
+		[Embed(source = "../../assets/maps/tut5coins.txt", mimeType = "application/octet-stream")] private static var level5Coins:Class;
 		
 		private static const GAME_WIDTH:int = 800;
 		private static const GAME_HEIGHT:int = 600;
@@ -64,13 +69,35 @@ package Managers
 		// gets the list of coins for a given level
 		public static function getCoins( level:int ) : Array
 		{
+			var coinData:String;
+			var tempCoordList:Array = new Array();
+			var tempCoin:Array = new Array();
 			var coinList:Array = new Array();
+			
 			switch ( level ) {
 				case 1:
-					coinList.push( new FlxPoint( 158, 135 ) );
-					coinList.push( new FlxPoint( 240, 380 ) );
+					coinData = new level1Coins;
+					break;
+				case 2:
+					coinData = new level2Coins;
+					break;
+				case 3:
+					coinData = new level3Coins;
+					break;
+				case 4:
+					coinData = new level4Coins;
+					break;
+				case 5:
+					coinData = new level5Coins;
 					break;
 			}
+			tempCoordList = coinData.split("\n");
+			for (var i:int = 0; i < tempCoordList.length; i++)
+			{
+				tempCoin = tempCoordList[i].split(",");
+				coinList.push( new FlxPoint( tempCoin[0], tempCoin[1] ) );
+			}
+			
 			return coinList;
 		}
 		
