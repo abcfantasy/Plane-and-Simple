@@ -11,7 +11,7 @@ package Managers
 		public static var Game_Controller:int = KEYBOARD;
 		
 		// max level player can play
-		public static var Max_Level:int = 1;
+		public static var Max_Level:int = 5; // Not working as intended?
 		
 		// save file
 		private static const _saveName:String = "Planeandsimple"
