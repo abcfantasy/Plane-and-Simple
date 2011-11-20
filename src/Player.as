@@ -95,14 +95,6 @@ package
 			joint.SetLength(STRING_DISTANCE/30);
 			
 			/*		
-			FlxG.stage.addChild(dbgSprite);
-			dbgDraw.SetSprite(dbgSprite);
-			// 30 is used as drawScale, since box2D per default uses a ratio of 30, i.e. 30 pixels = 1 meter
-			dbgDraw.SetDrawScale(30.0);
-			dbgDraw.SetAlpha(1);
-			dbgDraw.SetFillAlpha(0.3);
-			dbgDraw.SetLineThickness(1.0);
-			
 			// Here we specify which physics we want debugDraw to draw
 			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 			_world.SetDebugDraw(dbgDraw);
@@ -157,6 +149,9 @@ package
 			
 			if(movement)
 			{
+				// The angle is set based on the current velocity.
+				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+				player.angle = player._angle;
 				// Here the ship should be emitting exhaust... eventually!
 			}
 			else
@@ -164,22 +159,16 @@ package
 				// The impulse is set to the inverted velocity, to slow it down
 				impulse.x = -0.5*(linVel.x);
 				impulse.y = -0.5*(linVel.y);
+				// The original angle is retained.
+				player.angle = currentAngle;
 			}
 			
 			// The resulting impulse is applied to the body of the player object
 			player._obj.ApplyImpulse(impulse, position);
 			
-			if (lockdown) 
+			if (!lockdown)
 			{	
-				// The original angle is retained.
-				player.angle = currentAngle;
-			}
-			else
-			{	
-				// If not, the angle is set based on the current velocity.
-				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
-				player.angle = player._angle;
-				// On top of that, the maximum velocity is capped.
+				// The maximum velocity is capped.
 				if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
 				{
 					var scaleVector:b2Vec2 = linVel;
@@ -246,6 +235,9 @@ package
 			
 			if(movement)
 			{
+				// The angle is set based on the current velocity.
+				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+				player.angle = player._angle;
 				// Here the ship should be emitting exhaust... eventually!
 			}
 			else
@@ -253,22 +245,16 @@ package
 				// The impulse is set to the inverted velocity, to slow it down
 				impulse.x = -(linVel.x);
 				impulse.y = -(linVel.y);
+				// The original angle is retained.
+				player.angle = currentAngle;
 			}
 			
 			// The resulting impulse is applied to the body of the player object
 			player._obj.ApplyImpulse(impulse, position);
 			
-			if (lockdown) 
+			if (!lockdown)
 			{	
-				// The original angle is retained.
-				player.angle = currentAngle;
-			}
-			else
-			{	
-				// If not, the angle is set based on the current velocity.
-				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
-				player.angle = player._angle;
-				// On top of that, the maximum velocity is capped.
+				// If not, the maximum velocity is capped.
 				if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
 				{
 					var scaleVector:b2Vec2 = linVel;
@@ -330,7 +316,7 @@ package
 				if (dist > (STRING_DISTANCE+5))
 					joint.SetFrequency(1.0);
 				else
-					joint.SetFrequency(0.1);
+					joint.SetFrequency(0.1); // Consider lowering even further
 			}
 			
 			rope.graphics.clear();
