@@ -89,10 +89,11 @@ package States
 			
 			// set up emitter for exploding planes
 			explosionEmitter = new FlxEmitter(this.x, this.y);
+			var explosionColors:Array = [0xFFFF0000, 0xFFFFFF00, 0xFFFF8C00]
 			for (var i:int = 0; i < 50; i++)
 			{
 				var explosionParticle:FlxSprite = new FlxSprite();
-				explosionParticle.createGraphic(3, 3, 0xFFFF0000);
+				explosionParticle.createGraphic(3, 3, explosionColors[i % explosionColors.length]);
 				explosionEmitter.add(explosionParticle);
 			}
 			explosionEmitter.gravity = 0;

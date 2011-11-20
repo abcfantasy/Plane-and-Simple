@@ -8,7 +8,7 @@ package Managers
 	public class LevelManager 
 	{
 		// level 1 background - but, we only use one background at the moment?
-		[Embed(source = "../../assets/graphics/1-5bg.jpg")] public static var level1BgImage:Class;		
+		[Embed(source = "../../assets/graphics/1-5bg.jpg")] public static var level5BgImage:Class;		
 		// level 1 tiles - but, we only use one tileset at the moment?
 		[Embed(source="../../assets/graphics/tiles_asteroid_line3.png")] private static var stage1Tiles:Class;
 		// Maps:
@@ -33,8 +33,12 @@ package Managers
 		{
 			var background:FlxSprite = new FlxSprite();
 			switch ( level ) {
-				case 1:
-					background = background.loadGraphic( level1BgImage, false, false, GAME_WIDTH, GAME_HEIGHT );
+				case 1: // lovely ugly-hack to apply same bg to all 5 levels. :)
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+					background = background.loadGraphic( level5BgImage, false, false, GAME_WIDTH, GAME_HEIGHT );
 					break;
 			}
 			return background;
