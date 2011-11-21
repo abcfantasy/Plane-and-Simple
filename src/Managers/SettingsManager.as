@@ -66,9 +66,9 @@ package Managers
 		public static function getGameControllerString():String
 		{
 			if ( Game_Controller == KEYBOARD )
-				return "Keyboard";
+				return "KEYBOARD";
 			else
-				return "Xbox";
+				return "XBOX";
 		}
 		
 		// changes the controller option

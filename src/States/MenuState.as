@@ -10,6 +10,7 @@ package States
 	public class MenuState extends FlxState
 	{
 		[Embed(source = '../../assets/font1.png')] private var titleFont:Class;
+		[Embed(source = '../../assets/WC_RoughTrad.otf', fontFamily = "moyen", embedAsCFF = "false")] private var fontMoyen:String;
 		
 		// text
 		private var startGame:FlxText;
@@ -34,12 +35,12 @@ package States
 			
 			// show start game option
 			startGame = new FlxText( 20, 220, FlxG.width - 20, "Start Game" );
-			startGame.setFormat( null, 14, 0xFFFFFFFF, "center" );
+			startGame.setFormat( "moyen", 30, 0xFFFFFFFF, "center" );
 			this.add( startGame );
 			
 			// show controller options
-			controller = new FlxText( 20, 240, FlxG.width - 20, "Controller: " + SettingsManager.getGameControllerString() );
-			controller.setFormat( null, 14, 0xFFFFFFFF, "center" );
+			controller = new FlxText( 20, 250, FlxG.width - 20, "Controller: " + SettingsManager.getGameControllerString() );
+			controller.setFormat( "moyen", 30, 0xFFFFFFFF, "center" );
 			controller.alpha = 0.5;
 			this.add( controller );
 			

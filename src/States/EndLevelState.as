@@ -27,7 +27,7 @@ package States
 			
 			// create instructions (depending on whether replaying a level or playing a new level)
 			var instructions:FlxText = new FlxText( 20, 150, FlxG.width - 20, "" );
-			if ( FlxG.level == SettingsManager.Max_Level )
+			if ( FlxG.level == SettingsManager.Max_Level - 1 )
 				instructions.text = "Press ENTER/SPACE to play next level or ESC to go back to level selection.";
 			else
 				instructions.text = "Press ENTER/SPACE to replay the current level or ESC to go back to level selection.";

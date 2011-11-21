@@ -24,8 +24,8 @@ package
 	public class Player extends FlxObject
 	{
 		// images of the planes
-		[Embed(source = "../assets/graphics/plane.png")]public var leftPlaneImage:Class;
-		[Embed(source = "../assets/graphics/plane.png")]public var rightPlaneImage:Class;
+		[Embed(source = "../assets/graphics/plane2_green_small.png")]public var leftPlaneImage:Class;
+		[Embed(source = "../assets/graphics/plane2_pinkish_small.png")]public var rightPlaneImage:Class;
 		
 		// image of rope
 		[Embed(source = "../assets/graphics/rope.png")]public var ropeImage:Class;
@@ -69,8 +69,8 @@ package
 			playerLeft.createBody();
 			playerRight.createBody();
 
-			playerLeft.loadGraphic(leftPlaneImage, true, false, 40, 40);
-			playerRight.loadGraphic(rightPlaneImage, true, false, 40, 40);
+			playerLeft.loadGraphic(leftPlaneImage, true, false, 30, 30);
+			playerRight.loadGraphic(rightPlaneImage, true, false, 30, 30);
 			
 			CreateString(_world);
 			
