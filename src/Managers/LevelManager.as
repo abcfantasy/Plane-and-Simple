@@ -104,7 +104,6 @@ package Managers
 			
 			return coinList;
 		}
-		
 		public static function getjewels( level:int ) : Array 
 		{
 			var jewelList:Array = new Array();
@@ -116,7 +115,7 @@ package Managers
 			}
 			return jewelList;
 		}
-		
+
 		// Returns the position of the Player
 		public static function getPlayerPosition (level:int ) : FlxPoint
 		{

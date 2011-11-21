@@ -19,7 +19,7 @@ package States
 		
 		public var _world:b2World; // The Game World
 		private var p:Player; // The Player
-		
+
 		private var groundMap:FlxTilemapExt = new FlxTilemapExt();
 		private var emitter:FlxEmitter; // coin taking
 		private var jewelEmitter:FlxEmitter;
@@ -87,7 +87,7 @@ package States
 			emitter.particleDrag.x = 50;
 			emitter.particleDrag.y = 150;
 			this.add(emitter);
-			
+
 			// set up emitter for jewels
 			jewelEmitter = new FlxEmitter(this.x, this.y);
 			for (var j:int = 0; j < 100; j++)
@@ -104,7 +104,7 @@ package States
 			jewelEmitter.particleDrag.x = 30;
 			jewelEmitter.particleDrag.y = 30;
 			this.add(jewelEmitter);
-			
+
 			// set up emitter for exploding planes
 			explosionEmitter = new FlxEmitter(this.x, this.y);
 			var explosionColors:Array = [0xFFFF0000, 0xFFFFFF00, 0xFFFF8C00]
@@ -135,7 +135,7 @@ package States
 			{
 				this.add(new Coin(coinList[k].x, coinList[k].y, p, emitter, onCoinTaken));
 			}
-			
+
 			// get jewels for level
 			var jewelList:Array = LevelManager.getjewels( FlxG.level );
 			for ( var k:int = 0; k < jewelList.length; k++ )
