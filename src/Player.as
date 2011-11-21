@@ -19,12 +19,13 @@ package
 	import org.flixel.FlxState;
 	import org.flixel.plugin.photonstorm.FlxExtendedSprite;
 	import GamePads.*;
+	import Managers.SettingsManager;
 	
 	public class Player extends FlxObject
 	{
 		// images of the planes
-		[Embed(source = "../assets/graphics/fat_bug.png")]public var leftPlaneImage:Class;
-		[Embed(source = "../assets/graphics/fat_bug2.png")]public var rightPlaneImage:Class;
+		[Embed(source = "../assets/graphics/plane.png")]public var leftPlaneImage:Class;
+		[Embed(source = "../assets/graphics/plane.png")]public var rightPlaneImage:Class;
 		
 		// image of rope
 		[Embed(source = "../assets/graphics/rope.png")]public var ropeImage:Class;
@@ -67,14 +68,9 @@ package
 			playerRight = new B2FlxSprite(x + 40, y, 30, _world);
 			playerLeft.createBody();
 			playerRight.createBody();
-			playerLeft.loadGraphic(leftPlaneImage, true, false, 30, 60);
-			playerRight.loadGraphic(rightPlaneImage, true, false, 30, 60);
-			//playerLeft.addAnimation( "spin", [0, 1, 2, 3], 20, true );
-			//playerRight.addAnimation( "spin", [0, 1, 2, 3], 20, true );
-			//playerLeft.play("spin");
-			//playerRight.play("spin");
-			// This bool is enabled by default, so the call below will disable it
-			//playerRight.toggleBodyFollowsSprite();
+
+			playerLeft.loadGraphic(leftPlaneImage, true, false, 40, 40);
+			playerRight.loadGraphic(rightPlaneImage, true, false, 40, 40);
 			
 			CreateString(_world);
 			
@@ -98,17 +94,11 @@ package
 			joint.SetFrequency(0.0);
 			joint.SetLength(STRING_DISTANCE/30);
 			
-	/*		FlxG.stage.addChild(dbgSprite);
-			dbgDraw.SetSprite(dbgSprite);
-			// 30 is used as drawScale, since box2D per default uses a ratio of 30, i.e. 30 pixels = 1 meter
-			dbgDraw.SetDrawScale(30.0);
-			dbgDraw.SetAlpha(1);
-			dbgDraw.SetFillAlpha(0.3);
-			dbgDraw.SetLineThickness(1.0);
-			
+			/*		
 			// Here we specify which physics we want debugDraw to draw
 			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-			_world.SetDebugDraw(dbgDraw);*/
+			_world.SetDebugDraw(dbgDraw);
+			*/
 			
 			ropeBitMap = new ropeImage;
 			rope.graphics.lineStyle(4, 0xFF0000, 1, true, "normal", null, null, 3);
@@ -118,7 +108,7 @@ package
 		
 		private function updatePlaneController(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
 		{
-						// Flags
+			// Flags
 			var movement:Boolean = false;
 			var lockdown:Boolean = false;
 			
@@ -159,6 +149,9 @@ package
 			
 			if(movement)
 			{
+				// The angle is set based on the current velocity.
+				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+				player.angle = player._angle;
 				// Here the ship should be emitting exhaust... eventually!
 			}
 			else
@@ -166,22 +159,16 @@ package
 				// The impulse is set to the inverted velocity, to slow it down
 				impulse.x = -0.5*(linVel.x);
 				impulse.y = -0.5*(linVel.y);
+				// The original angle is retained.
+				player.angle = currentAngle;
 			}
 			
 			// The resulting impulse is applied to the body of the player object
 			player._obj.ApplyImpulse(impulse, position);
 			
-			if (lockdown) 
+			if (!lockdown)
 			{	
-				// The original angle is retained.
-				player.angle = currentAngle;
-			}
-			else
-			{	
-				// If not, the angle is set based on the current velocity.
-				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
-				player.angle = player._angle;
-				// On top of that, the maximum velocity is capped.
+				// The maximum velocity is capped.
 				if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
 				{
 					var scaleVector:b2Vec2 = linVel;
@@ -190,7 +177,6 @@ package
 				}
 			}
 		}
-		
 		
 		private function updatePlane(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
 		{
@@ -249,6 +235,9 @@ package
 			
 			if(movement)
 			{
+				// The angle is set based on the current velocity.
+				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+				player.angle = player._angle;
 				// Here the ship should be emitting exhaust... eventually!
 			}
 			else
@@ -256,22 +245,16 @@ package
 				// The impulse is set to the inverted velocity, to slow it down
 				impulse.x = -(linVel.x);
 				impulse.y = -(linVel.y);
+				// The original angle is retained.
+				player.angle = currentAngle;
 			}
 			
 			// The resulting impulse is applied to the body of the player object
 			player._obj.ApplyImpulse(impulse, position);
 			
-			if (lockdown) 
+			if (!lockdown)
 			{	
-				// The original angle is retained.
-				player.angle = currentAngle;
-			}
-			else
-			{	
-				// If not, the angle is set based on the current velocity.
-				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
-				player.angle = player._angle;
-				// On top of that, the maximum velocity is capped.
+				// If not, the maximum velocity is capped.
 				if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
 				{
 					var scaleVector:b2Vec2 = linVel;
@@ -312,12 +295,16 @@ package
 		
 		override public function update():void 
 		{
-			updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
-			//updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
-
-			updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
-			//updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
-			
+			if ( SettingsManager.Game_Controller == SettingsManager.KEYBOARD )
+			{
+				updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
+				updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
+			}
+			else
+			{
+				updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
+				updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
+			}
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			var dist:Number = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
 			
@@ -329,9 +316,8 @@ package
 				if (dist > (STRING_DISTANCE+5))
 					joint.SetFrequency(1.0);
 				else
-					joint.SetFrequency(0.1);
+					joint.SetFrequency(0.1); // Consider lowering even further
 			}
-			//FlxG.log("Leftstick.x: " + controller.getState(1).LeftStick.x + "Leftstick.y: " + controller.getState(1).LeftStick.y);
 			
 			rope.graphics.clear();
 			// 400/dist makes the width of the rope depend on the distance between the planes
