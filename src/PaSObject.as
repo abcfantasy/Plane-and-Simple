@@ -19,12 +19,6 @@ package
 			emitter_ = emitter;
 		}
 		
-		/**
-		   Original function by Pieter Iserbyt:
-		   http://local.wasp.uwa.edu.au/~pbourke/geometry/pointline/DistancePoint.java
-		   from Paul Bourke's website:
-		   http://local.wasp.uwa.edu.au/~pbourke/geometry/pointline/
-		 */
 		private function pointToLineDistance(p1x:int, p1y:int, p2x:int, p2y:int, p3x:int, p3y:int):Number
 		{
 			var xDelta:Number = p2x - p1x;
