@@ -198,7 +198,7 @@ package States
 			// apply boundary physics
 			planeBody.ApplyImpulse(new b2Vec2(-(planeBody.GetLinearVelocity().x), 0), new b2Vec2((planeBody.GetPosition().x * 30) - plane._radius, (planeBody.GetPosition().y * 30) - plane._radius));
 			
-			planeBody.SetPosition(new b2Vec2((groundMap.width - 2) / 30, planeBody.GetPosition().y));
+			planeBody.SetPosition(new b2Vec2((groundMap.width - plane._radius) / 30, planeBody.GetPosition().y));
 		}
 		
 		private function forceTopBoundary(plane:B2FlxSprite):void
@@ -220,7 +220,7 @@ package States
 			// aply boundary physics
 			planeBody.ApplyImpulse(new b2Vec2(0, -(planeBody.GetLinearVelocity().y)), new b2Vec2((planeBody.GetPosition().x * 30) - plane._radius, (planeBody.GetPosition().y * 30) - plane._radius));
 			
-			planeBody.SetPosition(new b2Vec2(planeBody.GetPosition().x, (groundMap.height - 2) / 30));
+			planeBody.SetPosition(new b2Vec2(planeBody.GetPosition().x, (groundMap.height - plane._radius - 1) / 30));
 		}
 		
 		override public function update():void
@@ -303,11 +303,11 @@ package States
 					{
 						if (planes[i].x <= 1)
 							forceLeftBoundary(planes[i]);
-						if (planes[i].x >= groundMap.width - planes[i]._radius - 1)
+						if (planes[i].x >= (groundMap.width - planes[i]._radius - 1))
 							forceRightBoundary(planes[i]);
 						if (planes[i].y <= 1)
 							forceTopBoundary(planes[i]);
-						if (planes[i].y >= groundMap.height - planes[i]._radius - 1)
+						if (planes[i].y >= (groundMap.height - planes[i]._radius - 1))
 							forceBottomBoundary(planes[i]);
 					}
 				}
