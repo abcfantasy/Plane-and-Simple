@@ -271,6 +271,9 @@ package States
 				if ( FlxG.level == SettingsManager.Max_Level )
 					SettingsManager.Max_Level++;
 				
+				// save level
+				SettingsManager.saveLevelTime( FlxG.level, elapsedTime );
+				
 				// go to end level state
 				FlxG.state = new EndLevelState(elapsedTime);
 			}

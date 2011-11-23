@@ -41,16 +41,17 @@ package Managers
 		{
 			_save.data.levels = SettingsManager.Max_Level;
 			_save.data.controller = SettingsManager.Game_Controller;
+			_save.forceSave();
 		}
 		
 		// save time of a level if better than previous
 		public static function saveLevelTime( level:int, time:Number ):void
 		{
-			if ( _save.read( level + "time" ) != null )
+			if ( _save.read( level + "time" ) == null || _save.read( level + "time" ) > time )
 			{
-				if ( _save.read( level + "time" ) > time )
-					_save.write( level + "time", time );
+				_save.write( level + "time", time );
 			}
+			saveGame();
 		}
 		
 		// load time of a level
