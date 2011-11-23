@@ -36,12 +36,14 @@ package
         //Default body type
         public var _type:uint = b2Body.b2_dynamicBody;
 		
+		public var ID:Number;
 		
-        public function B2FlxSprite(X:Number, Y:Number, Radius:Number, w:b2World):void
+        public function B2FlxSprite(X:Number, Y:Number, Radius:Number, w:b2World, id:Number):void
         {
             super(X,Y);
             _radius = Radius;
             _world = w
+			this.ID = id;
         }
 		
 		public function toggleBodyFollowsSprite():void

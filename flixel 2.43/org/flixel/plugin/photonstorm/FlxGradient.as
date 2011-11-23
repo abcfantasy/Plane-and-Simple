@@ -117,7 +117,7 @@ package org.flixel.plugin.photonstorm
 		{
 			var data:BitmapData = createGradientBitmapData(width, height, colors, chunkSize, rotation, interpolate);
 			
-			var dest:FlxSprite = new FlxSprite().makeGraphic(width, height);
+			var dest:FlxSprite = new FlxSprite().createGraphic(width, height);
 			
 			dest.pixels = data;
 			
@@ -209,7 +209,8 @@ package org.flixel.plugin.photonstorm
 			
 			var source:FlxSprite = createGradientFlxSprite(width, height, colors, chunkSize, rotation, interpolate);
 			
-			dest.stamp(source, destX, destY);
+			dest.draw(source, destX, destY );
+			//dest.stamp(source, destX, destY);
 			
 			return dest;
 		}

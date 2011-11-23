@@ -13,6 +13,7 @@ package States
 	import org.flixel.FlxText;
 	import org.flixel.FlxTilemap;
 	import org.flixel.FlxU;
+	import org.flixel.plugin.photonstorm.FlxHealthBar;
 	
 	public class PlayState extends FlxState
 	{
@@ -37,6 +38,9 @@ package States
 		private var planeDestroyed:Boolean = false; // flag determining whether the plane collided
 		private var resetCounter:Number = 0; // counter for delay after plane is destroyed
 		private var endCounter:Number = 0; // counter for delay after all coins taken
+		
+		private var stringElasticityBar:SimpleBar;
+		//private var stringElasticityText:FlxText;
 		
 		// sort of "constructor"
 		override public function create():void
@@ -67,8 +71,8 @@ package States
 			this.add(coinsText);
 			
 			// create time text
-			timeText = new FlxText(FlxG.width - 155, 5, 150, "0:00");
-			timeText.setFormat(null, 12, 0xFFFFFFFF, "right");
+			timeText = new FlxText(FlxG.width - 80, 5, 100, "0:00:000");
+			timeText.setFormat(null, 12, 0xFFFFFFFF, "left");
 			timeText.scrollFactor = new FlxPoint(0, 0);
 			this.add(timeText);
 			
@@ -91,7 +95,7 @@ package States
 			
 			// set up emitter for exploding planes
 			explosionEmitter = new FlxEmitter(this.x, this.y);
-			for (var i:int = 0; i < 50; i++)
+			for (var i:int = 0; i < 30; i++)
 			{
 				var explosionParticle:FlxSprite = new FlxSprite();
 				explosionParticle.createGraphic(3, 3, 0xFFFF0000);
@@ -119,6 +123,14 @@ package States
 			{
 				this.add(new Coin(coinList[k].x, coinList[k].y, p, emitter, onCoinTaken));
 			}
+			
+			// set up string stress bar
+			stringElasticityBar = new SimpleBar( ( FlxG.width / 2 ) - 75, 5, 150, 20, 0, 120 );
+			stringElasticityBar.createGradientBar( [0xFF000000, 0xFF000000], [0x99FF0000, 0x99FFFF00, 0x9900FF00, 0x99FFFF00, 0x99FF0000], 1, 180, true, 0xFFFFFFFF );
+			this.add(stringElasticityBar);
+			//stringElasticityText = new FlxText(50, 100, 150, "String: " );
+			//stringElasticityText.setFormat( null, 12, 0xffffffff, "left" );
+			//this.add(stringElasticityText);
 		}
 		
 		private function setupWorld():void
@@ -175,25 +187,30 @@ package States
 		{
 			super.update();
 			
-			// update elapsed time and text
-			elapsedTime += FlxG.elapsed;
-			var minutes:Number = Math.round(elapsedTime / 60);
-			var seconds:Number = Math.round(elapsedTime % 60);
-			timeText.text = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-			
 			// update and check for coins remaining
 			coinsText.text = "Coins Remaining: " + coinsRemaining;
+			
+			//stringElasticityText.text = p.getRopeLengthPercentage().toString();
+			stringElasticityBar.setValue( p.getRopeLengthPercentage() );
 			
 			// WIN
 			if (coinsRemaining == 0)
 				endLevel();
 			else
-			{					
+			{	
+							
+				// update elapsed time and text
+				elapsedTime += FlxG.elapsed * 1000;
+				var minutes:Number = Math.round(elapsedTime / 60000 );
+				var seconds:Number = Math.round(elapsedTime % 60000 / 1000);
+				var milliseconds:Number = Math.round(elapsedTime % 60000 % 1000);
+				timeText.text = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds + ":" + ( milliseconds < 100 ? ( milliseconds < 10 ? "00" : "0") : "") + milliseconds;
+			
 				// LOSE
 				if (planeDestroyed)
 				{
 					resetCounter += FlxG.elapsed;
-					if (resetCounter >= 1)
+					if (resetCounter >= 1.5)
 						FlxG.state = new PlayState();
 				}
 				// PLAY

@@ -36,9 +36,10 @@ package States
 			
 			// create current time			
 			var time:FlxText = new FlxText( 20, 300, FlxG.width - 20, "" );
-			var minutes:Number = Math.round( elapsed_ / 60 );
-			var seconds:Number = Math.round( elapsed_ % 60 );
-			time.text = "Your Time: " + (minutes < 10 ? "0":"") + minutes + ":" + (seconds < 10 ? "0":"") + seconds;
+			var minutes:Number = Math.round(elapsed_ / 60000 );
+			var seconds:Number = Math.round(elapsed_ % 60000 / 1000);
+			var milliseconds:Number = Math.round(elapsed_ % 60000 % 1000);
+			time.text = "Your Time: " + (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds + ":" + ( milliseconds < 100 ? ( milliseconds < 10 ? "00" : "0") : "") + milliseconds;
 			time.setFormat( null, 18, 0xFFFFFFFF, "center" );
 			this.add( time );
 			
@@ -47,9 +48,10 @@ package States
 			if ( bestTime > 0 )
 			{
 				var bestTimeText:FlxText = new FlxText( 20, 340, FlxG.width - 20, "" );
-				var best_minutes:Number = Math.round( bestTime / 60 );
-				var best_seconds:Number = Math.round( bestTime % 60 );
-				bestTimeText.text = "Best Time: " + (best_minutes < 10 ? "0":"") + best_minutes + ":" + (best_seconds < 10 ? "0":"") + best_seconds;
+				var best_minutes:Number = Math.round( bestTime / 60000 );
+				var best_seconds:Number = Math.round( bestTime % 60000 / 1000);
+				var best_milliseconds:Number = Math.round( bestTime % 60000 % 1000);
+				bestTimeText.text = "Best Time: " + (best_minutes < 10 ? "0":"") + best_minutes + ":" + (best_seconds < 10 ? "0":"") + best_seconds + ":" + ( best_milliseconds < 10 ? "0" : "") + best_milliseconds;
 				bestTimeText.setFormat( null, 18, 0xFFFFFFFF, "center" );
 				this.add( bestTimeText );
 			}
