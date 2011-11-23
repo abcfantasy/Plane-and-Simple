@@ -16,6 +16,8 @@ package States
 	
 	public class PlayState extends FlxState
 	{
+		// image of explosion (animation)
+		[Embed(source = "../../assets/graphics/explosion_animated.png")] public var explosionImage:Class;
 		
 		public var _world:b2World; // The Game World
 		private var p:Player; // The Player
@@ -96,12 +98,12 @@ package States
 				explosionEmitter.add(explosionParticle);
 			}
 			explosionEmitter.gravity = 0;
-			explosionEmitter.minParticleSpeed.y = -200;
-			explosionEmitter.maxParticleSpeed.y = 200;
-			explosionEmitter.maxParticleSpeed.x = 200;
-			explosionEmitter.minParticleSpeed.x = -200;
-			explosionEmitter.particleDrag.x = 60;
-			explosionEmitter.particleDrag.y = 60;
+			explosionEmitter.minParticleSpeed.y = -75;
+			explosionEmitter.maxParticleSpeed.y = 75;
+			explosionEmitter.maxParticleSpeed.x = 75;
+			explosionEmitter.minParticleSpeed.x = -75;
+			explosionEmitter.particleDrag.x = 45;
+			explosionEmitter.particleDrag.y = 45;
 			this.add(explosionEmitter);
 			
 			var startingPoint:FlxPoint = LevelManager.getStartingPoint( FlxG.level );
@@ -191,7 +193,7 @@ package States
 				if (planeDestroyed)
 				{
 					resetCounter += FlxG.elapsed;
-					if (resetCounter >= 4)
+					if (resetCounter >= 1)
 						FlxG.state = new PlayState();
 				}
 				// PLAY
@@ -213,6 +215,12 @@ package States
 					{
 						if (groundMap.overlaps(planes[j]))
 						{	
+							// play explosion animation
+							var explosion:FlxSprite = new FlxSprite( planes[j].x, planes[j].y );
+							explosion.loadGraphic( explosionImage, true, false, 30, 30 );
+							explosion.addAnimation( "explode", [0, 1, 2, 3], 15, true );
+							this.add(explosion);
+							explosion.play( "explode" );
 							explosionEmitter.at(planes[j]);
 							explosionEmitter.start(true, 2);
 							planes[j].kill();
