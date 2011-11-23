@@ -1,10 +1,10 @@
-package  
+package Objects
 {
 	import org.flixel.FlxG;
 	
 	public class Jewel extends PaSObject
 	{
-		[Embed(source = "../assets/graphics/jewel2_animated.png")] public var jewelImage:Class;
+		[Embed(source = "../../assets/graphics/jewel2_animated.png")] public var jewelImage:Class;
 		
 		private var onTaken_:Function;
 		

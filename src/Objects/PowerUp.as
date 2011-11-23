@@ -1,4 +1,4 @@
-package  
+package Objects
 {
 	import org.flixel.FlxG;
 	

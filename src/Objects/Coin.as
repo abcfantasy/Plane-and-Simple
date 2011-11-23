@@ -1,10 +1,10 @@
-package
+package Objects
 {
 	import org.flixel.FlxG;
 	
 	public class Coin extends PaSObject
 	{
-		[Embed(source = "../assets/graphics/coin.png")] public var coinImage:Class;
+		[Embed(source = "../../assets/graphics/coin.png")] public var coinImage:Class;
 		
 		private var onTaken_:Function;
 		

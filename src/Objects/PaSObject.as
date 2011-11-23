@@ -1,4 +1,4 @@
-package  
+package Objects
 {
 	import flash.geom.Point;
 	import org.flixel.FlxSprite

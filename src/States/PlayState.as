@@ -5,6 +5,8 @@ package States
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	import Managers.*;
+	import Objects.*;
+	import GamePads.*;
 	import org.flixel.FlxEmitter;
 	import org.flixel.FlxG;
 	import org.flixel.FlxPoint;
@@ -14,7 +16,6 @@ package States
 	import org.flixel.FlxTilemap;
 	import org.flixel.FlxU;
 	import org.flixel.plugin.photonstorm.FlxHealthBar;
-	import GamePads.*;
 	
 	public class PlayState extends FlxState
 	{
@@ -23,11 +24,11 @@ package States
 		
 		public var _world:b2World; // The Game World
 		private var p:Player; // The Player
-
+		
 		private var groundMap:FlxTilemapExt = new FlxTilemapExt();
-		private var emitter:FlxEmitter; // coin taking
-		private var jewelEmitter:FlxEmitter;
-		private var explosionEmitter:FlxEmitter; // exploding planes
+		private var emitterCoin:FlxEmitter; 		// Picking-up Coin
+		private var emitterJewel:FlxEmitter;		// Picking-up Jewel
+		private var emitterExplosion:FlxEmitter;	// Plane explosion
 		
 		// text
 		//private var scoreText:FlxText;
@@ -66,16 +67,10 @@ package States
 			groundMap.collideIndex = 2;
 			FlxU.setWorldBounds(0, 0, groundMap.width, groundMap.height);
 			
-			// create score text
-			/*
-			   scoreText = new FlxText(5, 20, 150, "Score: 0");
-			   scoreText.setFormat(null, 12, 0xFFFFFFFF, "left");
-			   scoreText.scrollFactor = new FlxPoint(0, 0);
-			   this.add(scoreText);
-			 */
-			// create coins remaining text
+			// Score texts
 			if (FlxG.mode == 1)
 			{
+				// Coin Game-mode
 				coinsText = new FlxText(5, 5, 150, "Coins Remaining: 0");
 				coinsText.setFormat(null, 12, 0xFFFFFFFF, "left");
 				coinsText.scrollFactor = new FlxPoint(0, 0);
@@ -83,6 +78,7 @@ package States
 			}
 			else
 			{
+				// Point Game-mode
 				pointsText = new FlxText(5, 5, 150, "Points: 0");
 				pointsText.setFormat(null, 12, 0xFFFFFFFF, "left");
 				pointsText.scrollFactor = new FlxPoint(0, 0);
@@ -98,61 +94,45 @@ package States
 			timeText.scrollFactor = new FlxPoint(0, 0);
 			this.add(timeText);
 			
-			// set up emitter for coins
-			emitter = new FlxEmitter(this.x, this.y);
-			for (var j:int = 0; j < 50; j++)
-			{
-				var particle:FlxSprite = new FlxSprite();
-				particle.createGraphic(4, 4, 0xffffff00);
-				emitter.add(particle);
-			}
-			emitter.gravity = 0;
-			emitter.minParticleSpeed.y = -150;
-			emitter.maxParticleSpeed.y = 150;
-			emitter.maxParticleSpeed.x = 150;
-			emitter.minParticleSpeed.x = -150;
-			emitter.particleDrag.x = 50;
-			emitter.particleDrag.y = 150;
-			this.add(emitter);
-
-			// set up emitter for jewels
-			jewelEmitter = new FlxEmitter(this.x, this.y);
-			for (var k:int = 0; k < 100; k++)
-			{
-				var particle2:FlxSprite = new FlxSprite();
-				particle2.createGraphic(3, 3, 0xffee2222);
-				jewelEmitter.add(particle2);
-			}
-			jewelEmitter.gravity = 0;
-			jewelEmitter.minParticleSpeed.y = -250;
-			jewelEmitter.maxParticleSpeed.y = 250;
-			jewelEmitter.maxParticleSpeed.x = 250;
-			jewelEmitter.minParticleSpeed.x = -250;
-			jewelEmitter.particleDrag.x = 30;
-			jewelEmitter.particleDrag.y = 30;
-			this.add(jewelEmitter);
-
+			// Sets up the Player
+			var playerPos:FlxPoint = LevelManager.getPlayerPosition(FlxG.level);
+			p = new Player(playerPos.x, playerPos.y, this, _world, 1);
+			this.add(p); // add the player object
+			
 			// set up emitter for exploding planes
-			explosionEmitter = new FlxEmitter(this.x, this.y);
+			emitterExplosion = new FlxEmitter(this.x, this.y);
 			var explosionColors:Array = [0xFFFF0000, 0xFFFFFF00, 0xFFFF8C00]
 			for (var i:int = 0; i < 30; i++)
 			{
 				var explosionParticle:FlxSprite = new FlxSprite();
 				explosionParticle.createGraphic(3, 3, explosionColors[i % explosionColors.length]);
-				explosionEmitter.add(explosionParticle);
+				emitterExplosion.add(explosionParticle);
 			}
-			explosionEmitter.gravity = 0;
-			explosionEmitter.minParticleSpeed.y = -75;
-			explosionEmitter.maxParticleSpeed.y = 75;
-			explosionEmitter.maxParticleSpeed.x = 75;
-			explosionEmitter.minParticleSpeed.x = -75;
-			explosionEmitter.particleDrag.x = 45;
-			explosionEmitter.particleDrag.y = 45;
-			this.add(explosionEmitter);
-
-			var playerPos:FlxPoint = LevelManager.getPlayerPosition(FlxG.level);
-			p = new Player(playerPos.x, playerPos.y, this, _world, 1);
-			this.add(p); // add the player object
+			emitterExplosion.gravity = 0;
+			emitterExplosion.minParticleSpeed.y = -75;
+			emitterExplosion.maxParticleSpeed.y = 75;
+			emitterExplosion.maxParticleSpeed.x = 75;
+			emitterExplosion.minParticleSpeed.x = -75;
+			emitterExplosion.particleDrag.x = 45;
+			emitterExplosion.particleDrag.y = 45;
+			this.add(emitterExplosion);
+			
+			// set up emitter for coins
+			emitterCoin = new FlxEmitter(this.x, this.y);
+			for (var j:int = 0; j < 50; j++)
+			{
+				var particle:FlxSprite = new FlxSprite();
+				particle.createGraphic(4, 4, 0xffffff00);
+				emitterCoin.add(particle);
+			}
+			emitterCoin.gravity = 0;
+			emitterCoin.minParticleSpeed.y = -150;
+			emitterCoin.maxParticleSpeed.y = 150;
+			emitterCoin.maxParticleSpeed.x = 150;
+			emitterCoin.minParticleSpeed.x = -150;
+			emitterCoin.particleDrag.x = 50;
+			emitterCoin.particleDrag.y = 150;
+			this.add(emitterCoin);
 			
 			// get coins for level
 			coinList = LevelManager.getCoins(FlxG.level);
@@ -161,25 +141,36 @@ package States
 				coinsText.text = "Coins Remaining: " + coinsRemaining;
 			
 			for (var l:int = 0; l < coinList.length; l++)
-			{
-				this.add(new Coin(coinList[l].x, coinList[l].y, p, emitter, onCoinTaken));
-			}
-
-			// get jewels for level
-			var jewelList:Array = LevelManager.getjewels( FlxG.level );
-			jewelsRemaining = jewelList.length;
-			for ( var m:int = 0; m < jewelList.length; m++ )
-			{
-				this.add( new Jewel( jewelList[m].x, jewelList[m].y, p, jewelEmitter, onJewelTaken ) );
-			}
+				this.add(new Coin(coinList[l].x, coinList[l].y, p, emitterCoin, onCoinTaken));
 			
+			if (FlxG.mode == 2) {
+				// set up emitter for jewels
+				emitterJewel = new FlxEmitter(this.x, this.y);
+				for (var k:int = 0; k < 100; k++)
+				{
+					var particle2:FlxSprite = new FlxSprite();
+					particle2.createGraphic(3, 3, 0xffee2222);
+					emitterJewel.add(particle2);
+				}
+				emitterJewel.gravity = 0;
+				emitterJewel.minParticleSpeed.y = -150;
+				emitterJewel.maxParticleSpeed.y = 150;
+				emitterJewel.maxParticleSpeed.x = 150;
+				emitterJewel.minParticleSpeed.x = -150;
+				emitterJewel.particleDrag.x = 30;
+				emitterJewel.particleDrag.y = 30;
+				this.add(emitterJewel);
+				
+				// get jewels for level
+				var jewelList:Array = LevelManager.getjewels( FlxG.level );
+				jewelsRemaining = jewelList.length;
+				for ( var m:int = 0; m < jewelList.length; m++ )
+					this.add( new Jewel( jewelList[m].x, jewelList[m].y, p, emitterJewel, onJewelTaken ) );
+			}
 			// set up string stress bar
 			stringElasticityBar = new SimpleBar( ( FlxG.width / 2 ) - 75, 5, 150, 20, 0, 120 );
 			stringElasticityBar.createGradientBar( [0xFF000000, 0xFF000000], [0x99FF0000, 0x99FFFF00, 0x9900FF00, 0x99FFFF00, 0x99FF0000], 1, 180, true, 0xFFFFFFFF );
 			this.add(stringElasticityBar);
-			//stringElasticityText = new FlxText(50, 100, 150, "String: " );
-			//stringElasticityText.setFormat( null, 12, 0xffffffff, "left" );
-			//this.add(stringElasticityText);
 		}
 		
 		private function setupWorld():void
@@ -253,7 +244,6 @@ package States
 				endLevel();
 			else
 			{	
-							
 				// update elapsed time and text
 				elapsedTime += FlxG.elapsed * 1000;
 				var minutes:Number = Math.round(elapsedTime / 60000 );
@@ -264,7 +254,6 @@ package States
 				else 
 					timeText.text = "Time left: " + (timeLeft-seconds);
 				
-			
 				// LOSE
 				if (planeDestroyed)
 				{
@@ -278,13 +267,13 @@ package States
 				{
 					_world.Step(FlxG.elapsed, 10, 80);
 					_world.DrawDebugData();
-
+					
 					// check input
 					if ( InputManager.exit() ) {
 						FlxG.stage.removeChild(p.getRope());
 						FlxG.state = new LevelMenuState();
 					}
-				
+					
 					var planes:Array = [p.getLeftPlane(), p.getRightPlane()];
 					
 					// checks collision with the groundMap
@@ -298,8 +287,8 @@ package States
 							explosion.addAnimation( "explode", [0, 1, 2, 3], 15, true );
 							this.add(explosion);
 							explosion.play( "explode" );
-							explosionEmitter.at(planes[j]);
-							explosionEmitter.start(true, 2);
+							emitterExplosion.at(planes[j]);
+							emitterExplosion.start(true, 2);
 							planes[j].kill();
 							FlxG.stage.removeChild( p.getRope() );
 							SoundManager.Explosion();
@@ -331,8 +320,8 @@ package States
 			this.coinsRemaining--;
 			
 			// emit particles
-			emitter.at(coin);
-			emitter.start(true, 0.5, 10);
+			emitterCoin.at(coin);
+			emitterCoin.start(true, 0.5, 10);
 			
 			// play coin
 			SoundManager.TakeCoin();
@@ -351,8 +340,8 @@ package States
 		private function onJewelTaken(jewel:Jewel):void
 		{
 			jewelsRemaining--;
-			jewelEmitter.at(jewel);
-			jewelEmitter.start(true, 0.5, 10);
+			emitterJewel.at(jewel);
+			emitterJewel.start(true, 0.5, 10);
 			FlxG.points += 5;
 			timeLeft += 10;
 			jewel.kill();
