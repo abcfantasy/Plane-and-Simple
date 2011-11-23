@@ -23,6 +23,12 @@ package Managers
 		[Embed(source = "../../assets/maps/tut3coins.txt", mimeType = "application/octet-stream")] private static var level3Coins:Class;
 		[Embed(source = "../../assets/maps/tut4coins.txt", mimeType = "application/octet-stream")] private static var level4Coins:Class;
 		[Embed(source = "../../assets/maps/tut5coins.txt", mimeType = "application/octet-stream")] private static var level5Coins:Class;
+		// Jewel:
+		[Embed(source = "../../assets/maps/tut1jewels.txt", mimeType = "application/octet-stream")] private static var level1Jewels:Class;
+		[Embed(source = "../../assets/maps/tut2jewels.txt", mimeType = "application/octet-stream")] private static var level2Jewels:Class;
+		[Embed(source = "../../assets/maps/tut3jewels.txt", mimeType = "application/octet-stream")] private static var level3Jewels:Class;
+		[Embed(source = "../../assets/maps/tut4jewels.txt", mimeType = "application/octet-stream")] private static var level4Jewels:Class;
+		[Embed(source = "../../assets/maps/tut5jewels.txt", mimeType = "application/octet-stream")] private static var level5Jewels:Class;
 		
 		private static const GAME_WIDTH:int = 800;
 		private static const GAME_HEIGHT:int = 600;
@@ -106,12 +112,32 @@ package Managers
 		}
 		public static function getjewels( level:int ) : Array 
 		{
+			var jewelData:String;
+			var tempCoordList:Array = new Array();
+			var tempJewel:Array = new Array();
 			var jewelList:Array = new Array();
 			switch ( level ) {
 				case 1:
-					jewelList.push( new FlxPoint( 500, 500 ) );
-					jewelList.push( new FlxPoint( 100, 500 ) );
+					jewelData = new level1Jewels;
 					break;
+				case 2:
+					jewelData = new level2Jewels;
+					break;
+				case 3:
+					jewelData = new level3Jewels;
+					break;
+				case 4:
+					jewelData = new level4Jewels;
+					break;
+				case 5:
+					jewelData = new level5Jewels;
+					break;
+			}
+			tempCoordList = jewelData.split("\n");
+			for (var i:int = 0; i < tempCoordList.length; i++)
+			{
+				tempJewel = tempCoordList[i].split(",");
+				jewelList.push( new FlxPoint( tempJewel[0], tempJewel[1] ) );
 			}
 			return jewelList;
 		}

@@ -1,6 +1,7 @@
 package Managers
 {
 	import org.flixel.FlxSave;
+	import GamePads.*;
 	public class SettingsManager 
 	{
 		// enumeration of controller types
@@ -9,6 +10,13 @@ package Managers
 		
 		// controller used (default KEYBOARD)
 		public static var Game_Controller:int = KEYBOARD;
+		
+		// enumeration of player modes
+		public static const SINGLEPLAYER:int = 0;
+		public static const MULTIPLAYER:int = 1;
+		
+		// playuer mode used (default SINGLEPLAYER)
+		public static var Player_mode:int = SINGLEPLAYER;
 		
 		// max level player can play
 		public static var Max_Level:int = 5; // Not working as intended?
@@ -71,13 +79,33 @@ package Managers
 				return "Xbox";
 		}
 		
+		public static function getPlayerModeString():String
+		{
+			if (Player_mode == SINGLEPLAYER)
+				return "Singleplayer";
+			else
+				return "Multiplayer";
+		}
+		
 		// changes the controller option
 		public static function toggleController():void
 		{
-			if ( Game_Controller == KEYBOARD )
+			if ( Game_Controller == KEYBOARD ){
 				Game_Controller = XBOX;
+				XBOX360Manager.getInstance().connect();
+			}
 			else
 				Game_Controller = KEYBOARD;
+		}
+		
+		// changes the player mode option
+		public static function togglePlayerMode():void
+		{
+			if ( Player_mode == SINGLEPLAYER ){
+				Player_mode = MULTIPLAYER;
+			}
+			else
+				Player_mode = SINGLEPLAYER;
 		}
 	}
 

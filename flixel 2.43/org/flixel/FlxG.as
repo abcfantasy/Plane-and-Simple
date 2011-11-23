@@ -79,6 +79,8 @@ package org.flixel
 		static public var level:int;
 		static public var scores:Array;
 		static public var score:int;
+		static public var mode:int;
+		static public var points:int = 0;
 		/**
 		 * <code>FlxG.saves</code> is a generic bucket for storing
 		 * FlxSaves so you can access them whenever you want.

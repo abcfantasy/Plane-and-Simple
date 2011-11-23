@@ -28,14 +28,17 @@ package States
 		// text
 		//private var scoreText:FlxText;
 		private var coinsText:FlxText;
+		private var pointsText:FlxText;
 		private var timeText:FlxText;
 		
 		private var coinList:Array;
 		private var coinsRemaining:Number = 0; // number of remaining coins in the level
+		private var jewelsRemaining:Number = 0; // number of remaining jewels in the level
 		private var elapsedTime:Number = 0; // elapsed time since starting the level
 		private var planeDestroyed:Boolean = false; // flag determining whether the plane collided
 		private var resetCounter:Number = 0; // counter for delay after plane is destroyed
 		private var endCounter:Number = 0; // counter for delay after all coins taken
+		private var timeLeft:uint = 20;
 		
 		// sort of "constructor"
 		override public function create():void
@@ -60,13 +63,26 @@ package States
 			   this.add(scoreText);
 			 */
 			// create coins remaining text
-			coinsText = new FlxText(5, 5, 150, "Coins Remaining: 0");
-			coinsText.setFormat(null, 12, 0xFFFFFFFF, "left");
-			coinsText.scrollFactor = new FlxPoint(0, 0);
-			this.add(coinsText);
+			if (FlxG.mode == 1)
+			{
+				coinsText = new FlxText(5, 5, 150, "Coins Remaining: 0");
+				coinsText.setFormat(null, 12, 0xFFFFFFFF, "left");
+				coinsText.scrollFactor = new FlxPoint(0, 0);
+				this.add(coinsText);
+			}
+			else
+			{
+				pointsText = new FlxText(5, 5, 150, "Points: 0");
+				pointsText.setFormat(null, 12, 0xFFFFFFFF, "left");
+				pointsText.scrollFactor = new FlxPoint(0, 0);
+				this.add(pointsText);
+			}
 			
 			// create time text
-			timeText = new FlxText(FlxG.width - 155, 5, 150, "0:00");
+			if(FlxG.mode == 1)
+				timeText = new FlxText(FlxG.width - 155, 5, 150, "0:00");
+			else
+				timeText = new FlxText(FlxG.width - 155, 5, 150, "0:20");
 			timeText.setFormat(null, 12, 0xFFFFFFFF, "right");
 			timeText.scrollFactor = new FlxPoint(0, 0);
 			this.add(timeText);
@@ -129,7 +145,8 @@ package States
 			// get coins for level
 			coinList = LevelManager.getCoins(FlxG.level);
 			coinsRemaining = coinList.length;
-			coinsText.text = "Coins Remaining: " + coinsRemaining;
+			if(FlxG.mode == 1)
+				coinsText.text = "Coins Remaining: " + coinsRemaining;
 			
 			for (var k:int = 0; k < coinList.length; k++)
 			{
@@ -138,9 +155,10 @@ package States
 
 			// get jewels for level
 			var jewelList:Array = LevelManager.getjewels( FlxG.level );
+			jewelsRemaining = jewelList.length;
 			for ( var k:int = 0; k < jewelList.length; k++ )
 			{
-				this.add( new Jewel( jewelList[k].x, jewelList[k].y, p, jewelEmitter ) );
+				this.add( new Jewel( jewelList[k].x, jewelList[k].y, p, jewelEmitter, onJewelTaken ) );
 			}
 		}
 		
@@ -202,19 +220,27 @@ package States
 			elapsedTime += FlxG.elapsed;
 			var minutes:Number = Math.round(elapsedTime / 60);
 			var seconds:Number = Math.round(elapsedTime % 60);
-			timeText.text = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-			
+			if(FlxG.mode == 1)
+				timeText.text = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+			else 
+				timeText.text = "Time left: " + (timeLeft-seconds);
 			// update and check for coins remaining
-			coinsText.text = "Coins Remaining: " + coinsRemaining;
+			if(FlxG.mode == 1)
+				coinsText.text = "Coins Remaining: " + coinsRemaining;
+			else
+				pointsText.text = "Points: " + FlxG.points;
 			
 			// WIN
-			if (coinsRemaining == 0)
+			if ((coinsRemaining+jewelsRemaining) == 0)
+				endLevel();
+			if (FlxG.mode == 2 && (timeLeft - seconds <= 0))
 				endLevel();
 			else
 			{					
 				// LOSE
 				if (planeDestroyed)
 				{
+					FlxG.points = 0;
 					resetCounter += FlxG.elapsed;
 					if (resetCounter >= 4)
 						FlxG.state = new PlayState();
@@ -280,8 +306,22 @@ package States
 			// add score
 			FlxG.score++;
 			
+			FlxG.points++;
+			
+			timeLeft += 2;
+			
 			// kill coin
 			coin.kill();
+		}
+		
+		private function onJewelTaken(jewel:Jewel):void
+		{
+			jewelsRemaining--;
+			jewelEmitter.at(jewel);
+			jewelEmitter.start(true, 0.5, 10);
+			FlxG.points += 5;
+			timeLeft += 10;
+			jewel.kill();
 		}
 		
 		private function endLevel():void

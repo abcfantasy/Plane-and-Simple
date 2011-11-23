@@ -303,7 +303,10 @@ package
 			else
 			{
 				updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
-				updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
+				if(SettingsManager.Player_mode == SettingsManager.SINGLEPLAYER)
+					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
+				else
+					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState+1).RightStick, controller.getState(controllerState+1).RB]); 
 			}
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			var dist:Number = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 

@@ -4,11 +4,14 @@ package
 	
 	public class Jewel extends PaSObject
 	{
-		[Embed(source="../assets/graphics/jewel.png")] public var jewelImage:Class;
+		[Embed(source = "../assets/graphics/jewel.png")] public var jewelImage:Class;
 		
-		public function Jewel(x:int, y:int, player:*, emitter:*)
+		private var onTaken_:Function;
+		
+		public function Jewel(x:int, y:int, player:*, emitter:*, onTaken:Function )
 		{
 			super(x, y, player, emitter);
+			onTaken_ = onTaken;
 			this.loadGraphic(jewelImage, false, false, 16, 16);
 		}
 		
@@ -17,10 +20,10 @@ package
 		
 			if (this.withinRange())
 			{	
-				emitter_.at(this);
-				emitter_.start(true, 0.5, 10);
-				FlxG.score += 5;
-				this.kill();
+				if ( this.onTaken_ != null )
+					onTaken_(this);
+				else
+					this.kill();		// kill coin if no coinTaken function callback is set
 			}
 			
 			super.update();
