@@ -30,7 +30,6 @@ package
 		// image of rope
 		[Embed(source = "../assets/graphics/string.png")]public var ropeImage:Class;
 		
-		
 		// sprite and bitmap for rope
 		private var rope:Sprite = new Sprite();
 		private var ropeBitMap:Bitmap;
@@ -333,16 +332,16 @@ package
 		{
 			if ( SettingsManager.Game_Controller == SettingsManager.KEYBOARD )
 			{
-				updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
-				updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.CONTROL]);
+				updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.R]);
+				updatePlane(rightPosition, rightImpulse, playerRight, [FlxG.keys.RIGHT, FlxG.keys.LEFT, FlxG.keys.UP, FlxG.keys.DOWN, FlxG.keys.SHIFT]);
 			}
 			else
 			{
-				updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
+				updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
 				if(SettingsManager.Player_mode == SettingsManager.SINGLEPLAYER)
-					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
+					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
 				else
-					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState+1).RightStick, controller.getState(controllerState+1).RB]); 
+					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState+1).LeftStick, controller.getState(controllerState+1).LB]); 
 			}
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			this.dist = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
