@@ -34,27 +34,39 @@ package States
 			instructions.setFormat( null, 14, 0xFFFFFFFF, "center" );
 			this.add( instructions );
 			
-			// create current time			
-			var time:FlxText = new FlxText( 20, 300, FlxG.width - 20, "" );
-			var minutes:Number = Math.round(elapsed_ / 60000 );
-			var seconds:Number = Math.round(elapsed_ % 60000 / 1000);
-			var milliseconds:Number = Math.round(elapsed_ % 60000 % 1000);
-			time.text = "Your Time: " + (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds + ":" + ( milliseconds < 100 ? ( milliseconds < 10 ? "00" : "0") : "") + milliseconds;
-			time.setFormat( null, 18, 0xFFFFFFFF, "center" );
-			this.add( time );
-			
-			// if best time exists, create it too
-			var bestTime:Number = SettingsManager.loadLevelTime( FlxG.level );
-			if ( bestTime > 0 )
+			if (FlxG.mode == 1)
 			{
-				var bestTimeText:FlxText = new FlxText( 20, 340, FlxG.width - 20, "" );
-				var best_minutes:Number = Math.round( bestTime / 60000 );
-				var best_seconds:Number = Math.round( bestTime % 60000 / 1000);
-				var best_milliseconds:Number = Math.round( bestTime % 60000 % 1000);
-				bestTimeText.text = "Best Time: " + (best_minutes < 10 ? "0":"") + best_minutes + ":" + (best_seconds < 10 ? "0":"") + best_seconds + ":" + ( best_milliseconds < 10 ? "0" : "") + best_milliseconds;
-				bestTimeText.setFormat( null, 18, 0xFFFFFFFF, "center" );
-				this.add( bestTimeText );
+				// create current time			
+				var time:FlxText = new FlxText( 20, 300, FlxG.width - 20, "" );
+				var minutes:Number = Math.round(elapsed_ / 60000 );
+				var seconds:Number = Math.round(elapsed_ % 60000 / 1000);
+				var milliseconds:Number = Math.round(elapsed_ % 60000 % 1000);
+				time.text = "Your Time: " + (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds + ":" + ( milliseconds < 100 ? ( milliseconds < 10 ? "00" : "0") : "") + milliseconds;
+				time.setFormat( null, 18, 0xFFFFFFFF, "center" );
+				this.add( time );
+			
+				// if best time exists, create it too
+				var bestTime:Number = SettingsManager.loadLevelTime( FlxG.level );
+				if ( bestTime > 0 )
+				{
+					var bestTimeText:FlxText = new FlxText( 20, 340, FlxG.width - 20, "" );
+					var best_minutes:Number = Math.round( bestTime / 60000 );
+					var best_seconds:Number = Math.round( bestTime % 60000 / 1000);
+					var best_milliseconds:Number = Math.round( bestTime % 60000 % 1000);
+					bestTimeText.text = "Best Time: " + (best_minutes < 10 ? "0":"") + best_minutes + ":" + (best_seconds < 10 ? "0":"") + best_seconds + ":" + ( best_milliseconds < 10 ? "0" : "") + best_milliseconds;
+					bestTimeText.setFormat( null, 18, 0xFFFFFFFF, "center" );
+					this.add( bestTimeText );
+				}
 			}
+			else
+			{
+				// create current points
+				var points:FlxText = new FlxText( 20, 300, FlxG.width - 20, "" );
+				points.text = "Your Points: " + FlxG.points;
+				points.setFormat( null, 18, 0xFFFFFFFF, "center" );
+				this.add( points );
+			}
+			FlxG.points = 0;
 		}
 		
 		override public function update():void 

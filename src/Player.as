@@ -122,14 +122,6 @@ package
 			joint.SetLength(STRING_DISTANCE/30);
 			
 			/*		
-			FlxG.stage.addChild(dbgSprite);
-			dbgDraw.SetSprite(dbgSprite);
-			// 30 is used as drawScale, since box2D per default uses a ratio of 30, i.e. 30 pixels = 1 meter
-			dbgDraw.SetDrawScale(30.0);
-			dbgDraw.SetAlpha(1);
-			dbgDraw.SetFillAlpha(0.3);
-			dbgDraw.SetLineThickness(1.0);
-			
 			// Here we specify which physics we want debugDraw to draw
 			dbgDraw.SetFlags(/*b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 			_world.SetDebugDraw(dbgDraw);
@@ -184,6 +176,9 @@ package
 			
 			if(movement)
 			{
+				// The angle is set based on the current velocity.
+				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+				player.angle = player._angle;
 				// Here the ship should be emitting exhaust... eventually!
 				exhaustEmitters[player.ID].at( player );
 				exhaustEmitters[player.ID].start( true, 0, 1 );
@@ -193,22 +188,16 @@ package
 				// The impulse is set to the inverted velocity, to slow it down
 				impulse.x = -0.5*(linVel.x);
 				impulse.y = -0.5*(linVel.y);
+				// The original angle is retained.
+				player.angle = currentAngle;
 			}
 			
 			// The resulting impulse is applied to the body of the player object
 			player._obj.ApplyImpulse(impulse, position);
 			
-			if (lockdown) 
+			if (!lockdown)
 			{	
-				// The original angle is retained.
-				player.angle = currentAngle;
-			}
-			else
-			{	
-				// If not, the angle is set based on the current velocity.
-				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
-				player.angle = player._angle;
-				// On top of that, the maximum velocity is capped.
+				// The maximum velocity is capped.
 				if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
 				{
 					var scaleVector:b2Vec2 = linVel;
@@ -275,6 +264,9 @@ package
 			
 			if(movement)
 			{
+				// The angle is set based on the current velocity.
+				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
+				player.angle = player._angle;
 				// Here the ship should be emitting exhaust... eventually!
 				exhaustEmitters[player.ID].at( player );
 				exhaustEmitters[player.ID].start( true, 0, 1 );
@@ -284,22 +276,16 @@ package
 				// The impulse is set to the inverted velocity, to slow it down
 				impulse.x = -(linVel.x);
 				impulse.y = -(linVel.y);
+				// The original angle is retained.
+				player.angle = currentAngle;
 			}
 			
 			// The resulting impulse is applied to the body of the player object
 			player._obj.ApplyImpulse(impulse, position);
 			
-			if (lockdown) 
+			if (!lockdown)
 			{	
-				// The original angle is retained.
-				player.angle = currentAngle;
-			}
-			else
-			{	
-				// If not, the angle is set based on the current velocity.
-				player._obj.SetAngle(Math.atan2(linVel.y, linVel.x));
-				player.angle = player._angle;
-				// On top of that, the maximum velocity is capped.
+				// If not, the maximum velocity is capped.
 				if (linVel.LengthSquared() > PLAYER_MAX_VELOCITY)
 				{
 					var scaleVector:b2Vec2 = linVel;
@@ -353,7 +339,10 @@ package
 			else
 			{
 				updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
-				updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
+				if(SettingsManager.Player_mode == SettingsManager.SINGLEPLAYER)
+					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
+				else
+					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState+1).RightStick, controller.getState(controllerState+1).RB]); 
 			}
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			this.dist = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
@@ -366,7 +355,7 @@ package
 				if (this.dist > (STRING_DISTANCE+5))
 					joint.SetFrequency(1.0);
 				else
-					joint.SetFrequency(0.1);
+					joint.SetFrequency(0.1); // Consider lowering even further
 			}
 			
 			rope.graphics.clear();

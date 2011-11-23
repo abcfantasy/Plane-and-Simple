@@ -10,15 +10,16 @@ package States
 	public class MenuState extends FlxState
 	{
 		[Embed(source = '../../assets/font1.png')] private var titleFont:Class;
-		[Embed(source = '../../assets/WC_RoughTrad.otf', fontFamily = "moyen", embedAsCFF = "false")] private var fontMoyen:String;
+		[Embed(source = '../../assets/unlearne.ttf', fontFamily = "moyen", embedAsCFF = "false")] private var fontMoyen:String;
 		
 		// text
 		private var startGame:FlxText;
 		private var controller:FlxText;
+		private var playermode:FlxText;
 		
 		// menu state
 		private var selected:int = 0;
-		private var maxOptions:int = 3;		// total options
+		private var maxOptions:int = 4;		// total options
 		
 		// sort of "constructor"
 		override public function create():void 
@@ -44,6 +45,12 @@ package States
 			controller.alpha = 0.5;
 			this.add( controller );
 			
+			// show single/multiplayer options
+			playermode = new FlxText( 20, 280, FlxG.width - 20, "Player Mode: " + SettingsManager.getPlayerModeString() );
+			playermode.setFormat( "moyen", 30, 0xFFFFFFFF, "center" );
+			playermode.alpha = 0.5;
+			this.add( playermode );
+			
 		}
 		
 		override public function update():void 
@@ -56,10 +63,13 @@ package States
 				switch ( selected )
 				{
 					case 0:
-						FlxG.state = new LevelMenuState();
+						FlxG.state = new ModeMenuState();
 						break;
 					case 1:
 						SettingsManager.toggleController();
+						break;
+					case 2:
+						SettingsManager.togglePlayerMode();
 						break;
 				}
 			}
@@ -80,15 +90,24 @@ package States
 				case 0:
 					startGame.alpha = 1;
 					controller.alpha = 0.5;
+					playermode.alpha = 0.5;
 					break;
 				case 1:
 					startGame.alpha = 0.5;
 					controller.alpha = 1;
+					playermode.alpha = 0.5;
+					break;
+				case 2:
+					startGame.alpha = 0.5;
+					controller.alpha = 0.5;
+					playermode.alpha = 1;
 					break;
 			}
 			
 			// update text
 			controller.text = "Controller: " + SettingsManager.getGameControllerString();
+			
+			playermode.text = "Player Mode: " + SettingsManager.getPlayerModeString();
 			
 		}
 	}
