@@ -351,10 +351,10 @@ package
 				// Fire object here, potentially :D
 			else 
 			{
-				if (this.dist > (STRING_DISTANCE+5))
+				if (this.dist > STRING_DISTANCE)
 					joint.SetFrequency(1.0);
 				else
-					joint.SetFrequency(0.1); // Consider lowering even further
+					joint.SetFrequency(0.01); // Consider lowering even further
 			}
 			
 			rope.graphics.clear();
