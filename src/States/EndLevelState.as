@@ -64,6 +64,7 @@ package States
 				points.setFormat( null, 18, 0xFFFFFFFF, "center" );
 				this.add( points );
 			}
+			FlxG.points = 0;
 		}
 		
 		override public function update():void 

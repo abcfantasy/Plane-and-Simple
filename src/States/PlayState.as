@@ -106,11 +106,11 @@ package States
 
 			// set up emitter for jewels
 			jewelEmitter = new FlxEmitter(this.x, this.y);
-			for (var j:int = 0; j < 100; j++)
+			for (var k:int = 0; k < 100; k++)
 			{
-				var particle:FlxSprite = new FlxSprite();
-				particle.createGraphic(3, 3, 0xffee2222);
-				jewelEmitter.add(particle);
+				var particle2:FlxSprite = new FlxSprite();
+				particle2.createGraphic(3, 3, 0xffee2222);
+				jewelEmitter.add(particle2);
 			}
 			jewelEmitter.gravity = 0;
 			jewelEmitter.minParticleSpeed.y = -250;
@@ -148,17 +148,17 @@ package States
 			if(FlxG.mode == 1)
 				coinsText.text = "Coins Remaining: " + coinsRemaining;
 			
-			for (var k:int = 0; k < coinList.length; k++)
+			for (var l:int = 0; l < coinList.length; l++)
 			{
-				this.add(new Coin(coinList[k].x, coinList[k].y, p, emitter, onCoinTaken));
+				this.add(new Coin(coinList[l].x, coinList[l].y, p, emitter, onCoinTaken));
 			}
 
 			// get jewels for level
 			var jewelList:Array = LevelManager.getjewels( FlxG.level );
 			jewelsRemaining = jewelList.length;
-			for ( var k:int = 0; k < jewelList.length; k++ )
+			for ( var m:int = 0; m < jewelList.length; m++ )
 			{
-				this.add( new Jewel( jewelList[k].x, jewelList[k].y, p, jewelEmitter, onJewelTaken ) );
+				this.add( new Jewel( jewelList[m].x, jewelList[m].y, p, jewelEmitter, onJewelTaken ) );
 			}
 		}
 		
@@ -231,9 +231,11 @@ package States
 				pointsText.text = "Points: " + FlxG.points;
 			
 			// WIN
-			if ((coinsRemaining+jewelsRemaining) == 0)
+			if (FlxG.mode == 1 && coinsRemaining == 0)
 				endLevel();
-			if (FlxG.mode == 2 && (timeLeft - seconds <= 0))
+			else if (FlxG.mode == 2 && (coinsRemaining + jewelsRemaining) == 0)
+				endLevel();
+			else if (FlxG.mode == 2 && (timeLeft - seconds <= 0))
 				endLevel();
 			else
 			{					

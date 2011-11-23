@@ -23,7 +23,7 @@ package Managers
 		[Embed(source = "../../assets/maps/tut3coins.txt", mimeType = "application/octet-stream")] private static var level3Coins:Class;
 		[Embed(source = "../../assets/maps/tut4coins.txt", mimeType = "application/octet-stream")] private static var level4Coins:Class;
 		[Embed(source = "../../assets/maps/tut5coins.txt", mimeType = "application/octet-stream")] private static var level5Coins:Class;
-		// Jewel:
+		// Jewels:
 		[Embed(source = "../../assets/maps/tut1jewels.txt", mimeType = "application/octet-stream")] private static var level1Jewels:Class;
 		[Embed(source = "../../assets/maps/tut2jewels.txt", mimeType = "application/octet-stream")] private static var level2Jewels:Class;
 		[Embed(source = "../../assets/maps/tut3jewels.txt", mimeType = "application/octet-stream")] private static var level3Jewels:Class;

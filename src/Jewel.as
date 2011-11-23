@@ -4,7 +4,7 @@ package
 	
 	public class Jewel extends PaSObject
 	{
-		[Embed(source = "../assets/graphics/jewel.png")] public var jewelImage:Class;
+		[Embed(source = "../assets/graphics/jewel2_animated.png")] public var jewelImage:Class;
 		
 		private var onTaken_:Function;
 		
@@ -13,6 +13,8 @@ package
 			super(x, y, player, emitter);
 			onTaken_ = onTaken;
 			this.loadGraphic(jewelImage, false, false, 16, 16);
+			this.addAnimation("shine", [0, 1, 2, 3, 4, 5, 6, 7], 3);
+			play("shine");
 		}
 		
 		override public function update():void
@@ -23,7 +25,7 @@ package
 				if ( this.onTaken_ != null )
 					onTaken_(this);
 				else
-					this.kill();		// kill coin if no coinTaken function callback is set
+					this.kill();		// kill jewel if no coinTaken function callback is set
 			}
 			
 			super.update();
