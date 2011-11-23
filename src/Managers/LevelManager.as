@@ -1,6 +1,7 @@
 package Managers
 {
 	import org.flixel.FlxPoint;
+	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxTilemap;
 	import org.flixel.FlxG;
@@ -10,7 +11,7 @@ package Managers
 		// level 1 background - but, we only use one background at the moment?
 		[Embed(source = "../../assets/graphics/1-5bg.jpg")] public static var level5BgImage:Class;		
 		// level 1 tiles - but, we only use one tileset at the moment?
-		[Embed(source="../../assets/graphics/tiles_asteroid_line3.png")] private static var stage1Tiles:Class;
+		[Embed(source="../../assets/graphics/tiles_asteroid.png")] private static var stage1Tiles:Class;
 		// Maps:
 		[Embed(source = "../../assets/maps/tut1.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
 		[Embed(source = "../../assets/maps/tut2.txt", mimeType = "application/octet-stream")] private static var level2MapString:Class;
@@ -23,6 +24,12 @@ package Managers
 		[Embed(source = "../../assets/maps/tut3coins.txt", mimeType = "application/octet-stream")] private static var level3Coins:Class;
 		[Embed(source = "../../assets/maps/tut4coins.txt", mimeType = "application/octet-stream")] private static var level4Coins:Class;
 		[Embed(source = "../../assets/maps/tut5coins.txt", mimeType = "application/octet-stream")] private static var level5Coins:Class;
+		// Jewels:
+		[Embed(source = "../../assets/maps/tut1jewels.txt", mimeType = "application/octet-stream")] private static var level1Jewels:Class;
+		[Embed(source = "../../assets/maps/tut2jewels.txt", mimeType = "application/octet-stream")] private static var level2Jewels:Class;
+		[Embed(source = "../../assets/maps/tut3jewels.txt", mimeType = "application/octet-stream")] private static var level3Jewels:Class;
+		[Embed(source = "../../assets/maps/tut4jewels.txt", mimeType = "application/octet-stream")] private static var level4Jewels:Class;
+		[Embed(source = "../../assets/maps/tut5jewels.txt", mimeType = "application/octet-stream")] private static var level5Jewels:Class;
 		
 		private static const GAME_WIDTH:int = 800;
 		private static const GAME_HEIGHT:int = 600;
@@ -45,9 +52,9 @@ package Managers
 		}
 		
 		// gets the tile map for given level
-		public static function getTileMap( level:int ) : FlxTilemap
+		public static function getTileMap( level:int ) : FlxTilemapExt
 		{
-			var groundMap:FlxTilemap = new FlxTilemap();
+			var groundMap:FlxTilemapExt = new FlxTilemapExt();
 			var chosenMap:String;
 			switch ( level ) {
 				case 1:
@@ -66,7 +73,7 @@ package Managers
 					chosenMap = new level5MapString;
 					break;
 			}
-			groundMap = groundMap.loadMap(chosenMap, stage1Tiles, TILE_SIZE, TILE_SIZE);
+			groundMap = groundMap.loadMapExt(chosenMap, stage1Tiles, TILE_SIZE, TILE_SIZE);
 			return groundMap;
 		}
 		
@@ -104,7 +111,38 @@ package Managers
 			
 			return coinList;
 		}
-		
+		public static function getjewels( level:int ) : Array 
+		{
+			var jewelData:String;
+			var tempCoordList:Array = new Array();
+			var tempJewel:Array = new Array();
+			var jewelList:Array = new Array();
+			switch ( level ) {
+				case 1:
+					jewelData = new level1Jewels;
+					break;
+				case 2:
+					jewelData = new level2Jewels;
+					break;
+				case 3:
+					jewelData = new level3Jewels;
+					break;
+				case 4:
+					jewelData = new level4Jewels;
+					break;
+				case 5:
+					jewelData = new level5Jewels;
+					break;
+			}
+			tempCoordList = jewelData.split("\n");
+			for (var i:int = 0; i < tempCoordList.length; i++)
+			{
+				tempJewel = tempCoordList[i].split(",");
+				jewelList.push( new FlxPoint( tempJewel[0], tempJewel[1] ) );
+			}
+			return jewelList;
+		}
+
 		// Returns the position of the Player
 		public static function getPlayerPosition (level:int ) : FlxPoint
 		{

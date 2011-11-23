@@ -4,15 +4,14 @@ package
 	
 	public class Coin extends PaSObject
 	{
-		[Embed(source="../assets/graphics/coin.png")] public var coinImage:Class;
-
-		private var emitter_:*;		
+		[Embed(source = "../assets/graphics/coin.png")] public var coinImage:Class;
+		
 		private var onTaken_:Function;
 		
 		public function Coin(x:int, y:int, player:*, emitter:*, onTaken:Function )
 		{
-			super(x, y, player);
-			emitter_ = emitter;
+			super(x, y, player, emitter);
+
 			onTaken_ = onTaken;
 			
 			this.loadGraphic( coinImage, true, false, 16, 16 );

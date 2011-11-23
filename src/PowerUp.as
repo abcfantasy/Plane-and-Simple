@@ -9,7 +9,7 @@ package
 		
 		public function PowerUp(x:int, y:int, player:*, powerUpType:String)
 		{
-			super(x, y, player);
+			super(x, y, player, null);
 			
 			type = powerUpType;		
 		}

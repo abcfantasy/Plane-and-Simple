@@ -16,22 +16,22 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'15-11-2011'</value>
+      <value>'21-11-2011'</value>
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
-      <path-element>F:\Dokumenter\DropBox\My Dropbox\ITU\Game Design\abcfantasy-Plane-and-Simple-15-11-2011\src</path-element>
-      <path-element>F:\Dokumenter\DropBox\My Dropbox\ITU\Game Design\abcfantasy-Plane-and-Simple-15-11-2011\flixel 2.43</path-element>
+      <path-element>C:\Users\Anders\Desktop\newestGit\src</path-element>
+      <path-element>C:\Users\Anders\Desktop\newestGit\flixel 2.43</path-element>
       <path-element>F:\Programmer\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
   </compiler>
   <file-specs>
-    <path-element>F:\Dokumenter\DropBox\My Dropbox\ITU\Game Design\abcfantasy-Plane-and-Simple-15-11-2011\src\Main.as</path-element>
+    <path-element>C:\Users\Anders\Desktop\newestGit\src\Main.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>
   <default-size>
     <width>800</width>
-    <height>621</height>
+    <height>600</height>
   </default-size>
 </flex-config>

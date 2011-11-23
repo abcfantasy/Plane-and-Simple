@@ -1,6 +1,7 @@
 package Managers
 {
 	import org.flixel.FlxSave;
+	import GamePads.*;
 	public class SettingsManager 
 	{
 		// enumeration of controller types
@@ -9,6 +10,13 @@ package Managers
 		
 		// controller used (default KEYBOARD)
 		public static var Game_Controller:int = KEYBOARD;
+		
+		// enumeration of player modes
+		public static const SINGLEPLAYER:int = 0;
+		public static const MULTIPLAYER:int = 1;
+		
+		// playuer mode used (default SINGLEPLAYER)
+		public static var Player_mode:int = SINGLEPLAYER;
 		
 		// max level player can play
 		public static var Max_Level:int = 5; // Not working as intended?
@@ -41,16 +49,17 @@ package Managers
 		{
 			_save.data.levels = SettingsManager.Max_Level;
 			_save.data.controller = SettingsManager.Game_Controller;
+			_save.forceSave();
 		}
 		
 		// save time of a level if better than previous
 		public static function saveLevelTime( level:int, time:Number ):void
 		{
-			if ( _save.read( level + "time" ) != null )
+			if ( _save.read( level + "time" ) == null || _save.read( level + "time" ) > time )
 			{
-				if ( _save.read( level + "time" ) > time )
-					_save.write( level + "time", time );
+				_save.write( level + "time", time );
 			}
+			saveGame();
 		}
 		
 		// load time of a level
@@ -66,18 +75,37 @@ package Managers
 		public static function getGameControllerString():String
 		{
 			if ( Game_Controller == KEYBOARD )
-				return "Keyboard";
+				return "KEYBOARD";
 			else
-				return "Xbox";
+				return "XBOX";
+		}
+		
+		public static function getPlayerModeString():String
+		{
+			if (Player_mode == SINGLEPLAYER)
+				return "Singleplayer";
+			else
+				return "Multiplayer";
 		}
 		
 		// changes the controller option
 		public static function toggleController():void
 		{
-			if ( Game_Controller == KEYBOARD )
+			if ( Game_Controller == KEYBOARD ){
 				Game_Controller = XBOX;
+			}
 			else
 				Game_Controller = KEYBOARD;
+		}
+		
+		// changes the player mode option
+		public static function togglePlayerMode():void
+		{
+			if ( Player_mode == SINGLEPLAYER ){
+				Player_mode = MULTIPLAYER;
+			}
+			else
+				Player_mode = SINGLEPLAYER;
 		}
 	}
 

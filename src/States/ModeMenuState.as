@@ -7,12 +7,12 @@ package States
 	import Managers.SettingsManager;
 	import Managers.InputManager;
 	
-	public class LevelMenuState extends FlxState
+	public class ModeMenuState extends FlxState
 	{
 		[Embed(source = '../../assets/font1.png')] private var titleFont:Class;
 		
 		// text
-		private var levelTexts:Array = new Array();
+		private var modeTexts:Array = new Array();
 		
 		// menu state
 		private var selected:int = 1;
@@ -30,12 +30,14 @@ package States
 			title.y = 70;
 			this.add( title );
 			
-			// create levels menu
-			for ( var i:int = 1; i <= SettingsManager.Max_Level; i++ )
+			// create modes menu
+
+			modeTexts.push( new FlxText( 20, 200 + ( 20 ), FlxG.width - 20, "Normal-mode" ) );
+			modeTexts.push( new FlxText( 20, 200 + ( 40 ), FlxG.width - 20, "Pointbased-mode" ) );
+			for (var i:int = 0; i < 2; i++)
 			{
-				levelTexts.push( new FlxText( 20, 200 + ( i * 20 ), FlxG.width - 20, "Level " + i ) );
-				levelTexts[i - 1].setFormat( null, 14, 0xFFFFFFFF, "center" );
-				this.add( levelTexts[i - 1] );
+				modeTexts[i].setFormat( null, 14, 0xFFFFFFFF, "center" );
+				this.add( modeTexts[i] );
 			}
 		}
 		
@@ -44,34 +46,31 @@ package States
 			super.update();
 			
 			// set all dim
-			for ( var i:int = 1; i <= SettingsManager.Max_Level; i++ )
-			{
-				levelTexts[i - 1].alpha = 0.5;
-			}
+			modeTexts[0].alpha = 0.5;
+			modeTexts[1].alpha = 0.5;
 			
 			// highlight selected
-			levelTexts[selected - 1].alpha = 1;
+			modeTexts[selected - 1].alpha = 1;
 			
 			// check input
 			if ( InputManager.confirm() )
 			{
-				FlxG.level = selected;
-				FlxG.score = 0;
-				FlxG.state = new PlayState();
+				FlxG.mode = selected;
+				FlxG.state = new LevelMenuState();
 			}
 			else if ( InputManager.down() )
 			{
-				if ( selected < SettingsManager.Max_Level )
+				if ( selected == 1 )
 					selected++;
 			}
 			else if ( InputManager.up() )
 			{
-				if ( selected > 1 )
+				if ( selected == 2 )
 					selected--;
 			}
 			else if ( InputManager.exit() )
 			{
-				FlxG.state = new ModeMenuState();
+				FlxG.state = new MenuState();
 			}
 		}
 	}
