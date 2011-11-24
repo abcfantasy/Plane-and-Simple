@@ -24,8 +24,8 @@ package
 	public class Player extends FlxObject
 	{
 		// images of the planes
-		[Embed(source = "../assets/graphics/plane2_green_small.png")]public var leftPlaneImage:Class;
-		[Embed(source = "../assets/graphics/plane2_pinkish_small.png")]public var rightPlaneImage:Class;
+		[Embed(source = "../assets/graphics/plane2_green_small_animated.png")]public var leftPlaneImage:Class;
+		[Embed(source = "../assets/graphics/plane2_pinkish_small_animated.png")]public var rightPlaneImage:Class;
 		
 		// image of rope
 		[Embed(source = "../assets/graphics/string.png")]public var ropeImage:Class;
@@ -76,6 +76,10 @@ package
 			
 			playerLeft.loadGraphic(leftPlaneImage, true, false, 30, 30);
 			playerRight.loadGraphic(rightPlaneImage, true, false, 30, 30);
+			playerLeft.addAnimation( "idle", [0], 0, false );
+			playerRight.addAnimation( "idle", [0], 0, false );
+			playerLeft.addAnimation( "lockdown", [1, 2, 3, 4], 10, true );
+			playerRight.addAnimation( "lockdown", [1, 2, 3, 4], 10, true );
 			
 			CreateString(_world);
 			
@@ -154,6 +158,7 @@ package
 			// Either the ship goes into Lockdown, or movement is being handled.
 			if ( keys[1] )
 			{
+				player.play( "lockdown" );
 				lockdown = true;
 				player._massData.mass = massLockDown;
 				player._obj.SetMassData(player._massData);
@@ -161,6 +166,7 @@ package
 			}
 			else
 			{	
+				player.play( "idle" );
 				// Since there's no lockdown, the mass is set to be normal again
 				player._massData.mass = massNormal;
 				player._obj.SetMassData(player._massData);
@@ -228,6 +234,7 @@ package
 			// Either the ship goes into Lockdown, or movement is being handled.
 			if ( keys[4] )
 			{
+				player.play( "lockdown" );
 				lockdown = true;
 				player._massData.mass = massLockDown;
 				player._obj.SetMassData(player._massData);
@@ -235,6 +242,7 @@ package
 			}
 			else
 			{	
+				player.play( "idle" );
 				// Since there's no lockdown, the mass is set to be normal again
 				player._massData.mass = massNormal;
 				player._obj.SetMassData(player._massData);
