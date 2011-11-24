@@ -53,7 +53,7 @@ package States
 					var best_minutes:Number = Math.round( bestTime / 60000 );
 					var best_seconds:Number = Math.round( bestTime % 60000 / 1000);
 					var best_milliseconds:Number = Math.round( bestTime % 60000 % 1000);
-					bestTimeText.text = "Best Time: " + (best_minutes < 10 ? "0":"") + best_minutes + ":" + (best_seconds < 10 ? "0":"") + best_seconds + ":" + ( best_milliseconds < 10 ? "0" : "") + best_milliseconds;
+					bestTimeText.text = "Best Time: " + (best_minutes < 10 ? "0":"") + best_minutes + ":" + (best_seconds < 10 ? "0":"") + best_seconds + ":" + ( best_milliseconds < 100 ? ( best_milliseconds < 10 ? "00" : "0") : "") + best_milliseconds;
 					bestTimeText.setFormat( null, 18, 0xFFFFFFFF, "center" );
 					this.add( bestTimeText );
 				}
