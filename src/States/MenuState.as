@@ -9,13 +9,12 @@ package States
 	
 	public class MenuState extends FlxState
 	{
-		[Embed(source = '../../assets/font1.png')] private var titleFont:Class;
-		[Embed(source = '../../assets/unlearne.ttf', fontFamily = "moyen", embedAsCFF = "false")] private var fontMoyen:String;
 		
 		// text
 		private var startGame:FlxText;
 		private var controller:FlxText;
 		private var playermode:FlxText;
+		private var gameMode:FlxText;
 		
 		// menu state
 		private var selected:int = 0;
@@ -27,29 +26,19 @@ package States
 			super.create();
 			
 			// create title
-			var title:FlxBitmapFont = new FlxBitmapFont( titleFont, 31, 25, FlxBitmapFont.TEXT_SET2, 10, 1, 0 );
-			title.scale.y = 1.3;
-			title.text = "Plane And Simple";
-			title.x = ( FlxG.width / 2 ) - ( title.width / 2 );
-			title.y = 70;
-			this.add( title );
+			this.add( Helpers.createTitleText() );
 			
 			// show start game option
-			startGame = new FlxText( 20, 220, FlxG.width - 20, "Start Game" );
-			startGame.setFormat( "moyen", 30, 0xFFFFFFFF, "center" );
-			this.add( startGame );
+			this.add( startGame = Helpers.createText( 20, 220, FlxG.width - 20, "Start Game", 30, 0xFFFFFFFF, "center" ) );
 			
 			// show controller options
-			controller = new FlxText( 20, 250, FlxG.width - 20, "Controller: " + SettingsManager.getGameControllerString() );
-			controller.setFormat( "moyen", 30, 0xFFFFFFFF, "center" );
-			controller.alpha = 0.5;
-			this.add( controller );
+			this.add( controller = Helpers.createText( 20, 250, FlxG.width - 20, "Controller: " + SettingsManager.getGameControllerString(), 30, 0xFFFFFFFF, "center", 0.5 ) );
 			
 			// show single/multiplayer options
-			playermode = new FlxText( 20, 280, FlxG.width - 20, "Player Mode: " + SettingsManager.getPlayerModeString() );
-			playermode.setFormat( "moyen", 30, 0xFFFFFFFF, "center" );
-			playermode.alpha = 0.5;
-			this.add( playermode );
+			this.add( playermode = Helpers.createText( 20, 280, FlxG.width - 20, "Player Mode: " + SettingsManager.getPlayerModeString(), 30, 0xFFFFFFFF, "center", 0.5 ) );
+			
+			// show game mode
+			this.add( gameMode = Helpers.createText( 20, 310, FlxG.width - 20, "Game Mode: " + SettingsManager.getGameModeString(), 30, 0xFFFFFFFF, "center", 0.5 ) );
 			
 		}
 		
@@ -63,13 +52,16 @@ package States
 				switch ( selected )
 				{
 					case 0:
-						FlxG.state = new ModeMenuState();
+						FlxG.state = new LevelMenuState();
 						break;
 					case 1:
 						SettingsManager.toggleController();
 						break;
 					case 2:
 						SettingsManager.togglePlayerMode();
+						break;
+					case 3:
+						SettingsManager.toggleGameMode();
 						break;
 				}
 			}
@@ -91,23 +83,32 @@ package States
 					startGame.alpha = 1;
 					controller.alpha = 0.5;
 					playermode.alpha = 0.5;
+					gameMode.alpha = 0.5;
 					break;
 				case 1:
 					startGame.alpha = 0.5;
 					controller.alpha = 1;
 					playermode.alpha = 0.5;
+					gameMode.alpha = 0.5;
 					break;
 				case 2:
 					startGame.alpha = 0.5;
 					controller.alpha = 0.5;
 					playermode.alpha = 1;
+					gameMode.alpha = 0.5;
+					break;
+				case 3:
+					startGame.alpha = 0.5;
+					controller.alpha = 0.5;
+					playermode.alpha = 0.5;
+					gameMode.alpha = 1;
 					break;
 			}
 			
 			// update text
 			controller.text = "Controller: " + SettingsManager.getGameControllerString();
-			
 			playermode.text = "Player Mode: " + SettingsManager.getPlayerModeString();
+			gameMode.text = "Game Mode: " + SettingsManager.getGameModeString();
 			
 		}
 	}

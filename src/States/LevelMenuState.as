@@ -8,9 +8,7 @@ package States
 	import Managers.InputManager;
 	
 	public class LevelMenuState extends FlxState
-	{
-		[Embed(source = '../../assets/font1.png')] private var titleFont:Class;
-		
+	{		
 		// text
 		private var levelTexts:Array = new Array();
 		
@@ -23,18 +21,16 @@ package States
 			super.create();
 			
 			// create title
-			var title:FlxBitmapFont = new FlxBitmapFont( titleFont, 31, 25, FlxBitmapFont.TEXT_SET2, 10, 1, 0 );
-			title.scale.y = 1.3;
-			title.text = "Plane And Simple";
-			title.x = ( FlxG.width / 2 ) - ( title.width / 2 );
-			title.y = 70;
-			this.add( title );
+			this.add( Helpers.createTitleText() );
 			
 			// create levels menu
 			for ( var i:int = 1; i <= SettingsManager.Max_Level; i++ )
 			{
-				levelTexts.push( new FlxText( 20, 200 + ( i * 20 ), FlxG.width - 20, "Level " + i ) );
-				levelTexts[i - 1].setFormat( null, 14, 0xFFFFFFFF, "center" );
+				levelTexts.push( Helpers.createText( 20, 200 + ( i * 20 ), FlxG.width - 20, "Level " + i, 25, 0xFFFFFFFF, "center", 0.5 ) );
+				var bestTime:Number = SettingsManager.loadLevelTime( i );
+				if ( bestTime != 0 ) {
+					levelTexts[i - 1].text += " - Best time: " + Helpers.timeToString( bestTime );
+				}
 				this.add( levelTexts[i - 1] );
 			}
 		}
@@ -71,7 +67,7 @@ package States
 			}
 			else if ( InputManager.exit() )
 			{
-				FlxG.state = new ModeMenuState();
+				FlxG.state = new MenuState();
 			}
 		}
 	}

@@ -68,31 +68,22 @@ package States
 			FlxU.setWorldBounds(0, 0, groundMap.width, groundMap.height);
 			
 			// Score texts
-			if (FlxG.mode == 1)
+			if (SettingsManager.Game_mode == SettingsManager.TIME_MODE)
 			{
 				// Coin Game-mode
-				coinsText = new FlxText(5, 5, 150, "Coins Remaining: 0");
-				coinsText.setFormat(null, 12, 0xFFFFFFFF, "left");
-				coinsText.scrollFactor = new FlxPoint(0, 0);
-				this.add(coinsText);
+				this.add( coinsText = Helpers.createText( 5, 5, 150, "Coins Remaining: 0", 12, 0xFFFFFFFF, "left" ) );
 			}
 			else
 			{
 				// Point Game-mode
-				pointsText = new FlxText(5, 5, 150, "Points: 0");
-				pointsText.setFormat(null, 12, 0xFFFFFFFF, "left");
-				pointsText.scrollFactor = new FlxPoint(0, 0);
-				this.add(pointsText);
+				this.add( pointsText = Helpers.createText( 5, 5, 150, "Points: 0", 12, 0xFFFFFFFF, "left" ) );
 			}
 			
 			// create time text
-			if(FlxG.mode == 1)
-				timeText = new FlxText(FlxG.width - 80, 5, 100, "0:00:000");
+			if (SettingsManager.Game_mode == SettingsManager.TIME_MODE)
+				this.add( timeText = Helpers.createText( FlxG.width - 80, 5, 100, "0:00:000", 12, 0xFFFFFFFF, "left" ) );
 			else
-				timeText = new FlxText(FlxG.width - 110, 5, 150, "Time left 0:20");
-			timeText.setFormat(null, 12, 0xFFFFFFFF, "left");
-			timeText.scrollFactor = new FlxPoint(0, 0);
-			this.add(timeText);
+				this.add( timeText = Helpers.createText( FlxG.width - 110, 5, 150, "Time left 0:20", 12, 0xFFFFFFFF, "left" ) );
 			
 			// Sets up the Player
 			var playerPos:FlxPoint = LevelManager.getPlayerPosition(FlxG.level);
@@ -100,66 +91,23 @@ package States
 			this.add(p); // add the player object
 			
 			// set up emitter for exploding planes
-			emitterExplosion = new FlxEmitter(this.x, this.y);
-			var explosionColors:Array = [0xFFFF0000, 0xFFFFFF00, 0xFFFF8C00]
-			for (var i:int = 0; i < 30; i++)
-			{
-				var explosionParticle:FlxSprite = new FlxSprite();
-				explosionParticle.createGraphic(3, 3, explosionColors[i % explosionColors.length]);
-				emitterExplosion.add(explosionParticle);
-			}
-			emitterExplosion.gravity = 0;
-			emitterExplosion.minParticleSpeed.y = -75;
-			emitterExplosion.maxParticleSpeed.y = 75;
-			emitterExplosion.maxParticleSpeed.x = 75;
-			emitterExplosion.minParticleSpeed.x = -75;
-			emitterExplosion.particleDrag.x = 45;
-			emitterExplosion.particleDrag.y = 45;
-			this.add(emitterExplosion);
+			this.add( emitterExplosion = Helpers.createEmitter( 75, 45, 30, null, 3, 3, [0xFFFF0000, 0xFFFFFF00, 0xFFFF8C00] ) );
 			
 			// set up emitter for coins
-			emitterCoin = new FlxEmitter(this.x, this.y);
-			for (var j:int = 0; j < 50; j++)
-			{
-				var particle:FlxSprite = new FlxSprite();
-				particle.createGraphic(4, 4, 0xffffff00);
-				emitterCoin.add(particle);
-			}
-			emitterCoin.gravity = 0;
-			emitterCoin.minParticleSpeed.y = -150;
-			emitterCoin.maxParticleSpeed.y = 150;
-			emitterCoin.maxParticleSpeed.x = 150;
-			emitterCoin.minParticleSpeed.x = -150;
-			emitterCoin.particleDrag.x = 50;
-			emitterCoin.particleDrag.y = 150;
-			this.add(emitterCoin);
+			this.add( emitterCoin = Helpers.createEmitter( 150, 150, 50, null, 4, 4, [0xFFFFFF00] ) );
 			
 			// get coins for level
 			coinList = LevelManager.getCoins(FlxG.level);
 			coinsRemaining = coinList.length;
-			if(FlxG.mode == 1)
+			if(SettingsManager.Game_mode == SettingsManager.TIME_MODE)
 				coinsText.text = "Coins Remaining: " + coinsRemaining;
 			
 			for (var l:int = 0; l < coinList.length; l++)
 				this.add(new Coin(coinList[l].x, coinList[l].y, p, emitterCoin, onCoinTaken));
 			
-			if (FlxG.mode == 2) {
+			if (SettingsManager.Game_mode == SettingsManager.POINT_MODE) {
 				// set up emitter for jewels
-				emitterJewel = new FlxEmitter(this.x, this.y);
-				for (var k:int = 0; k < 100; k++)
-				{
-					var particle2:FlxSprite = new FlxSprite();
-					particle2.createGraphic(3, 3, 0xffee2222);
-					emitterJewel.add(particle2);
-				}
-				emitterJewel.gravity = 0;
-				emitterJewel.minParticleSpeed.y = -150;
-				emitterJewel.maxParticleSpeed.y = 150;
-				emitterJewel.maxParticleSpeed.x = 150;
-				emitterJewel.minParticleSpeed.x = -150;
-				emitterJewel.particleDrag.x = 30;
-				emitterJewel.particleDrag.y = 30;
-				this.add(emitterJewel);
+				this.add( emitterJewel = Helpers.createEmitter( 150, 30, 100, null, 3, 3, [0xFFEE2222] ) );
 				
 				// get jewels for level
 				var jewelList:Array = LevelManager.getjewels( FlxG.level );
@@ -167,6 +115,7 @@ package States
 				for ( var m:int = 0; m < jewelList.length; m++ )
 					this.add( new Jewel( jewelList[m].x, jewelList[m].y, p, emitterJewel, onJewelTaken ) );
 			}
+			
 			// set up string stress bar
 			stringElasticityBar = new SimpleBar( ( FlxG.width / 2 ) - 75, 5, 150, 20, 0, 120 );
 			stringElasticityBar.createGradientBar( [0xFF000000, 0xFF000000], [0x99FF0000, 0x99FFFF00, 0x9900FF00, 0x99FFFF00, 0x99FF0000], 1, 180, true, 0xFFFFFFFF );
@@ -228,7 +177,7 @@ package States
 			super.update();
 
 			// update and check for coins remaining
-			if(FlxG.mode == 1)
+			if(SettingsManager.Game_mode == SettingsManager.TIME_MODE)
 				coinsText.text = "Coins Remaining: " + coinsRemaining;
 			else
 				pointsText.text = "Points: " + FlxG.points;
@@ -236,23 +185,20 @@ package States
 			stringElasticityBar.setValue( p.getRopeLengthPercentage() );
 			
 			// WIN
-			if (FlxG.mode == 1 && coinsRemaining == 0)
+			if ( ( SettingsManager.Game_mode == SettingsManager.TIME_MODE && coinsRemaining == 0 ) ||
+				 ( SettingsManager.Game_mode == SettingsManager.POINT_MODE && (coinsRemaining + jewelsRemaining) == 0) ||
+				 ( SettingsManager.Game_mode == SettingsManager.POINT_MODE && (timeLeft - Math.round(elapsedTime / 1000) <= 0) ) )
+			{
 				endLevel();
-			else if (FlxG.mode == 2 && (coinsRemaining + jewelsRemaining) == 0)
-				endLevel();
-			else if (FlxG.mode == 2 && (timeLeft - seconds <= 0))
-				endLevel();
+			}
 			else
 			{	
 				// update elapsed time and text
 				elapsedTime += FlxG.elapsed * 1000;
-				var minutes:Number = Math.round(elapsedTime / 60000 );
-				var seconds:Number = Math.round(elapsedTime % 60000 / 1000);
-				var milliseconds:Number = Math.round(elapsedTime % 60000 % 1000);
-				if(FlxG.mode == 1)
-					timeText.text = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds + ":" + ( milliseconds < 100 ? ( milliseconds < 10 ? "00" : "0") : "") + milliseconds;
+				if(SettingsManager.Game_mode == SettingsManager.TIME_MODE)
+					timeText.text = Helpers.timeToString( elapsedTime );
 				else 
-					timeText.text = "Time left: " + (timeLeft-seconds);
+					timeText.text = "Time left: " + ( timeLeft - Math.round(elapsedTime / 1000) );
 				
 				// LOSE
 				if (planeDestroyed)

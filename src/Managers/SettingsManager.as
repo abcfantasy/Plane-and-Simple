@@ -15,8 +15,15 @@ package Managers
 		public static const SINGLEPLAYER:int = 0;
 		public static const MULTIPLAYER:int = 1;
 		
-		// playuer mode used (default SINGLEPLAYER)
+		// player mode used (default SINGLEPLAYER)
 		public static var Player_mode:int = SINGLEPLAYER;
+		
+		// enumeration of game modes
+		public static const TIME_MODE:int = 1;
+		public static const POINT_MODE:int = 2;
+		
+		// game mode used (default TIME_MODE)
+		public static var Game_mode:int = TIME_MODE;
 		
 		// max level player can play
 		public static var Max_Level:int = 5; // Not working as intended?
@@ -80,6 +87,7 @@ package Managers
 				return "XBOX";
 		}
 		
+		// gets the player mode as string
 		public static function getPlayerModeString():String
 		{
 			if (Player_mode == SINGLEPLAYER)
@@ -88,12 +96,20 @@ package Managers
 				return "Multiplayer";
 		}
 		
+		// gets the game mode as string
+		public static function getGameModeString():String
+		{
+			if ( Game_mode == TIME_MODE )
+				return "Time-based";
+			else
+				return "Point-based";
+		}
+		
 		// changes the controller option
 		public static function toggleController():void
 		{
-			if ( Game_Controller == KEYBOARD ){
+			if ( Game_Controller == KEYBOARD )
 				Game_Controller = XBOX;
-			}
 			else
 				Game_Controller = KEYBOARD;
 		}
@@ -101,11 +117,19 @@ package Managers
 		// changes the player mode option
 		public static function togglePlayerMode():void
 		{
-			if ( Player_mode == SINGLEPLAYER ){
+			if ( Player_mode == SINGLEPLAYER )
 				Player_mode = MULTIPLAYER;
-			}
 			else
 				Player_mode = SINGLEPLAYER;
+		}
+		
+		// changes the game mode option
+		public static function toggleGameMode():void
+		{
+			if ( Game_mode == TIME_MODE )
+				Game_mode = POINT_MODE;
+			else
+				Game_mode = TIME_MODE;
 		}
 	}
 

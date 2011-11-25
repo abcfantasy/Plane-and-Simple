@@ -95,21 +95,7 @@ package
 			exhaustEmitters = new Array();
 			for (  var i:int = 0; i < 2; i++ )
 			{
-				exhaustEmitters[i] = new FlxEmitter(this.x, this.y);
-				for (var j:int = 0; j < 100; j++)
-				{
-					exhaustEmitters[i].add(new Exhaust());
-				}
-				exhaustEmitters[i].gravity = 0;
-				exhaustEmitters[i].maxRotation = 0;
-				exhaustEmitters[i].minRotation = 0;
-				exhaustEmitters[i].minParticleSpeed.y = -30;
-				exhaustEmitters[i].maxParticleSpeed.y = 30;
-				exhaustEmitters[i].maxParticleSpeed.x = 30;
-				exhaustEmitters[i].minParticleSpeed.x = -30;
-				exhaustEmitters[i].particleDrag.x = 0;
-				exhaustEmitters[i].particleDrag.y = 0;
-				parent.add(exhaustEmitters[i]);
+				parent.add( exhaustEmitters[i] = Helpers.createEmitter( 30, 0, 100, Exhaust ) );
 			}
 		}
 		

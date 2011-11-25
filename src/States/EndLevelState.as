@@ -21,50 +21,31 @@ package States
 			super.create();
 			
 			// create level complete
-			var levelComplete:FlxText = new FlxText( 20, 50, FlxG.width - 20, "Level " + FlxG.level + " Complete!" );
-			levelComplete.setFormat( null, 25, 0xFFFFFFFF, "center" );
-			this.add( levelComplete );
+			this.add( Helpers.createText( 20, 50, FlxG.width - 20, "Level " + FlxG.level + " Complete!", 25, 0xFFFFFFFF, "center" ) );
 			
 			// create instructions (depending on whether replaying a level or playing a new level)
 			var instructions:FlxText = new FlxText( 20, 150, FlxG.width - 20, "" );
 			if ( FlxG.level == SettingsManager.Max_Level - 1 )
-				instructions.text = "Press ENTER/SPACE to play next level or ESC to go back to level selection.";
+				this.add( Helpers.createText( 20, 150, FlxG.width - 20, "Press ENTER/SPACE to play next level or ESC to go back to level selection.", 14, 0xFFFFFFFF, "center" ) );
 			else
-				instructions.text = "Press ENTER/SPACE to replay the current level or ESC to go back to level selection.";
-			instructions.setFormat( null, 14, 0xFFFFFFFF, "center" );
-			this.add( instructions );
+				this.add( Helpers.createText( 20, 150, FlxG.width - 20, "Press ENTER/SPACE to replay the current level or ESC to go back to level selection.", 14, 0xFFFFFFFF, "center" ) );
 			
-			if (FlxG.mode == 1)
+			if (SettingsManager.Game_mode == SettingsManager.TIME_MODE)
 			{
-				// create current time			
-				var time:FlxText = new FlxText( 20, 300, FlxG.width - 20, "" );
-				var minutes:Number = Math.round(elapsed_ / 60000 );
-				var seconds:Number = Math.round(elapsed_ % 60000 / 1000);
-				var milliseconds:Number = Math.round(elapsed_ % 60000 % 1000);
-				time.text = "Your Time: " + (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds + ":" + ( milliseconds < 100 ? ( milliseconds < 10 ? "00" : "0") : "") + milliseconds;
-				time.setFormat( null, 18, 0xFFFFFFFF, "center" );
-				this.add( time );
-			
+				// create current time		
+				this.add( Helpers.createText( 20, 300, FlxG.width - 20, "Your Time: " + Helpers.timeToString( elapsed_ ), 18, 0xFFFFFF, "center" ) );
+				
 				// if best time exists, create it too
 				var bestTime:Number = SettingsManager.loadLevelTime( FlxG.level );
 				if ( bestTime > 0 )
 				{
-					var bestTimeText:FlxText = new FlxText( 20, 340, FlxG.width - 20, "" );
-					var best_minutes:Number = Math.round( bestTime / 60000 );
-					var best_seconds:Number = Math.round( bestTime % 60000 / 1000);
-					var best_milliseconds:Number = Math.round( bestTime % 60000 % 1000);
-					bestTimeText.text = "Best Time: " + (best_minutes < 10 ? "0":"") + best_minutes + ":" + (best_seconds < 10 ? "0":"") + best_seconds + ":" + ( best_milliseconds < 100 ? ( best_milliseconds < 10 ? "00" : "0") : "") + best_milliseconds;
-					bestTimeText.setFormat( null, 18, 0xFFFFFFFF, "center" );
-					this.add( bestTimeText );
+					this.add( Helpers.createText( 20, 340, FlxG.width - 20, "Best Time: " + Helpers.timeToString( bestTime ), 18, 0xFFFFFFFF, "center" ) );
 				}
 			}
 			else
 			{
 				// create current points
-				var points:FlxText = new FlxText( 20, 300, FlxG.width - 20, "" );
-				points.text = "Your Points: " + FlxG.points;
-				points.setFormat( null, 18, 0xFFFFFFFF, "center" );
-				this.add( points );
+				this.add( Helpers.createText( 20, 300, FlxG.width - 20, "Your Points: " + FlxG.points, 18, 0xFFFFFFFF, "center" ) );
 			}
 			FlxG.points = 0;
 		}
