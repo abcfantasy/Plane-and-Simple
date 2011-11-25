@@ -172,6 +172,8 @@ package
 				player.angle = player._angle;
 				// Here the ship should be emitting exhaust... eventually!
 				exhaustEmitters[player.ID].at( player );
+				exhaustEmitters[player.ID].x += -( 20 * Math.cos( player.angle * Math.PI / 180 ) );
+				exhaustEmitters[player.ID].y += -( 20 * Math.sin( player.angle * Math.PI / 180 ) );
 				exhaustEmitters[player.ID].start( true, 0, 1 );
 			}
 			else
@@ -262,6 +264,8 @@ package
 				player.angle = player._angle;
 				// Here the ship should be emitting exhaust... eventually!
 				exhaustEmitters[player.ID].at( player );
+				exhaustEmitters[player.ID].x += -( 20 * Math.cos( player.angle * Math.PI / 180 ) );
+				exhaustEmitters[player.ID].y += -( 20 * Math.sin( player.angle * Math.PI / 180 ) );
 				exhaustEmitters[player.ID].start( true, 0, 1 );
 			}
 			else

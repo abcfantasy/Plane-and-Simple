@@ -9,7 +9,7 @@ package
 	public class Helpers 
 	{
 		[Embed(source = '../assets/font1.png')] private static var titleFont:Class;
-		[Embed(source = '../assets/unlearne.ttf', fontFamily = "mainFont", embedAsCFF = "false")] private static var mainFont:String;
+		[Embed(source = '../assets/acknowtt.ttf', fontFamily = "mainFont", embedAsCFF = "false")] private static var mainFont:String;
 		
 		// creates title text
 		public static function createTitleText() : FlxBitmapFont
@@ -46,7 +46,7 @@ package
 			if ( particlesSprite == null ) {
 				// add pixel particles
 				for ( var i:int = 0; i < particlesCount; i++ ) {
-					var particle:FlxSprite = new FlxSprite();
+					var particle:FlxSprite = new FlxSprite( -42, -42 );		// the -42 is the answer to a weird problem and everything else
 					particle.createGraphic(width, height, colors[i % colors.length]);
 					newEmitter.add(particle);
 				}

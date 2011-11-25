@@ -54,6 +54,9 @@ package States
 			super.create();
 			setupWorld();
 			
+			// play game music
+			SoundManager.GameMusic();
+			
 			// set xbox controller if enabled
 			if ( SettingsManager.Game_Controller == SettingsManager.XBOX )
 				XBOX360Manager.getInstance().connect();
@@ -71,19 +74,19 @@ package States
 			if (SettingsManager.Game_mode == SettingsManager.TIME_MODE)
 			{
 				// Coin Game-mode
-				this.add( coinsText = Helpers.createText( 5, 5, 150, "Coins Remaining: 0", 12, 0xFFFFFFFF, "left" ) );
+				this.add( coinsText = Helpers.createText( 5, 5, 200, "Coins Remaining: 0", 20, 0xFFFFFFFF, "left" ) );
 			}
 			else
 			{
 				// Point Game-mode
-				this.add( pointsText = Helpers.createText( 5, 5, 150, "Points: 0", 12, 0xFFFFFFFF, "left" ) );
+				this.add( pointsText = Helpers.createText( 5, 5, 150, "Points: 0", 20, 0xFFFFFFFF, "left" ) );
 			}
 			
 			// create time text
 			if (SettingsManager.Game_mode == SettingsManager.TIME_MODE)
-				this.add( timeText = Helpers.createText( FlxG.width - 80, 5, 100, "0:00:000", 12, 0xFFFFFFFF, "left" ) );
+				this.add( timeText = Helpers.createText( FlxG.width - 100, 5, 100, "0:00:000", 20, 0xFFFFFFFF, "left" ) );
 			else
-				this.add( timeText = Helpers.createText( FlxG.width - 110, 5, 150, "Time left 0:20", 12, 0xFFFFFFFF, "left" ) );
+				this.add( timeText = Helpers.createText( FlxG.width - 130, 5, 150, "Time left 0:20", 20, 0xFFFFFFFF, "left" ) );
 			
 			// Sets up the Player
 			var playerPos:FlxPoint = LevelManager.getPlayerPosition(FlxG.level);
@@ -233,6 +236,9 @@ package States
 							explosion.addAnimation( "explode", [0, 1, 2, 3], 15, true );
 							this.add(explosion);
 							explosion.play( "explode" );
+							// shake screen
+							FlxG.quake.start( 0.01, 0.2 );
+							// emit exploding particles
 							emitterExplosion.at(planes[j]);
 							emitterExplosion.start(true, 2);
 							planes[j].kill();

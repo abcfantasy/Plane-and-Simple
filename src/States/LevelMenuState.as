@@ -6,6 +6,7 @@ package States
 	import org.flixel.plugin.photonstorm.FlxBitmapFont;
 	import Managers.SettingsManager;
 	import Managers.InputManager;
+	import Managers.SoundManager;
 	
 	public class LevelMenuState extends FlxState
 	{		
@@ -19,6 +20,9 @@ package States
 		override public function create():void 
 		{
 			super.create();
+			
+			// play menu music
+			SoundManager.MenuMusic();
 			
 			// create title
 			this.add( Helpers.createTitleText() );

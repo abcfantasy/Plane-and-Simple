@@ -21,31 +21,31 @@ package States
 			super.create();
 			
 			// create level complete
-			this.add( Helpers.createText( 20, 50, FlxG.width - 20, "Level " + FlxG.level + " Complete!", 25, 0xFFFFFFFF, "center" ) );
+			this.add( Helpers.createText( 20, 50, FlxG.width - 20, "Level " + FlxG.level + " Complete!", 35, 0xFFFFFFFF, "center" ) );
 			
 			// create instructions (depending on whether replaying a level or playing a new level)
 			var instructions:FlxText = new FlxText( 20, 150, FlxG.width - 20, "" );
 			if ( FlxG.level == SettingsManager.Max_Level - 1 )
-				this.add( Helpers.createText( 20, 150, FlxG.width - 20, "Press ENTER/SPACE to play next level or ESC to go back to level selection.", 14, 0xFFFFFFFF, "center" ) );
+				this.add( Helpers.createText( 20, 150, FlxG.width - 20, "Press ENTER/SPACE to play next level or ESC to go back to level selection.", 24, 0xFFFFFFFF, "center" ) );
 			else
-				this.add( Helpers.createText( 20, 150, FlxG.width - 20, "Press ENTER/SPACE to replay the current level or ESC to go back to level selection.", 14, 0xFFFFFFFF, "center" ) );
+				this.add( Helpers.createText( 20, 150, FlxG.width - 20, "Press ENTER/SPACE to replay the current level or ESC to go back to level selection.", 24, 0xFFFFFFFF, "center" ) );
 			
 			if (SettingsManager.Game_mode == SettingsManager.TIME_MODE)
 			{
 				// create current time		
-				this.add( Helpers.createText( 20, 300, FlxG.width - 20, "Your Time: " + Helpers.timeToString( elapsed_ ), 18, 0xFFFFFF, "center" ) );
+				this.add( Helpers.createText( 20, 300, FlxG.width - 20, "Your Time: " + Helpers.timeToString( elapsed_ ), 28, 0xFFFFFF, "center" ) );
 				
 				// if best time exists, create it too
 				var bestTime:Number = SettingsManager.loadLevelTime( FlxG.level );
 				if ( bestTime > 0 )
 				{
-					this.add( Helpers.createText( 20, 340, FlxG.width - 20, "Best Time: " + Helpers.timeToString( bestTime ), 18, 0xFFFFFFFF, "center" ) );
+					this.add( Helpers.createText( 20, 340, FlxG.width - 20, "Best Time: " + Helpers.timeToString( bestTime ), 28, 0xFFFFFFFF, "center" ) );
 				}
 			}
 			else
 			{
 				// create current points
-				this.add( Helpers.createText( 20, 300, FlxG.width - 20, "Your Points: " + FlxG.points, 18, 0xFFFFFFFF, "center" ) );
+				this.add( Helpers.createText( 20, 300, FlxG.width - 20, "Your Points: " + FlxG.points, 28, 0xFFFFFFFF, "center" ) );
 			}
 			FlxG.points = 0;
 		}
