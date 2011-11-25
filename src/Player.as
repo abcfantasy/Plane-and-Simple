@@ -69,8 +69,8 @@ package
 		
 		public function Player( x:int, y:int, parent:FlxState, _world:b2World, state:int) 
 		{		
-			playerLeft = new B2FlxSprite(x - 40, y, 30, _world, 0);
-			playerRight = new B2FlxSprite(x + 40, y, 30, _world, 1);
+			playerLeft = new B2FlxSprite(x - 40, y, 15, _world, 0);
+			playerRight = new B2FlxSprite(x + 40, y, 15, _world, 1);
 			playerLeft.createBody();
 			playerRight.createBody();
 			
