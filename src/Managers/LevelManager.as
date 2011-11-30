@@ -12,8 +12,10 @@ package Managers
 		[Embed(source = "../../assets/graphics/1-5bg.jpg")] public static var level1_5BgImage:Class;		
 		// level 6-10 background
 		[Embed(source = "../../assets/graphics/6-10.jpg")] public static var level6_10BgImage:Class;		
-		// level 1 tiles - but, we only use one tileset at the moment?
-		[Embed(source = "../../assets/graphics/tiles_asteroid.png")] private static var stage1Tiles:Class;
+		// level 1-5 tiles
+		[Embed(source = "../../assets/graphics/tiles_asteroid.png")] private static var stage1_5Tiles:Class;
+		// level 6-10
+		[Embed(source = "../../assets/graphics/tiles_blue_in_line2.png")] private static var stage6_10Tiles:Class;
 		// boundary tiles
 		[Embed(source="../../assets/graphics/edge_in_line.png")] private static var boundaryTiles:Class;
 		
@@ -73,27 +75,34 @@ package Managers
 		{
 			var groundMap:FlxTilemapExt = new FlxTilemapExt();
 			var chosenMap:String;
+			var tiles:Class;
 			switch ( level ) {
 				case 1:
 					chosenMap = new level1MapString;
+					tiles = stage1_5Tiles;
 					break;
 				case 2:
 					chosenMap = new level2MapString;
+					tiles = stage1_5Tiles;
 					break;
 				case 3:
 					chosenMap = new level3MapString;
+					tiles = stage1_5Tiles;
 					break;
 				case 4:
 					chosenMap = new level4MapString;
+					tiles = stage1_5Tiles;
 					break;
 				case 5:
 					chosenMap = new level5MapString;
+					tiles = stage1_5Tiles;
 					break;
 				case 6:
 					chosenMap = new level6MapString;
+					tiles = stage6_10Tiles;
 					break;
 			}
-			groundMap = groundMap.loadMapExt(chosenMap, stage1Tiles, TILE_SIZE, TILE_SIZE);
+			groundMap = groundMap.loadMapExt(chosenMap, tiles, TILE_SIZE, TILE_SIZE);
 			return groundMap;
 		}
 		

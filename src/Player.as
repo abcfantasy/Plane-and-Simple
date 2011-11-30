@@ -65,7 +65,7 @@ package
 		// constants
 		protected static const PLAYER_IMPULSE_FORCE:int = 2.5;
 		protected static const STRING_DISTANCE:int = 150;
-		protected static const PLAYER_MAX_VELOCITY:int = 100;
+		protected static const PLAYER_MAX_VELOCITY:int = 75;
 		
 		public function Player( x:int, y:int, parent:FlxState, _world:b2World, state:int) 
 		{		

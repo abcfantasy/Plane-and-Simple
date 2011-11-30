@@ -202,8 +202,6 @@ package States
 					
 					FlxG.follow(cameraPivot, 1); 
 					
-					FlxG.log("w: " + this.width + "h: " + this.height);
-					
 					// checks collision with the groundMap
 					for (var j:uint = 0; j < planes.length; j++)
 					{
