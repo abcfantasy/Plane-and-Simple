@@ -31,22 +31,22 @@ package States
 			SoundManager.MenuMusic();
 			
 			// create title
-			this.add( Helpers.createTitleText() );
+			this.add( Helpers.createTitleImage() );
 			
 			// show start game option
-			this.add( startGame = Helpers.createText( 20, 220, FlxG.width - 20, "Start Game", 30, 0xFFFFFFFF, "center" ) );
+			this.add( startGame = Helpers.createText( 20, 200, FlxG.width - 20, "Start Game", 30, 0xFFFFFFFF, "center" ) );
 			
 			// show controller options
-			this.add( controller = Helpers.createText( 20, 250, FlxG.width - 20, "Controller: " + SettingsManager.getGameControllerString(), 30, 0xFFFFFFFF, "center", 0.5 ) );
+			this.add( controller = Helpers.createText( 20, 240, FlxG.width - 20, "Controller: " + SettingsManager.getGameControllerString(), 30, 0xFFFFFFFF, "center", 0.5 ) );
 			
 			// show single/multiplayer options
 			this.add( playermode = Helpers.createText( 20, 280, FlxG.width - 20, "Player Mode: " + SettingsManager.getPlayerModeString(), 30, 0xFFFFFFFF, "center", 0.5 ) );
 			
 			// show game mode
-			this.add( gameMode = Helpers.createText( 20, 310, FlxG.width - 20, "Game Mode: " + SettingsManager.getGameModeString(), 30, 0xFFFFFFFF, "center", 0.5 ) );
+			this.add( gameMode = Helpers.createText( 20, 320, FlxG.width - 20, "Game Mode: " + SettingsManager.getGameModeString(), 30, 0xFFFFFFFF, "center", 0.5 ) );
 			
 			// show clear data
-			this.add( clearData = Helpers.createText( 20, 340, FlxG.width - 20, "Clear Data", 30, 0xFFFFFFFF, "center", 0.5 ) );
+			this.add( clearData = Helpers.createText( 20, 360, FlxG.width - 20, "Clear Data", 30, 0xFFFFFFFF, "center", 0.5 ) );
 			
 		}
 		

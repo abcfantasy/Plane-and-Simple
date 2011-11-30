@@ -8,8 +8,9 @@ package
 	import org.flixel.plugin.photonstorm.FlxBitmapFont;
 	public class Helpers 
 	{
+		[Embed(source = '../assets/graphics/title_final.png')] private static var titleImage:Class;
 		[Embed(source = '../assets/font1.png')] private static var titleFont:Class;
-		[Embed(source = '../assets/acknowtt.ttf', fontFamily = "mainFont", embedAsCFF = "false")] private static var mainFont:String;
+		[Embed(source = '../assets/MicroExtendFLF.ttf', fontFamily = "mainFont", embedAsCFF = "false")] private static var mainFont:String;
 		
 		// creates title text
 		public static function createTitleText() : FlxBitmapFont
@@ -20,6 +21,14 @@ package
 			titleText.x = ( FlxG.width / 2 ) - ( titleText.width / 2 );
 			titleText.y = 70;
 			return titleText;
+		}
+		
+		public static function createTitleImage() : FlxSprite
+		{
+			var titleImage:FlxSprite = new FlxSprite(31, 35, titleImage );
+			titleImage.x = ( FlxG.width / 2 ) - ( titleImage.width / 2 );
+			titleImage.fixed = true;
+			return titleImage;
 		}
 		
 		// creates a text

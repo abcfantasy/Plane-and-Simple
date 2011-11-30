@@ -25,12 +25,12 @@ package States
 			SoundManager.MenuMusic();
 			
 			// create title
-			this.add( Helpers.createTitleText() );
+			this.add( Helpers.createTitleImage() );
 			
 			// create levels menu
 			for ( var i:int = 1; i <= SettingsManager.Max_Level; i++ )
 			{
-				levelTexts.push( Helpers.createText( 20, 200 + ( i * 20 ), FlxG.width - 20, "Level " + i, 25, 0xFFFFFFFF, "center", 0.5 ) );
+				levelTexts.push( Helpers.createText( 20, 160 + ( i * 30 ), FlxG.width - 20, "Level " + i, 25, 0xFFFFFFFF, "center", 0.5 ) );
 				var bestTime:Number = SettingsManager.loadLevelTime( i );
 				if ( bestTime != 0 ) {
 					levelTexts[i - 1].text += " - Best time: " + Helpers.timeToString( bestTime );
