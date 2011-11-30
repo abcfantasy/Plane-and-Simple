@@ -16,10 +16,11 @@ package States
 		private var controller:FlxText;
 		private var playermode:FlxText;
 		private var gameMode:FlxText;
+		private var clearData:FlxText;
 		
 		// menu state
 		private var selected:int = 0;
-		private var maxOptions:int = 4;		// total options
+		private var maxOptions:int = 5;		// total options
 		
 		// sort of "constructor"
 		override public function create():void 
@@ -44,6 +45,9 @@ package States
 			// show game mode
 			this.add( gameMode = Helpers.createText( 20, 310, FlxG.width - 20, "Game Mode: " + SettingsManager.getGameModeString(), 30, 0xFFFFFFFF, "center", 0.5 ) );
 			
+			// show clear data
+			this.add( clearData = Helpers.createText( 20, 340, FlxG.width - 20, "Clear Data", 30, 0xFFFFFFFF, "center", 0.5 ) );
+			
 		}
 		
 		override public function update():void 
@@ -67,6 +71,10 @@ package States
 					case 3:
 						SettingsManager.toggleGameMode();
 						break;
+					case 4: 
+						SettingsManager.clearData();
+						clearData.text += " (Cleared)";
+						break;
 				}
 			}
 			else if ( InputManager.down() )
@@ -88,25 +96,37 @@ package States
 					controller.alpha = 0.5;
 					playermode.alpha = 0.5;
 					gameMode.alpha = 0.5;
+					clearData.alpha = 0.5;
 					break;
 				case 1:
 					startGame.alpha = 0.5;
 					controller.alpha = 1;
 					playermode.alpha = 0.5;
 					gameMode.alpha = 0.5;
+					clearData.alpha = 0.5;
 					break;
 				case 2:
 					startGame.alpha = 0.5;
 					controller.alpha = 0.5;
 					playermode.alpha = 1;
 					gameMode.alpha = 0.5;
+					clearData.alpha = 0.5;
 					break;
 				case 3:
 					startGame.alpha = 0.5;
 					controller.alpha = 0.5;
 					playermode.alpha = 0.5;
 					gameMode.alpha = 1;
+					clearData.alpha = 0.5;
 					break;
+				case 4:
+					startGame.alpha = 0.5;
+					controller.alpha = 0.5;
+					playermode.alpha = 0.5;
+					gameMode.alpha = 0.5;
+					clearData.alpha = 1;
+					break;
+					
 			}
 			
 			// update text

@@ -270,7 +270,7 @@ package States
 				FlxG.stage.removeChild(p.getRope());
 				
 				// if it was latest level, include new level
-				if ( FlxG.level == SettingsManager.Max_Level )
+				if ( FlxG.level == SettingsManager.Max_Level && FlxG.level != SettingsManager.Last_Level )
 					SettingsManager.Max_Level++;
 				
 				// save level
