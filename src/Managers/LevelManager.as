@@ -11,7 +11,10 @@ package Managers
 		// level 1 background - but, we only use one background at the moment?
 		[Embed(source = "../../assets/graphics/1-5bg.jpg")] public static var level5BgImage:Class;		
 		// level 1 tiles - but, we only use one tileset at the moment?
-		[Embed(source="../../assets/graphics/tiles_asteroid.png")] private static var stage1Tiles:Class;
+		[Embed(source = "../../assets/graphics/tiles_asteroid.png")] private static var stage1Tiles:Class;
+		// boundary tiles
+		[Embed(source="../../assets/graphics/edge_in_line.png")] private static var boundaryTiles:Class;
+		
 		// Maps:
 		[Embed(source = "../../assets/maps/tut1.txt", mimeType = "application/octet-stream")] private static var level1MapString:Class;
 		[Embed(source = "../../assets/maps/tut2.txt", mimeType = "application/octet-stream")] private static var level2MapString:Class;
@@ -75,6 +78,13 @@ package Managers
 			}
 			groundMap = groundMap.loadMapExt(chosenMap, stage1Tiles, TILE_SIZE, TILE_SIZE);
 			return groundMap;
+		}
+		
+		public static function getBoundaries():FlxTilemapExt
+		{
+			var boundaries:FlxTilemapExt = new FlxTilemapExt();
+			boundaries = boundaries.createBoundaries(boundaryTiles, TILE_SIZE, TILE_SIZE);
+			return boundaries;
 		}
 		
 		// gets the list of coins for a given level

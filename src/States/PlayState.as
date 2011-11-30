@@ -26,6 +26,7 @@ package States
 		private var p:Player; // The Player
 		
 		private var groundMap:FlxTilemapExt = new FlxTilemapExt();
+		private var boundaries:FlxTilemapExt = new FlxTilemapExt();
 		private var emitterCoin:FlxEmitter; 		// Picking-up Coin
 		private var emitterJewel:FlxEmitter;		// Picking-up Jewel
 		private var emitterExplosion:FlxEmitter;	// Plane explosion
@@ -69,6 +70,9 @@ package States
 			this.add(groundMap);
 			groundMap.collideIndex = 2;
 			FlxU.setWorldBounds(0, 0, groundMap.width, groundMap.height);
+			
+			boundaries = LevelManager.getBoundaries();
+			this.add(boundaries);
 			
 			// Score texts
 			if (SettingsManager.Game_mode == SettingsManager.TIME_MODE)
@@ -131,50 +135,6 @@ package States
 			_world = new b2World(gravity, false);
 		}
 		
-		private function forceLeftBoundary(plane:B2FlxSprite):void
-		{
-			// get body of the correct plane
-			var planeBody:b2Body = plane._obj;
-			
-			// apply boundary physics
-			planeBody.ApplyImpulse(new b2Vec2(-(planeBody.GetLinearVelocity().x), 0), new b2Vec2((planeBody.GetPosition().x * 30) - plane._radius, (planeBody.GetPosition().y * 30) - plane._radius));
-			
-			planeBody.SetPosition(new b2Vec2(0.73, planeBody.GetPosition().y));
-		}
-		
-		private function forceRightBoundary(plane:B2FlxSprite):void
-		{
-			// get body of the correct plane
-			var planeBody:b2Body = plane._obj;
-			
-			// apply boundary physics
-			planeBody.ApplyImpulse(new b2Vec2(-(planeBody.GetLinearVelocity().x), 0), new b2Vec2((planeBody.GetPosition().x * 30) - plane._radius, (planeBody.GetPosition().y * 30) - plane._radius));
-			
-			planeBody.SetPosition(new b2Vec2((groundMap.width - plane._radius) / 30, planeBody.GetPosition().y));
-		}
-		
-		private function forceTopBoundary(plane:B2FlxSprite):void
-		{
-			// get body of the plane
-			var planeBody:b2Body = plane._obj;
-			
-			// aply boundary physics
-			planeBody.ApplyImpulse(new b2Vec2(0, -(planeBody.GetLinearVelocity().y)), new b2Vec2((planeBody.GetPosition().x * 30) - plane._radius, (planeBody.GetPosition().y * 30) - plane._radius));
-			
-			planeBody.SetPosition(new b2Vec2(planeBody.GetPosition().x, 0.73));
-		}
-		
-		private function forceBottomBoundary(plane:B2FlxSprite):void
-		{
-			// get body of the plane
-			var planeBody:b2Body = plane._obj;
-			
-			// aply boundary physics
-			planeBody.ApplyImpulse(new b2Vec2(0, -(planeBody.GetLinearVelocity().y)), new b2Vec2((planeBody.GetPosition().x * 30) - plane._radius, (planeBody.GetPosition().y * 30) - plane._radius));
-			
-			planeBody.SetPosition(new b2Vec2(planeBody.GetPosition().x, (groundMap.height - plane._radius - 1) / 30));
-		}
-		
 		override public function update():void
 		{
 			super.update();
@@ -228,7 +188,7 @@ package States
 					// checks collision with the groundMap
 					for (var j:uint = 0; j < planes.length; j++)
 					{
-						if (groundMap.solveSlopeCollide(groundMap, planes[j]))
+						if (groundMap.solveSlopeCollide(groundMap, planes[j]) > 0) // the function returns the index of the tile (from the .csv file)
 						{	
 							// play explosion animation
 							var explosion:FlxSprite = new FlxSprite( planes[j].x, planes[j].y );
@@ -253,14 +213,16 @@ package States
 					// both planes are at the boundary
 					for (var i:uint = 0; i < planes.length; i++)
 					{
-						if (planes[i].x <= 1)
-							forceLeftBoundary(planes[i]);
-						if (planes[i].x >= (groundMap.width - planes[i]._radius - 1))
-							forceRightBoundary(planes[i]);
-						if (planes[i].y <= 1)
-							forceTopBoundary(planes[i]);
-						if (planes[i].y >= (groundMap.height - planes[i]._radius - 1))
-							forceBottomBoundary(planes[i]);
+						if (boundaries.solveSlopeCollide(boundaries, planes[i]) >= 1)
+							planes[i]._obj.SetLinearVelocity( new b2Vec2( -planes[i]._obj.GetLinearVelocity().x*0.2, planes[i]._obj.GetLinearVelocity().y*0.2));
+						if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 3)
+							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x + 0.05, planes[i]._obj.GetPosition().y));
+						else if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 2)
+							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x - 0.05, planes[i]._obj.GetPosition().y));
+						else if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 1)
+							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x, planes[i]._obj.GetPosition().y + 0.05));
+						else if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 4)
+							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x, planes[i]._obj.GetPosition().y - 0.05));
 					}
 				}
 			}

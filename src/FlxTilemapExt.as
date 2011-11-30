@@ -1,5 +1,6 @@
 package
 {
+	import Box2D.Dynamics.b2Body;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.geom.Point;
@@ -19,8 +20,93 @@ package
 			this.loadMap(Level, TileGraphics, TileWidth, TileHeight);
 			return this;
 		}
+		
+		public function createBoundaries(TileGraphic:Class, TileWidth:uint = 0, TileHeight:uint = 0):FlxTilemapExt
+		{
+			refresh = true;
+			
+			//Figure out the map dimensions based on the data string
+			var cols:Array;
+			var rows:Array = new Array;
+			rows[0] = new String("6,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7");
+			for (var i:uint = 1; i < 37; i++)
+				rows[i] = new String("3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2");
+			rows[37] = new String("5,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,8");
+			heightInTiles = rows.length;
+			_data = new Array();
+			var r:uint = 0;
+			var c:uint;
+			while(r < heightInTiles)
+			{
+				cols = rows[r++].split(",");
+				if(cols.length <= 1)
+				{
+					heightInTiles = heightInTiles - 1;
+					continue;
+				}
+				if(widthInTiles == 0)
+					widthInTiles = cols.length;
+				c = 0;
+				while(c < widthInTiles)
+					_data.push(uint(cols[c++]));
+			}
+			
+			//Pre-process the map data if it's auto-tiled
+			var i:uint;
+			totalTiles = widthInTiles*heightInTiles;
+			if(auto > OFF)
+			{
+				collideIndex = startingIndex = drawIndex = 1;
+				i = 0;
+				while(i < totalTiles)
+					autoTile(i++);
+			}
+			
+			//Figure out the size of the tiles
+			_pixels = FlxG.addBitmap(TileGraphic);
+			_tileWidth = TileWidth;
+			if(_tileWidth == 0)
+				_tileWidth = _pixels.height;
+			_tileHeight = TileHeight;
+			if(_tileHeight == 0)
+				_tileHeight = _tileWidth;
+			_block.width = _tileWidth;
+			_block.height = _tileHeight;
+			
+			//Then go through and create the actual map
+			width = widthInTiles*_tileWidth;
+			height = heightInTiles*_tileHeight;
+			_rects = new Array(totalTiles);
+			i = 0;
+			while(i < totalTiles)
+				updateTile(i++);
+			
+			//Also need to allocate a buffer to hold the rendered tiles
+			var bw:uint = (FlxU.ceil(FlxG.width / _tileWidth) + 1)*_tileWidth;
+			var bh:uint = (FlxU.ceil(FlxG.height / _tileHeight) + 1)*_tileHeight;
+			_buffer = new BitmapData(bw,bh,true,0);
+			
+			//Pre-set some helper variables for later
+			_screenRows = Math.ceil(FlxG.height/_tileHeight)+1;
+			if(_screenRows > heightInTiles)
+				_screenRows = heightInTiles;
+			_screenCols = Math.ceil(FlxG.width/_tileWidth)+1;
+			if(_screenCols > widthInTiles)
+				_screenCols = widthInTiles;
+			
+			_bbKey = String(TileGraphic);
+			generateBoundingTiles();
+			refreshHulls();
+			
+			_flashRect.x = 0;
+			_flashRect.y = 0;
+			_flashRect.width = _buffer.width;
+			_flashRect.height = _buffer.height;
+			
+			return this;
+		}
 
-		public function solveSlopeCollide(Map:FlxTilemapExt, Plane:B2FlxSprite):Boolean
+		public function solveSlopeCollide(Map:FlxTilemapExt, Plane:B2FlxSprite):uint
 		{
 			var r:uint;
 			var c:uint;
@@ -61,11 +147,12 @@ package
 						bitmap.x = x + (ix + c) * _tileWidth;
 						bitmap.y = y + (iy + r) * _tileHeight;
 						// we perform a perfect per-pixel check of overlap between the plane and the bitmap of the block with maximum accuracy (6)
-						return FlxHitTest.complexHitTestObject(Plane, bitmap, 6);
+						if (FlxHitTest.complexHitTestObject(Plane, bitmap, 6))
+							return dd;
 					}
 				}
 			}
-			return false;
-		}
+			return 0;
+		}		
 	}
 }
