@@ -9,6 +9,7 @@ package States
 	import GamePads.*;
 	import org.flixel.FlxEmitter;
 	import org.flixel.FlxG;
+	import org.flixel.FlxObject;
 	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxState;
@@ -30,6 +31,7 @@ package States
 		private var emitterCoin:FlxEmitter; 		// Picking-up Coin
 		private var emitterJewel:FlxEmitter;		// Picking-up Jewel
 		private var emitterExplosion:FlxEmitter;	// Plane explosion
+		private var cameraPivot:FlxObject = new FlxObject();
 		
 		// text
 		//private var scoreText:FlxText;
@@ -71,7 +73,7 @@ package States
 			groundMap.collideIndex = 2;
 			FlxU.setWorldBounds(0, 0, groundMap.width, groundMap.height);
 			
-			boundaries = LevelManager.getBoundaries();
+			boundaries = LevelManager.getBoundaries(groundMap.widthInTiles, groundMap.heightInTiles);
 			this.add(boundaries);
 			
 			// Score texts
@@ -96,6 +98,7 @@ package States
 			var playerPos:FlxPoint = LevelManager.getPlayerPosition(FlxG.level);
 			p = new Player(playerPos.x, playerPos.y, this, _world, 1);
 			this.add(p); // add the player object
+			
 			
 			// set up emitter for exploding planes
 			this.add( emitterExplosion = Helpers.createEmitter( 75, 45, 30, null, 3, 3, [0xFFFF0000, 0xFFFFFF00, 0xFFFF8C00] ) );
@@ -185,6 +188,22 @@ package States
 					
 					var planes:Array = [p.getLeftPlane(), p.getRightPlane()];
 					
+					cameraPivot.x = p.getCenter().x;
+					cameraPivot.y = p.getCenter().y;
+					
+					if (cameraPivot.x <= 400)
+						cameraPivot.x = 400;
+					else if (cameraPivot.x >= groundMap.width - 400)
+						cameraPivot.x = groundMap.width - 400;
+					if (cameraPivot.y <= 300)
+						cameraPivot.y = 300;
+					else if (cameraPivot.y >= groundMap.height - 300)
+						cameraPivot.y = groundMap.height - 300;
+					
+					FlxG.follow(cameraPivot, 1); 
+					
+					FlxG.log("w: " + this.width + "h: " + this.height);
+					
 					// checks collision with the groundMap
 					for (var j:uint = 0; j < planes.length; j++)
 					{
@@ -207,6 +226,9 @@ package States
 							planeDestroyed = true;
 						}
 					}
+					
+					stringElasticityBar.x = ( FlxG.width / 2 ) - 75 - FlxG.scroll.x;
+					stringElasticityBar.y = 5 - FlxG.scroll.y;
 					
 					// check boundaries 
 					// Note: must check each plane independently for each boundary, to handle the case where

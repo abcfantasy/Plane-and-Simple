@@ -46,7 +46,7 @@ package
 			if ( particlesSprite == null ) {
 				// add pixel particles
 				for ( var i:int = 0; i < particlesCount; i++ ) {
-					var particle:FlxSprite = new FlxSprite( -42, -42 );		// the -42 is the answer to a weird problem and everything else
+					var particle:FlxSprite = new FlxSprite( -4200, -4200 );		// the -4200 is the answer to a weird problem and everything else
 					particle.createGraphic(width, height, colors[i % colors.length]);
 					newEmitter.add(particle);
 				}

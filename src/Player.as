@@ -321,6 +321,11 @@ package
 			return this.rope;
 		}
 		
+		public function getCenter():Point
+		{
+			return new Point((playerLeft.x + playerRight.x) / 2, (playerLeft.y + playerRight.y) / 2);
+		}
+		
 		public function getRopeLengthPercentage():Number
 		{
 			return Math.round( this.dist / STRING_DISTANCE * 100 );
@@ -359,8 +364,8 @@ package
 			// 400/dist makes the width of the rope depend on the distance between the planes
 			rope.graphics.lineStyle(400 / dist, 0xFF0000, 1, true, "normal", null, null, 3);
 			rope.graphics.lineBitmapStyle(ropeBitMap.bitmapData, null, true, true);
-			rope.graphics.moveTo(playerLeft.x + (playerLeft.width/2), playerLeft.y + (playerLeft.height/2));
-			rope.graphics.lineTo(playerRight.x + (playerRight.width/2), playerRight.y + (playerRight.height/2));
+			rope.graphics.moveTo(playerLeft.x + FlxG.scroll.x + (playerLeft.width/2), playerLeft.y + FlxG.scroll.y + (playerLeft.height/2));
+			rope.graphics.lineTo(playerRight.x + FlxG.scroll.x + (playerRight.width/2), playerRight.y + FlxG.scroll.y + (playerRight.height/2));
 			
 			super.update();
 		}
