@@ -92,7 +92,7 @@ package
 		
 		public static function flxspriteToBitmap(Graphic:B2FlxSprite):Bitmap
 		{
-			var bitmapData:BitmapData = new BitmapData( Graphic.frameWidth, Graphic.frameHeight, true, 0x00FFFFFF );
+			var bitmapData:BitmapData = new BitmapData( Graphic.frameWidth, Graphic.frameHeight, true, 0 );
 			bitmapData.copyPixels( Graphic.pixels, new Rectangle( 0, 0, Graphic.frameWidth, Graphic.frameHeight ), new Point( 0, 0 ) );
 			var bitmap:Bitmap = new Bitmap( bitmapData );
 			//var bitmap:Bitmap = new Bitmap(Graphic.pixels/*._framePixels*/);

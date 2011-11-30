@@ -24,8 +24,8 @@ package
 	public class Player extends FlxObject
 	{
 		// images of the planes
-		[Embed(source = "../assets/graphics/plane2_green_small_animated.png")]public var leftPlaneImage:Class;
-		[Embed(source = "../assets/graphics/plane2_pinkish_small_animated.png")]public var rightPlaneImage:Class;
+		[Embed(source = "../assets/graphics/plane2_left_animated.png")]public var leftPlaneImage:Class;
+		[Embed(source = "../assets/graphics/plane2_right_animated.png")]public var rightPlaneImage:Class;
 		
 		// image of rope
 		[Embed(source = "../assets/graphics/string.png")]public var ropeImage:Class;
@@ -74,8 +74,8 @@ package
 			playerLeft.createBody();
 			playerRight.createBody();
 			
-			playerLeft.loadGraphic(leftPlaneImage, true, false, 30, 30);
-			playerRight.loadGraphic(rightPlaneImage, true, false, 30, 30);
+			playerLeft.loadGraphic(leftPlaneImage, true, false, 40, 40);
+			playerRight.loadGraphic(rightPlaneImage, true, false, 40, 40);
 			playerLeft.addAnimation( "idle", [0], 0, false );
 			playerRight.addAnimation( "idle", [0], 0, false );
 			playerLeft.addAnimation( "lockdown", [1, 2, 3, 4], 10, true );
@@ -172,8 +172,8 @@ package
 				player.angle = player._angle;
 				// Here the ship should be emitting exhaust... eventually!
 				exhaustEmitters[player.ID].at( player );
-				exhaustEmitters[player.ID].x += -( 20 * Math.cos( player.angle * Math.PI / 180 ) );
-				exhaustEmitters[player.ID].y += -( 20 * Math.sin( player.angle * Math.PI / 180 ) );
+				exhaustEmitters[player.ID].x += -( 10 * Math.cos( player.angle * Math.PI / 180 ) );
+				exhaustEmitters[player.ID].y += -( 10 * Math.sin( player.angle * Math.PI / 180 ) );
 				exhaustEmitters[player.ID].start( true, 0, 1 );
 			}
 			else
@@ -340,11 +340,11 @@ package
 			}
 			else
 			{
-				updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
+				updatePlaneController(leftPosition, leftImpulse, playerLeft, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
 				if(SettingsManager.Player_mode == SettingsManager.SINGLEPLAYER)
-					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).LeftStick, controller.getState(controllerState).LB]); 
+					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState).RightStick, controller.getState(controllerState).RB]); 
 				else
-					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState+1).LeftStick, controller.getState(controllerState+1).LB]); 
+					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState+1).RightStick, controller.getState(controllerState+1).RB]); 
 			}
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			this.dist = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
@@ -357,7 +357,7 @@ package
 				if (this.dist > STRING_DISTANCE)
 					joint.SetFrequency(1.0);
 				else
-					joint.SetFrequency(0.01); // Consider lowering even further
+					joint.SetFrequency(0.01);
 			}
 			
 			rope.graphics.clear();

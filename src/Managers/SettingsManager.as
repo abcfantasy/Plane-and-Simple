@@ -63,7 +63,7 @@ package Managers
 		// save time of a level if better than previous
 		public static function saveLevelTime( level:int, time:Number ):void
 		{
-			if ( _save.read( level + "time" ) == null || _save.read( level + "time" ) > time )
+			if ( _save.read( level + "time" ) == null || ( (Number)(_save.read( level + "time" )) * 1000 ) > ( time * 1000 ) )
 			{
 				_save.write( level + "time", time );
 			}

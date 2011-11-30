@@ -80,7 +80,7 @@ package States
 			if (SettingsManager.Game_mode == SettingsManager.TIME_MODE)
 			{
 				// Coin Game-mode
-				this.add( coinsText = Helpers.createText( 5, 5, 200, "Coins Remaining: 0", 20, 0xFFFFFFFF, "left" ) );
+				this.add( coinsText = Helpers.createText( 5, 5, 250, "Coins left: 0", 20, 0xFFFFFFFF, "left" ) );
 			}
 			else
 			{
@@ -90,9 +90,9 @@ package States
 			
 			// create time text
 			if (SettingsManager.Game_mode == SettingsManager.TIME_MODE)
-				this.add( timeText = Helpers.createText( FlxG.width - 100, 5, 100, "0:00:000", 20, 0xFFFFFFFF, "left" ) );
+				this.add( timeText = Helpers.createText( FlxG.width - 150, 5, 145, "0:00:000", 20, 0xFFFFFFFF, "left" ) );
 			else
-				this.add( timeText = Helpers.createText( FlxG.width - 130, 5, 150, "Time left 0:20", 20, 0xFFFFFFFF, "left" ) );
+				this.add( timeText = Helpers.createText( FlxG.width - 180, 5, 175, "Time left 0:20", 20, 0xFFFFFFFF, "left" ) );
 			
 			// Sets up the Player
 			var playerPos:FlxPoint = LevelManager.getPlayerPosition(FlxG.level);
@@ -144,7 +144,7 @@ package States
 
 			// update and check for coins remaining
 			if(SettingsManager.Game_mode == SettingsManager.TIME_MODE)
-				coinsText.text = "Coins Remaining: " + coinsRemaining;
+				coinsText.text = "Coins left: " + coinsRemaining;
 			else
 				pointsText.text = "Points: " + FlxG.points;
 			
