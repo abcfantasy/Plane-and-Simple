@@ -57,7 +57,7 @@ package States
 			if ( InputManager.confirm() )
 			{
 				// if at the last level, go to new level
-				if ( FlxG.level == SettingsManager.Max_Level )
+				if ( FlxG.level == SettingsManager.Max_Level - 1  && FlxG.level != SettingsManager.Last_Level )
 				{
 					FlxG.level++;
 					FlxG.state = new PlayState();
