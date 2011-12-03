@@ -25,7 +25,7 @@ package
 			FlxG.state.addChild(bitmap1);
 			FlxG.state.addChild(target2);
 			
-			var result:Boolean = complexIntersectionRectangle( bitmap1, target2, accurracy ).width != 0;
+			var result:Boolean = complexIntersectionRectangle( bitmap1, target2, accurracy ).width >= 1;
 			
 			FlxG.state.removeChild(bitmap1);
 			FlxG.state.removeChild(target2);
@@ -80,6 +80,10 @@ package
 			{
 				intersection.x /= accurracy;
 				intersection.y /= accurracy;
+				var test:int = 0;
+			
+				if (intersection.width > 0)
+					test = 2;
 				intersection.width /= accurracy;
 				intersection.height /= accurracy;
 			}
