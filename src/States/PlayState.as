@@ -99,7 +99,6 @@ package States
 			p = new Player(playerPos.x, playerPos.y, this, _world, 1);
 			this.add(p); // add the player object
 			
-			
 			// set up emitter for exploding planes
 			this.add( emitterExplosion = Helpers.createEmitter( 75, 45, 30, null, 3, 3, [0xFFFF0000, 0xFFFFFF00, 0xFFFF8C00] ) );
 			
