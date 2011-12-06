@@ -195,10 +195,10 @@ package States
 						cameraPivot.x = 400;
 					else if (cameraPivot.x >= groundMap.width - 400)
 						cameraPivot.x = groundMap.width - 400;
-					if (cameraPivot.y <= 300)
-						cameraPivot.y = 300;
-					else if (cameraPivot.y >= groundMap.height - 300)
-						cameraPivot.y = groundMap.height - 300;
+					if (cameraPivot.y <= 250)
+						cameraPivot.y = 250;
+					else if (cameraPivot.y >= groundMap.height - 250)
+						cameraPivot.y = groundMap.height - 250;
 					
 					FlxG.follow(cameraPivot, 1); 
 					
