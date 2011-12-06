@@ -233,16 +233,39 @@ package States
 					// both planes are at the boundary
 					for (var i:uint = 0; i < planes.length; i++)
 					{
-						if (boundaries.solveSlopeCollide(boundaries, planes[i]) >= 1)
-							planes[i]._obj.SetLinearVelocity( new b2Vec2( -planes[i]._obj.GetLinearVelocity().x*0.2, planes[i]._obj.GetLinearVelocity().y*0.2));
+						// Temporary variables for Positions & Velocities
+						var newPos:b2Vec2 = new b2Vec2(planes[i]._obj.GetPosition().x, planes[i]._obj.GetPosition().y);
+						var newVel:b2Vec2 = new b2Vec2(planes[i]._obj.GetLinearVelocity().x, planes[i]._obj.GetLinearVelocity().y);
+						var rebound:Number = 0.25; 			// Was 0.05, might need retuning
+						
+						// Variables are set, based on which border is struck
 						if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 3)
-							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x + 0.05, planes[i]._obj.GetPosition().y));
+						{	// Hitting left border
+							newPos.x += rebound;
+							newVel.x = -newVel.x;
+						}
 						else if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 2)
-							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x - 0.05, planes[i]._obj.GetPosition().y));
+						{	// Hitting right border
+							newPos.x -= rebound;
+							newVel.x = -newVel.x;
+						}
 						else if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 1)
-							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x, planes[i]._obj.GetPosition().y + 0.05));
+						{	// Hitting upper border
+							newPos.y += rebound;
+							newVel.y = -newVel.y;
+						}
 						else if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 4)
-							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x, planes[i]._obj.GetPosition().y - 0.05));
+						{	// Hitting lower border
+							newPos.y -= rebound;
+							newVel.y = -newVel.y;
+						}
+						
+						if (boundaries.solveSlopeCollide(boundaries, planes[i]) >= 1)
+						{	// New position and velocity is set.
+							planes[i]._obj.SetLinearVelocity(new b2Vec2(0, 0));
+							planes[i]._obj.SetPosition(new b2Vec2(newPos.x, newPos.y));
+							planes[i]._obj.SetLinearVelocity(new b2Vec2(newVel.x, newVel.y)); 
+						}
 					}
 				}
 			}
