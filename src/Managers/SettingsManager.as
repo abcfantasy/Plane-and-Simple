@@ -26,8 +26,8 @@ package Managers
 		public static var Game_mode:int = TIME_MODE;
 		
 		// max level player can play
-		public static var Max_Level:int = 1; // Not working as intended?
-		public static var Last_Level:int = 5;
+		public static var Max_Level:int = 1; 
+		public static var Last_Level:int = 6;
 		
 		// save file
 		private static const _saveName:String = "Planeandsimple"

@@ -9,6 +9,7 @@ package States
 	import GamePads.*;
 	import org.flixel.FlxEmitter;
 	import org.flixel.FlxG;
+	import org.flixel.FlxObject;
 	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxState;
@@ -30,6 +31,7 @@ package States
 		private var emitterCoin:FlxEmitter; 		// Picking-up Coin
 		private var emitterJewel:FlxEmitter;		// Picking-up Jewel
 		private var emitterExplosion:FlxEmitter;	// Plane explosion
+		private var cameraPivot:FlxObject = new FlxObject();
 		
 		// text
 		//private var scoreText:FlxText;
@@ -71,7 +73,7 @@ package States
 			groundMap.collideIndex = 2;
 			FlxU.setWorldBounds(0, 0, groundMap.width, groundMap.height);
 			
-			boundaries = LevelManager.getBoundaries();
+			boundaries = LevelManager.getBoundaries(groundMap.widthInTiles, groundMap.heightInTiles);
 			this.add(boundaries);
 			
 			// Score texts
@@ -185,6 +187,20 @@ package States
 					
 					var planes:Array = [p.getLeftPlane(), p.getRightPlane()];
 					
+					cameraPivot.x = p.getCenter().x;
+					cameraPivot.y = p.getCenter().y;
+					
+					if (cameraPivot.x <= 400)
+						cameraPivot.x = 400;
+					else if (cameraPivot.x >= groundMap.width - 400)
+						cameraPivot.x = groundMap.width - 400;
+					if (cameraPivot.y <= 250)
+						cameraPivot.y = 250;
+					else if (cameraPivot.y >= groundMap.height - 250)
+						cameraPivot.y = groundMap.height - 250;
+					
+					FlxG.follow(cameraPivot, 1); 
+					
 					// checks collision with the groundMap
 					for (var j:uint = 0; j < planes.length; j++)
 					{
@@ -208,21 +224,47 @@ package States
 						}
 					}
 					
+					stringElasticityBar.x = ( FlxG.width / 2 ) - 75 - FlxG.scroll.x;
+					stringElasticityBar.y = 5 - FlxG.scroll.y;
+					
 					// check boundaries 
 					// Note: must check each plane independently for each boundary, to handle the case where
 					// both planes are at the boundary
 					for (var i:uint = 0; i < planes.length; i++)
 					{
-						if (boundaries.solveSlopeCollide(boundaries, planes[i]) >= 1)
-							planes[i]._obj.SetLinearVelocity( new b2Vec2( -planes[i]._obj.GetLinearVelocity().x*0.2, planes[i]._obj.GetLinearVelocity().y*0.2));
+						// Temporary variables for Positions & Velocities
+						var newPos:b2Vec2 = new b2Vec2(planes[i]._obj.GetPosition().x, planes[i]._obj.GetPosition().y);
+						var newVel:b2Vec2 = new b2Vec2(planes[i]._obj.GetLinearVelocity().x, planes[i]._obj.GetLinearVelocity().y);
+						var rebound:Number = 0.25; 			// Was 0.05, might need retuning
+						
+						// Variables are set, based on which border is struck
 						if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 3)
-							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x + 0.05, planes[i]._obj.GetPosition().y));
+						{	// Hitting left border
+							newPos.x += rebound;
+							newVel.x = -newVel.x;
+						}
 						else if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 2)
-							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x - 0.05, planes[i]._obj.GetPosition().y));
+						{	// Hitting right border
+							newPos.x -= rebound;
+							newVel.x = -newVel.x;
+						}
 						else if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 1)
-							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x, planes[i]._obj.GetPosition().y + 0.05));
+						{	// Hitting upper border
+							newPos.y += rebound;
+							newVel.y = -newVel.y;
+						}
 						else if (boundaries.solveSlopeCollide(boundaries, planes[i]) == 4)
-							planes[i]._obj.SetPosition(new b2Vec2(planes[i]._obj.GetPosition().x, planes[i]._obj.GetPosition().y - 0.05));
+						{	// Hitting lower border
+							newPos.y -= rebound;
+							newVel.y = -newVel.y;
+						}
+						
+						if (boundaries.solveSlopeCollide(boundaries, planes[i]) >= 1)
+						{	// New position and velocity is set.
+							planes[i]._obj.SetLinearVelocity(new b2Vec2(0, 0));
+							planes[i]._obj.SetPosition(new b2Vec2(newPos.x, newPos.y));
+							planes[i]._obj.SetLinearVelocity(new b2Vec2(newVel.x, newVel.y)); 
+						}
 					}
 				}
 			}

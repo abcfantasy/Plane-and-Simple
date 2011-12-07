@@ -30,13 +30,13 @@ package
 		// image of rope
 		[Embed(source = "../assets/graphics/string.png")]public var ropeImage:Class;
 		
-		// sprite and bitmap for rope
-		private var rope:Sprite = new Sprite();
-		private var ropeBitMap:Bitmap;
-		
 		// sprite objects
 		private var playerLeft:B2FlxSprite;
 		private var playerRight:B2FlxSprite;
+		
+		// sprite and bitmap for rope
+		private var rope:Sprite = new Sprite();
+		private var ropeBitMap:Bitmap;
 		
 		// distance joint
 		private var jointDef:b2DistanceJointDef = new b2DistanceJointDef();
@@ -65,7 +65,7 @@ package
 		// constants
 		protected static const PLAYER_IMPULSE_FORCE:int = 2.5;
 		protected static const STRING_DISTANCE:int = 150;
-		protected static const PLAYER_MAX_VELOCITY:int = 100;
+		protected static const PLAYER_MAX_VELOCITY:int = 75;
 		
 		public function Player( x:int, y:int, parent:FlxState, _world:b2World, state:int) 
 		{		
@@ -119,7 +119,7 @@ package
 			ropeBitMap = new ropeImage;
 			rope.graphics.lineStyle(4, 0xFF0000, 1, true, "normal", null, null, 3);
 			rope.graphics.lineBitmapStyle(ropeBitMap.bitmapData, null, false, true);
-			FlxG.stage.addChild(rope);			
+			FlxG.stage.addChild(rope);
 		}
 		
 		private function updatePlaneController(position:b2Vec2, impulse:b2Vec2, player:B2FlxSprite, keys:Array):void 
@@ -321,6 +321,11 @@ package
 			return this.rope;
 		}
 		
+		public function getCenter():Point
+		{
+			return new Point((playerLeft.x + playerRight.x) / 2, (playerLeft.y + playerRight.y) / 2);
+		}
+		
 		public function getRopeLengthPercentage():Number
 		{
 			return Math.round( this.dist / STRING_DISTANCE * 100 );
@@ -328,6 +333,7 @@ package
 		
 		override public function update():void 
 		{
+			// Controls are managed, based on Game Controller:
 			if ( SettingsManager.Game_Controller == SettingsManager.KEYBOARD )
 			{
 				updatePlane(leftPosition, leftImpulse, playerLeft, [FlxG.keys.D, FlxG.keys.A, FlxG.keys.W, FlxG.keys.S, FlxG.keys.R]);
@@ -342,12 +348,13 @@ package
 					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState+1).RightStick, controller.getState(controllerState+1).RB]); 
 			}
 			
-			// Methods for keeping the string as an actual string, rather than an elastic band
+			// Distance between planes is calculated, to be used in Rope looks and calculations
 			this.dist = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
 			
+			// Methods for keeping the string as an actual string, rather than an elastic band
 			if (this.dist > (STRING_DISTANCE+25))
 				joint.SetFrequency(5.0);
-				// Fire object here, potentially :D
+				// R.I.P awesome game-addition, that might be happening in Expansion 1. :<
 			else 
 			{
 				if (this.dist > STRING_DISTANCE)
@@ -356,12 +363,13 @@ package
 					joint.SetFrequency(0.01);
 			}
 			
+			// Drawing the Rope between the planes.
 			rope.graphics.clear();
-			// 400/dist makes the width of the rope depend on the distance between the planes
-			rope.graphics.lineStyle(400 / dist, 0xFF0000, 1, true, "normal", null, null, 3);
+			var ropeWidth:Number = ((400 / dist) > 4 )? 4 : (400 / dist); // 400 / dist makes width change
+			rope.graphics.lineStyle(ropeWidth, 0xFF0000, 1, true, "normal", null, null, 3);
 			rope.graphics.lineBitmapStyle(ropeBitMap.bitmapData, null, true, true);
-			rope.graphics.moveTo(playerLeft.x + (playerLeft.width/2), playerLeft.y + (playerLeft.height/2));
-			rope.graphics.lineTo(playerRight.x + (playerRight.width/2), playerRight.y + (playerRight.height/2));
+			rope.graphics.moveTo(playerLeft.x + FlxG.scroll.x + (playerLeft.width/2), playerLeft.y + FlxG.scroll.y + (playerLeft.height/2));
+			rope.graphics.lineTo(playerRight.x + FlxG.scroll.x + (playerRight.width / 2), playerRight.y + FlxG.scroll.y + (playerRight.height / 2));
 			
 			
 			super.update();

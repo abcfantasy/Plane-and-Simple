@@ -21,18 +21,29 @@ package
 			return this;
 		}
 		
-		public function createBoundaries(TileGraphic:Class, TileWidth:uint = 0, TileHeight:uint = 0):FlxTilemapExt
+		public function createBoundaries(TileGraphic:Class, TileWidth:uint, TileHeight:uint, _widthInTiles:uint, _heightInTiles:uint):FlxTilemapExt
 		{
 			refresh = true;
 			
-			//Figure out the map dimensions based on the data string
 			var cols:Array;
 			var rows:Array = new Array;
-			rows[0] = new String("6,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7");
-			for (var i:uint = 1; i < 37; i++)
-				rows[i] = new String("3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2");
-			rows[37] = new String("5,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,8");
+			rows[0] = new String("6");
+			for (var i:uint = 0; i < _widthInTiles - 2; i++)
+				rows[0] = rows[0].concat(",1");
+			rows[0] = rows[0].concat(",7");
+			for (var j:uint = 1; j < _heightInTiles - 1; j++)
+			{
+				rows[j] = new String("3");
+				for (var k:uint = 0; k < _widthInTiles - 2; k++)
+					rows[j] = rows[j].concat(",0");
+				rows[j] = rows[j].concat(",2");
+			}
+			rows[_heightInTiles - 1] = new String("5");
+			for (var l:uint = 0; l < _widthInTiles - 2; l++)
+				rows[_heightInTiles - 1] = rows[_heightInTiles - 1].concat(",4");
+			rows[_heightInTiles - 1] = rows[_heightInTiles - 1].concat(",8");
 			heightInTiles = rows.length;
+
 			_data = new Array();
 			var r:uint = 0;
 			var c:uint;

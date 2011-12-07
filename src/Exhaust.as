@@ -8,7 +8,7 @@ package
 		
 		public function Exhaust() 
 		{
-			this.x = -42;		// this is the answer to a weird problem and everything else
+			this.x = -4200;		// this is the answer to a weird problem and everything else
 			this.loadGraphic( exhaustImage, true, false, 15, 15 );
 			this.addAnimation( "exhaust", [0, 1, 2, 3, 4], 5, false );
 		}
