@@ -341,6 +341,7 @@ package
 				else
 					updatePlaneController(rightPosition, rightImpulse, playerRight, [controller.getState(controllerState+1).RightStick, controller.getState(controllerState+1).RB]); 
 			}
+			
 			// Methods for keeping the string as an actual string, rather than an elastic band
 			this.dist = Math.sqrt((Math.pow((playerLeft.x - playerRight.x), 2) + Math.pow((playerLeft.y - playerRight.y), 2))); 
 			
@@ -361,6 +362,7 @@ package
 			rope.graphics.lineBitmapStyle(ropeBitMap.bitmapData, null, true, true);
 			rope.graphics.moveTo(playerLeft.x + (playerLeft.width/2), playerLeft.y + (playerLeft.height/2));
 			rope.graphics.lineTo(playerRight.x + (playerRight.width/2), playerRight.y + (playerRight.height/2));
+			
 			
 			super.update();
 		}

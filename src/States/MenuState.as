@@ -17,10 +17,11 @@ package States
 		private var playermode:FlxText;
 		private var gameMode:FlxText;
 		private var clearData:FlxText;
+		private var instructions:FlxText;
 		
 		// menu state
 		private var selected:int = 0;
-		private var maxOptions:int = 5;		// total options
+		private var maxOptions:int = 6;		// total options
 		
 		// sort of "constructor"
 		override public function create():void 
@@ -47,6 +48,9 @@ package States
 			
 			// show clear data
 			this.add( clearData = Helpers.createText( 20, 360, FlxG.width - 20, "Clear Data", 30, 0xFFFFFFFF, "center", 0.5 ) );
+			
+			// show instructions
+			this.add( instructions = Helpers.createText( 20, 400, FlxG.width - 20, "Instructions", 30, 0xFFFFFFFF, "center", 0.5 ) );
 			
 		}
 		
@@ -75,6 +79,9 @@ package States
 						SettingsManager.clearData();
 						clearData.text += " (Cleared)";
 						break;
+					case 5:
+						FlxG.state = new InstructionsState();
+						break;
 				}
 			}
 			else if ( InputManager.down() )
@@ -97,6 +104,7 @@ package States
 					playermode.alpha = 0.5;
 					gameMode.alpha = 0.5;
 					clearData.alpha = 0.5;
+					instructions.alpha = 0.5;
 					break;
 				case 1:
 					startGame.alpha = 0.5;
@@ -104,6 +112,7 @@ package States
 					playermode.alpha = 0.5;
 					gameMode.alpha = 0.5;
 					clearData.alpha = 0.5;
+					instructions.alpha = 0.5;
 					break;
 				case 2:
 					startGame.alpha = 0.5;
@@ -111,6 +120,7 @@ package States
 					playermode.alpha = 1;
 					gameMode.alpha = 0.5;
 					clearData.alpha = 0.5;
+					instructions.alpha = 0.5;
 					break;
 				case 3:
 					startGame.alpha = 0.5;
@@ -118,6 +128,7 @@ package States
 					playermode.alpha = 0.5;
 					gameMode.alpha = 1;
 					clearData.alpha = 0.5;
+					instructions.alpha = 0.5;
 					break;
 				case 4:
 					startGame.alpha = 0.5;
@@ -125,6 +136,15 @@ package States
 					playermode.alpha = 0.5;
 					gameMode.alpha = 0.5;
 					clearData.alpha = 1;
+					instructions.alpha = 0.5;
+					break;
+				case 5:
+					startGame.alpha = 0.5;
+					controller.alpha = 0.5;
+					playermode.alpha = 0.5;
+					gameMode.alpha = 0.5;
+					clearData.alpha = 0.5;
+					instructions.alpha = 1.0;
 					break;
 					
 			}

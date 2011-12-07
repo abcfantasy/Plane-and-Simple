@@ -50,6 +50,9 @@ package Objects
 		
 		public function withinRange():Boolean
 		{
+			if ( player_ == null )
+				return false;
+				
 			// get player plane coordinates
 			var p1Coord:Point = this.player_.getLeftPlaneCoord();
 			var p2Coord:Point = this.player_.getRightPlaneCoord();
