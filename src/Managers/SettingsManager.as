@@ -70,6 +70,16 @@ package Managers
 			saveGame();
 		}
 		
+		// save points of a level if better than previous
+		public static function saveLevelPoints( level:int, points:Number ):void
+		{
+			if ( _save.read( level + "points" ) == null || ( (Number)(_save.read( level + "points" ) ) < points ) )
+			{
+				_save.write( level + "points", points );
+			}
+			saveGame();
+		}
+		
 		// load time of a level
 		public static function loadLevelTime( level:int ):Number
 		{
@@ -77,6 +87,14 @@ package Managers
 				return 0;
 			else
 				return (Number)(_save.read( level + "time" ));
+		}
+		
+		public static function loadLevelPoints( level:int ):Number
+		{
+			if ( _save.read( level + "points" ) == null )
+				return 0;
+			else
+				return (Number)(_save.read( level + "points" ) );
 		}
 		
 		// gets the game controller used as string

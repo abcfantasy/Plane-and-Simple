@@ -151,7 +151,7 @@ package States
 			
 			// WIN
 			if ( ( SettingsManager.Game_mode == SettingsManager.TIME_MODE && coinsRemaining == 0 ) ||
-				 ( SettingsManager.Game_mode == SettingsManager.POINT_MODE && (coinsRemaining + jewelsRemaining) == 0) ||
+				 ( SettingsManager.Game_mode == SettingsManager.POINT_MODE && (coinsRemaining) == 0) ||
 				 ( SettingsManager.Game_mode == SettingsManager.POINT_MODE && (timeLeft - Math.round(elapsedTime / 1000) <= 0) ) )
 			{
 				endLevel();
@@ -287,7 +287,7 @@ package States
 			
 			FlxG.points++;
 			
-			timeLeft += 2;
+			timeLeft++;
 			
 			// kill coin
 			coin.kill();
@@ -299,10 +299,10 @@ package States
 			emitterJewel.at(jewel);
 			emitterJewel.start(true, 0.5, 10);
 			FlxG.points += 5;
-			timeLeft += 10;
+			timeLeft += 5;
+		
 			jewel.kill();
 		}
-		
 		private function endLevel():void
 		{
 			endCounter += FlxG.elapsed;
@@ -316,7 +316,10 @@ package States
 					SettingsManager.Max_Level++;
 				
 				// save level
-				SettingsManager.saveLevelTime( FlxG.level, elapsedTime );
+				if ( SettingsManager.Game_mode == SettingsManager.TIME_MODE )
+					SettingsManager.saveLevelTime( FlxG.level, elapsedTime );
+				else
+					SettingsManager.saveLevelPoints( FlxG.level, FlxG.points );
 				
 				// go to end level state
 				FlxG.state = new EndLevelState(elapsedTime);

@@ -46,6 +46,13 @@ package States
 			{
 				// create current points
 				this.add( Helpers.createText( 20, 300, FlxG.width - 20, "Your Points: " + FlxG.points, 28, 0xFFFFFFFF, "center" ) );
+				
+				// if best points exists, create it too
+				var bestPoints:Number = SettingsManager.loadLevelPoints( FlxG.level );
+				if ( bestPoints > 0 )
+				{
+					this.add( Helpers.createText( 20, 340, FlxG.width - 20, "Top Score: " + bestPoints, 28, 0xFFFFFFFF, "center" ) );
+				}
 			}
 			FlxG.points = 0;
 		}

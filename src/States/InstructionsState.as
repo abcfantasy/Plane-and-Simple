@@ -28,38 +28,38 @@ package States
 			this.add( Helpers.createText( 80, 160, FlxG.width - 20, "Control this with arrow keys or right analog stick (Xbox)", 18, 0xFFFFFFFF, "left" ) );
 			this.add( new FlxSprite( 20, 150 ).loadGraphic( leftPlaneImage, false, false, 40, 40 ) );
 			
-			this.add( Helpers.createText( 80, 200, FlxG.width - 20, "Control this with WASD keys or left analog stick (Xbox)", 18, 0xFFFFFFFF, "left" ) );
-			this.add( new FlxSprite( 20, 190 ).loadGraphic( rightPlaneImage, false, false, 40, 40 ) );
+			this.add( Helpers.createText( 80, 195, FlxG.width - 20, "Control this with WASD keys or left analog stick (Xbox)", 18, 0xFFFFFFFF, "left" ) );
+			this.add( new FlxSprite( 20, 185 ).loadGraphic( rightPlaneImage, false, false, 40, 40 ) );
 			
 			// add coin
-			this.add ( Helpers.createText( 80, 240, FlxG.width - 20, "Gather these coins", 18, 0xFFFFFFFF, "left" ) );
-			this.add( new Coin( 35, 243, null, null, null ) );
+			this.add ( Helpers.createText( 80, 230, FlxG.width - 20, "Gather these coins", 18, 0xFFFFFFFF, "left" ) );
+			this.add( new Coin( 35, 233, null, null, null ) );
 			
 			// add jewel
-			this.add( Helpers.createText( 80, 280, FlxG.width - 20, "Gather these jewels in point-based mode for additional points", 18, 0xFFFFFFFF, "left" ) );
-			this.add( new Jewel( 35, 280, null, null, null ) );
+			this.add( Helpers.createText( 80, 265, FlxG.width - 20, "Gather these jewels in point-based mode for additional points", 18, 0xFFFFFFFF, "left" ) );
+			this.add( new Jewel( 35, 265, null, null, null ) );
 			
 			// add tile
-			this.add( Helpers.createText( 80, 320, FlxG.width - 20, "Don''t crash on this with the planes", 18, 0xFFFFFFFF, "left" ) );
-			this.add( new FlxSprite( 27, 315, tileImage ) );
+			this.add( Helpers.createText( 80, 300, FlxG.width - 20, "Don''t crash on this with the planes", 18, 0xFFFFFFFF, "left" ) );
+			this.add( new FlxSprite( 27, 295, tileImage ) );
 			
 			// add string
-			this.add( Helpers.createText( 200, 360, FlxG.width - 220, "The string connects the 2 planes, and is used to gather coins/jewels", 18, 0xFFFFFFFF, "left" ) );
-			var rope:FlxSprite = new FlxSprite( -210, 380, ropeImage );
+			this.add( Helpers.createText( 200, 335, FlxG.width - 220, "The string connects the 2 planes, and is used to gather coins/jewels", 18, 0xFFFFFFFF, "left" ) );
+			var rope:FlxSprite = new FlxSprite( -210, 355, ropeImage );
 			rope.scale.x = 0.2;
 			this.add( rope );
 			
 			// add stretch bar
-			this.add( Helpers.createText( 200, 420, FlxG.width - 220, "This bar shows how stretched the string is", 18, 0xFFFFFFFF, "left" ) );
-			var stringElasticityBar:SimpleBar = new SimpleBar( 25, 420, 150, 20, 0, 120 );
+			this.add( Helpers.createText( 200, 390, FlxG.width - 220, "This bar shows how stretched the string is", 18, 0xFFFFFFFF, "left" ) );
+			var stringElasticityBar:SimpleBar = new SimpleBar( 25, 390, 150, 20, 0, 120 );
 			stringElasticityBar.createGradientBar( [0xFF000000, 0xFF000000], [0x99FF0000, 0x99FFFF00, 0x9900FF00, 0x99FFFF00, 0x99FF0000], 1, 180, true, 0xFFFFFFFF );
 			stringElasticityBar.setValue( 50 );
 			this.add(stringElasticityBar);
 			
 			// lockdown
-			this.add( Helpers.createText( 120, 460, FlxG.width - 140, "Activate lockdown mode by holding SHIFT and R key or LB and RB (Xbox). In this mode, the plane will not be dragged by the other if the string stretches too much.", 18, 0xFFFFFFFF, "left" ) );
-			var playerLeft:FlxSprite = new FlxSprite(20, 470);
-			var playerRight:FlxSprite = new FlxSprite(60, 470);
+			this.add( Helpers.createText( 120, 425, FlxG.width - 140, "Activate lockdown mode by holding SHIFT and R key or LB and RB (Xbox). In this mode, the plane will not be dragged by the other if the string stretches too much.", 18, 0xFFFFFFFF, "left" ) );
+			var playerLeft:FlxSprite = new FlxSprite(20, 430);
+			var playerRight:FlxSprite = new FlxSprite(60, 430);
 			playerLeft.loadGraphic(leftPlaneImage, true, false, 40, 40);
 			playerRight.loadGraphic(rightPlaneImage, true, false, 40, 40);
 			playerLeft.addAnimation( "lockdown", [1, 2, 3, 4], 10, true );

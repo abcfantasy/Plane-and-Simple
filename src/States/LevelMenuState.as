@@ -31,9 +31,19 @@ package States
 			for ( var i:int = 1; i <= SettingsManager.Max_Level; i++ )
 			{
 				levelTexts.push( Helpers.createText( 20, 160 + ( i * 30 ), FlxG.width - 20, "Level " + i, 25, 0xFFFFFFFF, "center", 0.5 ) );
-				var bestTime:Number = SettingsManager.loadLevelTime( i );
-				if ( bestTime != 0 ) {
-					levelTexts[i - 1].text += " - Best time: " + Helpers.timeToString( bestTime );
+				if ( SettingsManager.Game_mode == SettingsManager.TIME_MODE )
+				{
+					var bestTime:Number = SettingsManager.loadLevelTime( i );
+					if ( bestTime != 0 ) {
+						levelTexts[i - 1].text += " - Best time: " + Helpers.timeToString( bestTime );
+					}
+				}
+				else
+				{
+					var bestPoints:Number = SettingsManager.loadLevelPoints( i );
+					if ( bestPoints != 0 ) {
+						levelTexts[i - 1].text += " - Top Score: " + bestPoints;
+					}
 				}
 				this.add( levelTexts[i - 1] );
 			}
